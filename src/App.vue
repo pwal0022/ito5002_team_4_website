@@ -4,7 +4,7 @@ import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
-  <header>
+  <!-- <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
@@ -15,9 +15,36 @@ import HelloWorld from './components/HelloWorld.vue'
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
-  </header>
+  </header> -->
 
-  <RouterView />
+  <!-- <RouterView /> -->
+  <div class="container">
+    <!-- <BHeader /> -->
+    <!-- bootstrap navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Fourth navbar example">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/"
+          ><img src="\src\assets\logo.svg" alt="logo" width="30px" height="35px"
+        /></a>
+
+        <div class="collapse navbar-collapse" id="navbarsExample04">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+            <li class="nav-item">
+              <router-link to="/" class="nav-link" active-class="active" aria-current="page"
+                >Home</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link to="/about" class="nav-link" active-class="active" aria-current="page"
+                >About Us</router-link
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <router-view />
+  </div>
 </template>
 
 <style scoped>
