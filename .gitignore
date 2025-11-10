@@ -34,3 +34,10 @@ coverage
 
 # Vitest
 __screenshots__/
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+EOF
