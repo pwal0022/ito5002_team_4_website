@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import Footer from './components/Footer.vue'
 </script>
 
 <template>
@@ -35,8 +36,18 @@ import HelloWorld from './components/HelloWorld.vue'
               >
             </li>
             <li class="nav-item">
-              <router-link to="/about" class="nav-link" active-class="active" aria-current="page"
-                >About Us</router-link
+              <router-link to="/solar" class="nav-link" active-class="active" aria-current="page"
+                >Solar Calculator</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link to="/ev" class="nav-link" active-class="active" aria-current="page"
+                >EV Calculator</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link to="/results" class="nav-link" active-class="active" aria-current="page"
+                >Results</router-link
               >
             </li>
           </ul>
@@ -44,6 +55,7 @@ import HelloWorld from './components/HelloWorld.vue'
       </div>
     </nav>
     <router-view />
+    <Footer />
   </div>
 </template>
 
