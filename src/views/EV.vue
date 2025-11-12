@@ -7,7 +7,7 @@
 <style>
 @media (min-width: 1024px) {
   .ev {
-    min-height: 100vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
   }

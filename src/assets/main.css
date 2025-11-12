@@ -23,13 +23,29 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
+    /* display: flex; */
     place-items: center;
   }
 
   #app {
-    display: grid;
+    /* display: grid; */
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+}
+.custom-header {
+  background-color: #6d9197 !important; /* Orange */
+  color: rgb(0, 0, 0) !important;
+}
+.custom-card {
+  border-color: #007bff !important; /* Blue */
+}
+.custom-text {
+  color: #28a745 !important; /* Green */
+}
+.background {
+  background-color: #6d9197;
+  color: black;
+  text-align: center;
+  padding: 5px;
 }
