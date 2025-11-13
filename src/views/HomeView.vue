@@ -1,13 +1,17 @@
+<script setup lang="ts">
+import Landing from '@/components/Landing.vue'
+</script>
+
 <template>
   <div class="home">
-    <h1>This is the home page</h1>
+    <Landing />
   </div>
 </template>
 
 <style>
 @media (min-width: 1024px) {
   .home {
-    min-height: 100vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
   }
