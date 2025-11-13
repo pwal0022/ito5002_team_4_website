@@ -4,6 +4,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'ResultsView'
+}
+</script>
+
 <style>
 @media (min-width: 1024px) {
   .results {

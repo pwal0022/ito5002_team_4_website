@@ -1,20 +1,18 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import Footer from './components/Footer.vue'
-import BHeader from './components/BHeader.vue'
-import Nav from './components/Nav.vue'
+import { RouterView } from 'vue-router'
+import AppFooter from './components/Footer.vue'
+import NavBar from './components/Nav.vue'
 </script>
 
 <template>
   <div class="container">
     <!-- <BHeader /> -->
     <!-- navigation -->
-    <Nav />
+    <NavBar />
     <!-- page content based on menu item selected -->
     <router-view />
     <!-- Footer links and copyright etc. -->
-    <Footer />
+    <AppFooter />
   </div>
 </template>
 
@@ -75,7 +73,6 @@ nav a:first-of-type {
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-
     padding: 1rem 0;
     margin-top: 1rem;
   }

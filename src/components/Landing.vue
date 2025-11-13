@@ -13,16 +13,22 @@ defineProps({
     <h3>
       <p>
         Welcome to the Australian Household Carbon Calculator where you can compare your energy
-        usage and see how you compare to others in your are and get suggestions for how you can
+        usage and see how you compare to others in your area and get suggestions for how you can
         reduce your carbon footprint
       </p>
-
-      <p>This ia a group project for ITO5002 completed by HS, DW, MW and PW</p>
-       <br></br><p>To add and change content, do so by modifying the Landing.vue component</p>
+      <p>This is a group project for ITO5002 completed by HS, DW, MW and PW</p>
+      <br>
+      <p>To add and change content, do so by modifying the Landing.vue component</p>
       <p>found in ito5002_team_4_website\src\components\Landing.vue</p>
     </h3>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'LandingPage'
+}
+</script>
 
 <style scoped>
 h1 {

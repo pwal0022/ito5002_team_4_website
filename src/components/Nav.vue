@@ -1,4 +1,5 @@
 <script setup></script>
+
 <template>
   <!-- Using Bootstrap's Header template (starter code) -->
   <!-- https://getbootstrap.com/docs/5.0/examples/headers/ -->
@@ -47,3 +48,9 @@
     </nav>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'NavBar'
+}
+</script>

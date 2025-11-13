@@ -8,7 +8,6 @@
           <label for="postCode" class="form-label">Post Code</label>
           <input
             type="text"
-            z
             class="form-control"
             id="postCode"
             alt="postCode"
@@ -47,7 +46,7 @@
         </div> -->
       </div>
       <!-- Do you have solar -->
-       <br></br>
+      <br>
       <h1>Do you have Solar?</h1>
       <div>
         <b-form-checkbox
@@ -71,7 +70,6 @@
           <label for="electricityBill" class="form-label">How much was your last Electriciy bill?</label>
           <input
             type="text"
-            z
             class="form-control"
             id="electricityBill"
             alt="electricityBill"
@@ -101,7 +99,6 @@
           <label for="gasBill" class="form-label">How much was your last Gas bill?</label>
           <input
             type="text"
-            z
             class="form-control"
             id="gasBill"
             alt="gasBill"
@@ -143,6 +140,7 @@
 
 <script>
 export default {
+  name: 'SolarView',
   data() {
     return {
       selectedHomeType: null,
@@ -174,9 +172,6 @@ export default {
       ],
     }
   },
-
-
-
 }
 </script>
 
@@ -185,9 +180,10 @@ export default {
 import { ref } from 'vue'
 
 const formData = ref({
-  name: '',
-  email: '',
-  reason: '',
+  postCode: '',
+  familySize: '',
+  electricityBill: '',
+  gasBill: '',
 })
 
 const submittedCards = ref([])
@@ -195,9 +191,10 @@ const submittedCards = ref([])
 const submitForm = () => {
   validatePostCode(true)
   validateFamilySize(true)
-  validateReason(true)
+  validateElectricityBill(true)
+  validateGasBill(true)
 
-  if (!errors.value.postCode && !errors.value.email && !errors.value.reason) {
+  if (!errors.value.postCode && !errors.value.familySize && !errors.value.electricityBill && !errors.value.gasBill) {
     submittedCards.value.push({
       ...formData.value,
     })
@@ -211,20 +208,23 @@ const submitForm = () => {
 const clearForm = () => {
   formData.value = {
     postCode: '',
-    email: '',
-    reason: '',
+    familySize: '',
+    electricityBill: '',
+    gasBill: '',
   }
-  errors.value = ref({
+  errors.value = {
     postCode: null,
-    email: null,
-    reason: null,
-  })
+    familySize: null,
+    electricityBill: null,
+    gasBill: null,
+  }
 }
 
 const errors = ref({
   postCode: null,
-  email: null,
-  reason: null,
+  familySize: null,
+  electricityBill: null,
+  gasBill: null,
 })
 
 const validatePostCode = (blur) => {
@@ -234,6 +234,7 @@ const validatePostCode = (blur) => {
     errors.value.postCode = null
   }
 }
+
 const validateFamilySize = (blur) => {
   if (formData.value.familySize.length < 1) {
     if (blur) errors.value.familySize = 'How many people in your family?'
@@ -242,6 +243,21 @@ const validateFamilySize = (blur) => {
   }
 }
 
+const validateElectricityBill = (blur) => {
+  if (formData.value.electricityBill.length < 1) {
+    if (blur) errors.value.electricityBill = 'Please enter your electricity bill amount'
+  } else {
+    errors.value.electricityBill = null
+  }
+}
+
+const validateGasBill = (blur) => {
+  if (formData.value.gasBill.length < 1) {
+    if (blur) errors.value.gasBill = 'Please enter your gas bill amount'
+  } else {
+    errors.value.gasBill = null
+  }
+}
 </script>
 
 <style scoped>

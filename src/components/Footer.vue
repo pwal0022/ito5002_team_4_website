@@ -24,10 +24,15 @@
           </ul>
         </div>
       </div>
-
       <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
         <p>© 2025 Australian Household Carbon Calculator, Inc. All rights reserved.</p>
       </div>
     </footer>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'AppFooter'
+}
+</script>
