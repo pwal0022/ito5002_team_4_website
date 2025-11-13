@@ -10,7 +10,22 @@
         <p class="text-muted">It only takes 2 minutes to get your personalised results!</p>
       </div>
 
-      <form @submit.prevent="submitForm">
+      <!-- Loading State -->
+      <div v-if="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading calculator data from Firebase...</p>
+      </div>
+
+      <!-- Error State -->
+      <div v-if="error" class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">⚠️ Oops! Something went wrong</h4>
+        <p>{{ error }}</p>
+        <button class="btn btn-primary" @click="retryLoadData">Try Again</button>
+      </div>
+
+      <form v-if="!loading && !error" @submit.prevent="submitForm">
         <!-- Step 1: Location -->
         <div class="card mb-4 shadow-sm">
           <div class="card-header bg-gradient-primary text-white">
@@ -390,10 +405,16 @@
           <button
             type="submit"
             class="btn btn-primary btn-lg btn-calculate shadow-lg"
-            :disabled="!calculations.includeSolar && !calculations.includeEV"
+            :disabled="!calculations.includeSolar && !calculations.includeEV || calculating"
           >
-            <span class="btn-icon">🧮</span>
-            Calculate My Savings
+            <span v-if="!calculating">
+              <span class="btn-icon">🧮</span>
+              Calculate My Savings
+            </span>
+            <span v-else>
+              <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+              Calculating...
+            </span>
           </button>
           <br />
           <button type="button" class="btn btn-link mt-3" @click="clearForm">
@@ -738,10 +759,19 @@
 </template>
 
 <script>
+import { getSolarDataByState, getEVDataByState } from '@/services/firebaseService'
+
 export default {
   name: 'SolarView',
   data() {
     return {
+      loading: true,
+      error: null,
+      calculating: false,
+      firebaseData: {
+        solar: null,
+        ev: null,
+      },
       calculations: {
         includeSolar: false,
         includeEV: false,
@@ -777,7 +807,39 @@ export default {
       },
     }
   },
+  async mounted() {
+    // Component is ready, but we'll load Firebase data when user selects a state
+    this.loading = false
+  },
   methods: {
+    async loadFirebaseData() {
+      if (!this.formData.state) return
+
+      try {
+        this.loading = true
+        this.error = null
+
+        // Load data for the selected state
+        if (this.calculations.includeSolar) {
+          this.firebaseData.solar = await getSolarDataByState(this.formData.state)
+          console.log('✅ Solar data loaded from Firebase:', this.firebaseData.solar)
+        }
+
+        if (this.calculations.includeEV) {
+          this.firebaseData.ev = await getEVDataByState(this.formData.state)
+          console.log('✅ EV data loaded from Firebase:', this.firebaseData.ev)
+        }
+
+        this.loading = false
+      } catch (err) {
+        console.error('❌ Error loading Firebase data:', err)
+        this.error = `Failed to load data for ${this.formData.state}. ${err.message}`
+        this.loading = false
+      }
+    },
+    async retryLoadData() {
+      await this.loadFirebaseData()
+    },
     validateElectricityBill(blur) {
       if (
         this.calculations.includeSolar &&
@@ -799,17 +861,8 @@ export default {
       }
     },
     calculateSolarSavings() {
-      // State-specific emissions factors (kg CO2e per kWh)
-      const emissionsFactors = {
-        NSW: 0.79,
-        VIC: 1.02,
-        QLD: 0.81,
-        SA: 0.47,
-        WA: 0.7,
-        TAS: 0.16,
-        NT: 0.59,
-        ACT: 0.79,
-      }
+      // Use Firebase data for state-specific calculations
+      const solarData = this.firebaseData.solar
 
       // Orientation multipliers
       const orientationFactors = {
@@ -830,25 +883,25 @@ export default {
       }
 
       // Convert number of panels to system size in kW
-      // Assuming standard 400W (0.4kW) panels
       const panelWattage = 0.4 // 400W per panel
       const numberOfPanels = parseFloat(this.formData.solar.numberOfPanels)
       const systemSize = numberOfPanels * panelWattage
 
       const efficiency = parseFloat(this.formData.solar.efficiency)
-      const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
       const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
       const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
 
-      // Average sun hours per day in Australia (conservative estimate)
-      const avgSunHours = 4.5
+      // Use Firebase data for state-specific calculations
+      const dailyOutputPerKw = solarData.dailyOutputKwh / 6.6 // Normalize to per kW
+      const annualOutputPerKw = solarData.annualOutputKwh / 6.6
 
-      // Annual kWh generated
+      // Calculate actual output based on system size and conditions
       const kWhGenerated = Math.round(
-        systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
+        annualOutputPerKw * systemSize * efficiency * orientationFactor * shadingFactor
       )
 
-      // Annual CO2 saved (in tonnes)
+      // Use Firebase emissions factor
+      const emissionsFactor = solarData.totalEmissionsFactor
       const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
 
       // Cost savings (assuming $0.30 per kWh)
@@ -869,17 +922,8 @@ export default {
       }
     },
     calculateEVSavings() {
-      // State-specific emissions factors (kg CO2e per kWh)
-      const emissionsFactors = {
-        NSW: 0.79,
-        VIC: 1.02,
-        QLD: 0.81,
-        SA: 0.47,
-        WA: 0.7,
-        TAS: 0.16,
-        NT: 0.59,
-        ACT: 0.79,
-      }
+      // Use Firebase data for EV calculations
+      const evData = this.firebaseData.ev
 
       // Vehicle emissions (kg CO2 per liter of fuel)
       const vehicleEmissions = {
@@ -892,12 +936,14 @@ export default {
         hybrid: { emissionsPerKm: 0.1, fuelConsumption: 4.5 },
       }
 
-      // EV efficiency (kWh per 100km)
-      const evEfficiency = 18
+      // Use Firebase EV efficiency data
+      const evEfficiency = evData.avgEfficiencyKwhPer100km
 
       const annualKm = parseFloat(this.formData.ev.annualKm)
       const vehicleType = vehicleEmissions[this.formData.ev.currentVehicleType]
-      const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
+      
+      // Use Firebase grid emissions factor
+      const emissionsFactor = evData.gridEmissionsFactorScope2
 
       // Current vehicle emissions (in kg CO2)
       const currentEmissions = annualKm * vehicleType.emissionsPerKm
@@ -933,7 +979,13 @@ export default {
         treesEquivalent,
       }
     },
-    submitForm() {
+    async submitForm() {
+      // Validate state selection
+      if (!this.formData.state) {
+        alert('Please select your state first!')
+        return
+      }
+
       // Validate all fields
       if (this.calculations.includeSolar) {
         this.validateElectricityBill(true)
@@ -950,49 +1002,60 @@ export default {
         return
       }
 
-      // Calculate results
-      if (this.calculations.includeSolar) {
-        this.results.solar = this.calculateSolarSavings()
-      }
+      try {
+        this.calculating = true
 
-      if (this.calculations.includeEV) {
-        this.results.ev = this.calculateEVSavings()
-      }
+        // Load Firebase data for selected state
+        await this.loadFirebaseData()
 
-      // Calculate combined results
-      if (this.calculations.includeSolar && this.calculations.includeEV) {
-        const totalCO2Saved = (
-          parseFloat(this.results.solar.annualCO2Saved) +
-          parseFloat(this.results.ev.annualCO2Saved)
-        ).toFixed(2)
-        const totalCostSavings =
-          this.results.solar.costSavings + this.results.ev.costSavings
-        const totalTreesEquivalent =
-          this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
-        const totalCarsOffRoad = (totalCO2Saved / 4.6).toFixed(1)
-
-        // Australian household average emissions: ~20 tonnes CO2e per year
-        // Target: 50% reduction = 10 tonnes
-        const percentageOfTarget = ((totalCO2Saved / 10) * 100).toFixed(0)
-
-        this.results.combined = {
-          totalCO2Saved,
-          totalCostSavings,
-          totalTreesEquivalent,
-          totalCarsOffRoad,
-          percentageOfTarget,
+        // Calculate results
+        if (this.calculations.includeSolar) {
+          this.results.solar = this.calculateSolarSavings()
         }
-      }
 
-      this.showResults = true
-
-      // Scroll to results
-      setTimeout(() => {
-        const resultsElement = document.querySelector('.results-section')
-        if (resultsElement) {
-          resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        if (this.calculations.includeEV) {
+          this.results.ev = this.calculateEVSavings()
         }
-      }, 100)
+
+        // Calculate combined results
+        if (this.calculations.includeSolar && this.calculations.includeEV) {
+          const totalCO2Saved = (
+            parseFloat(this.results.solar.annualCO2Saved) +
+            parseFloat(this.results.ev.annualCO2Saved)
+          ).toFixed(2)
+          const totalCostSavings =
+            this.results.solar.costSavings + this.results.ev.costSavings
+          const totalTreesEquivalent =
+            this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
+          const totalCarsOffRoad = (totalCO2Saved / 4.6).toFixed(1)
+
+          // Australian household average emissions: ~20 tonnes CO2e per year
+          // Target: 50% reduction = 10 tonnes
+          const percentageOfTarget = ((totalCO2Saved / 10) * 100).toFixed(0)
+
+          this.results.combined = {
+            totalCO2Saved,
+            totalCostSavings,
+            totalTreesEquivalent,
+            totalCarsOffRoad,
+            percentageOfTarget,
+          }
+        }
+
+        this.showResults = true
+        this.calculating = false
+
+        // Scroll to results
+        setTimeout(() => {
+          const resultsElement = document.querySelector('.results-section')
+          if (resultsElement) {
+            resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 100)
+      } catch (err) {
+        this.calculating = false
+        alert(`Error calculating results: ${err.message}`)
+      }
     },
     clearForm() {
       this.formData = {
@@ -1028,6 +1091,10 @@ export default {
         ev: null,
         combined: null,
       }
+      this.firebaseData = {
+        solar: null,
+        ev: null,
+      }
 
       // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -1037,6 +1104,7 @@ export default {
 </script>
 
 <style scoped>
+/* All your existing styles remain exactly the same */
 /* Hero Section */
 .hero-section {
   padding: 3rem 1rem;
@@ -1437,39 +1505,6 @@ export default {
   font-size: 0.9rem;
   color: #888;
   margin-top: 0.2rem;
-}
-
-/* Money Timeline (old - remove if not needed) */
-.money-timeline {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  padding: 2rem;
-  border-radius: 15px;
-}
-
-/* Next Steps */
-.next-steps {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid #e0e0e0;
-}
-
-.next-step-card {
-  padding: 1.5rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 15px;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-}
-
-.next-step-card:hover {
-  border-color: #667eea;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-  transform: translateY(-2px);
-}
-
-.next-step-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
 }
 
 /* Mobile Responsiveness */
