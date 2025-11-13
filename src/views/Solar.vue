@@ -1,278 +1,408 @@
 <template>
-  <div class="solar">
-    <h1>This is the solar page</h1>
-    <form @submit.prevent="submitForm" action="https://formsubmit.co/el/bahixi" method="POST">
-      <div class="row mb-3">
-        <!-- post code -->
-        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="postCode" class="form-label">Post Code</label>
-          <input
-            type="text"
-            class="form-control"
-            id="postCode"
-            alt="postCode"
-            @blur="() => validatePostCode(true)"
-            @input="() => validatePostCode(false)"
-            v-model="formData.postCode"
-            required
-          />
-          <div v-if="errors.postCode" class="text-danger">
-            {{ errors.postCode }}
+  <div class="solar-page">
+    <div class="container">
+      <h1>Solar Panel CO2 Calculator</h1>
+      <p class="subtitle">Calculate your carbon emissions reduction from solar panels</p>
+
+      <div class="calculator-card">
+        <form @submit.prevent="calculateSavings">
+          <!-- State Selection -->
+          <div class="form-group">
+            <label for="state">State/Territory *</label>
+            <select v-model="formData.state" id="state" required>
+              <option value="">Select your state...</option>
+              <option value="NSW">New South Wales</option>
+              <option value="VIC">Victoria</option>
+              <option value="QLD">Queensland</option>
+              <option value="SA">South Australia</option>
+              <option value="WA">Western Australia</option>
+              <option value="TAS">Tasmania</option>
+              <option value="NT">Northern Territory</option>
+              <option value="ACT">Australian Capital Territory</option>
+            </select>
+          </div>
+
+          <!-- Number of Panels -->
+          <div class="form-group">
+            <label for="numPanels">Number of Solar Panels *</label>
+            <input 
+              type="number" 
+              v-model.number="formData.numPanels" 
+              id="numPanels"
+              min="1"
+              max="50"
+              step="1"
+              placeholder="e.g., 20"
+              required
+            />
+            <small>Typical residential: 15-25 panels</small>
+          </div>
+
+          <!-- Panel Wattage -->
+          <div class="form-group">
+            <label for="panelWattage">Panel Wattage (W) *</label>
+            <select v-model.number="formData.panelWattage" id="panelWattage" required>
+              <option value="">Select panel wattage...</option>
+              <option value="250">250W (Older panels)</option>
+              <option value="300">300W (Standard)</option>
+              <option value="330">330W (Common)</option>
+              <option value="350">350W (Modern)</option>
+              <option value="370">370W (High efficiency)</option>
+              <option value="400">400W (Premium)</option>
+              <option value="450">450W (Latest technology)</option>
+            </select>
+            <small>Check your solar quote or panel specifications</small>
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button type="submit" class="btn-primary">Calculate CO2 Savings</button>
+            <button type="button" class="btn-secondary" @click="clearForm">Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results -->
+      <div v-if="results" class="results-card">
+        <h2>Your CO2 Impact</h2>
+        
+        <div class="results-grid">
+          <div class="result-item primary">
+            <div class="result-value">{{ results.co2Saved }}</div>
+            <div class="result-label">Tonnes CO2 Saved/Year</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-value">{{ results.carsOffRoad }}</div>
+            <div class="result-label">Cars Off Road (Equivalent)</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-value">{{ results.treesEquivalent }}</div>
+            <div class="result-label">Trees Planted Equivalent</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-value">{{ results.householdPercent }}%</div>
+            <div class="result-label">Of Avg Household Emissions</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-value">{{ results.energyGenerated }}</div>
+            <div class="result-label">kWh Generated/Year</div>
+          </div>
+
+          <div class="result-item">
+            <div class="result-value">{{ results.homePowered }}</div>
+            <div class="result-label">Months Powering Avg Home</div>
           </div>
         </div>
-        <!-- household size -->
-        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="familySize" class="form-label">Household Size</label>
-          <input
-            type="text"
-            class="form-control"
-            id="familySize"
-            @blur="() => validateFamilySize(true)"
-            @input="() => validateFamilySize(false)"
-            v-model="formData.familySize"
-            required
-          />
-          <div v-if="errors.familySize" class="text-danger">
-            {{ errors.familySize }}
-          </div>
+
+        <div class="info-box">
+          <p><strong>Your system:</strong> {{ results.numPanels }} × {{ results.panelWattage }}W panels = {{ results.systemSizeKw }} kW total</p>
+          <p><strong>State emissions factor:</strong> {{ results.emissionsFactor }} kg CO2-e per kWh</p>
+          <p><strong>Average sun hours:</strong> {{ results.sunHours }} hours per day</p>
         </div>
       </div>
-      <!-- home type -->
-
-      <div>
-        <b-form-select v-model="selectedHomeType" :options="homeTypeOptions"></b-form-select>
-        <!-- <div class="mt-3">
-          Home Type: <strong>{{ selectedHomeType }}</strong>
-        </div> -->
-      </div>
-      <!-- Do you have solar -->
-      <br>
-      <h1>Do you have Solar?</h1>
-      <div>
-        <b-form-checkbox
-          id="checkbox-1"
-          v-model="solarStatus"
-          name="checkbox-1"
-          value="I have solar"
-          unchecked-value="No solar"
-        >
-         I have solar
-        </b-form-checkbox>
-
-        <!-- <div>
-          State: <strong>{{ solarStatus }}</strong>
-        </div> -->
-      </div>
-      <h1> Energy</h1>
-      <!-- Electricity bill  -->
-       <div class="row mb-3">
-          <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="electricityBill" class="form-label">How much was your last Electriciy bill?</label>
-          <input
-            type="text"
-            class="form-control"
-            id="electricityBill"
-            alt="electricityBill"
-            @blur="() => validateElectricityBill(true)"
-            @input="() => validateElectricityBill(false)"
-            v-model="formData.electricityBill"
-            required
-          />
-          <div v-if="errors.electricityBill" class="text-danger">
-            {{ errors.electricityBill }}
-          </div>
-        </div>
-        <!-- Electricity Bill Frequency -->
-        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="electricityBillFrequency" class="form-label">What is your bill frequency?</label>
-        <b-form-select v-model="electricityBillFrequency" :options="electricityBillFrequencyOptions"></b-form-select>
-        <!-- <div class="mt-3">
-          Frequency: <strong>{{ electricityBillFrequency }}</strong>
-        </div> -->
-      </div>
-      </div>
-
-
-<!-- Gas Bill  -->
-       <div class="row mb-3">
-          <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="gasBill" class="form-label">How much was your last Gas bill?</label>
-          <input
-            type="text"
-            class="form-control"
-            id="gasBill"
-            alt="gasBill"
-            @blur="() => validateGasBill(true)"
-            @input="() => validateGasBill(false)"
-            v-model="formData.gasBill"
-            required
-          />
-          <div v-if="errors.gasBill" class="text-danger">
-            {{ errors.gasBill }}
-          </div>
-        </div>
-        <!-- Gas Bill Frequency -->
-        <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6">
-          <label for="electricityBillFrequency" class="form-label">What is your  bill frequency?</label>
-        <b-form-select v-model="GasBillFrequency" :options="gasBillFrequencyOptions"></b-form-select>
-        <!-- <div class="mt-3">
-          Frequency: <strong>{{ GasBillFrequency }}</strong>
-        </div> -->
-      </div>
-      </div>
-
-
-
-
-
-
-
-
-
-      <!-- Submit and clear form buttons -->
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary me-2">Submit</button>
-        <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
-      </div>
-    </form>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'SolarView',
-  data() {
-    return {
-      selectedHomeType: null,
-      homeTypeOptions: [
-        { value: null, text: 'Please select a house type' },
-        { value: 'House', text: 'House' },
-        { value: 'Townhouse', text: 'Townhouse' },
-        { value: 'Semi', text: 'Semi' },
-        { value: 'Duplex', text: 'Duplex' },
-        { value: 'Terrace', text: 'Terrace' },
-        { value: 'Apartment', text: 'Apartment' },
-      ],
-      solarStatus: 'no solar',
-      electricityBillFrequency: null,
-      electricityBillFrequencyOptions: [
-        { value: null, text: 'Please select frequency' },
-        { value: 'Annually', text: 'Annually' },
-        { value: 'Quarterly', text: 'Quarterly' },
-        { value: 'Monthly', text: 'Monthly' },
-        { value: 'Weekly', text: 'Weekly' },
-      ],
-      gasBillFrequency: null,
-      gasBillFrequencyOptions: [
-        { value: null, text: 'Please select frequency' },
-        { value: 'Annually', text: 'Annually' },
-        { value: 'Quarterly', text: 'Quarterly' },
-        { value: 'Monthly', text: 'Monthly' },
-        { value: 'Weekly', text: 'Weekly' },
-      ],
-    }
-  },
-}
-</script>
-
 <script setup>
-// import Footer from "../components/Footer.vue";
 import { ref } from 'vue'
 
 const formData = ref({
-  postCode: '',
-  familySize: '',
-  electricityBill: '',
-  gasBill: '',
+  state: '',
+  numPanels: null,
+  panelWattage: null
 })
 
-const submittedCards = ref([])
+const results = ref(null)
 
-const submitForm = () => {
-  validatePostCode(true)
-  validateFamilySize(true)
-  validateElectricityBill(true)
-  validateGasBill(true)
+// TEST DATA - Replace with real CER data later
+const TEST_DATA = {
+  sunHours: {
+    'NSW': 5.2,
+    'VIC': 4.5,
+    'QLD': 5.5,
+    'SA': 5.3,
+    'WA': 5.8,
+    'TAS': 4.0,
+    'NT': 6.0,
+    'ACT': 5.0
+  },
+  emissionsFactors: {
+    'NSW': 0.79,
+    'VIC': 0.98,
+    'QLD': 0.82,
+    'SA': 0.42,
+    'WA': 0.64,
+    'TAS': 0.15,
+    'NT': 0.59,
+    'ACT': 0.00
+  },
+  systemEfficiency: 0.80
+}
 
-  if (!errors.value.postCode && !errors.value.familySize && !errors.value.electricityBill && !errors.value.gasBill) {
-    submittedCards.value.push({
-      ...formData.value,
-    })
-    clearForm()
-    alert(
-      'Thank you for your enquiry, we will endeavour to respond to you within two business days.',
-    )
+const calculateSavings = () => {
+  const { state, numPanels, panelWattage } = formData.value
+  
+  if (!state || !numPanels || !panelWattage) {
+    alert('Please fill in all fields')
+    return
+  }
+
+  // Calculate total system size in kW
+  // Formula: (Number of panels × Wattage per panel) ÷ 1000 = kW
+  const systemSizeKw = (numPanels * panelWattage) / 1000
+
+  // Get data for selected state
+  const sunHours = TEST_DATA.sunHours[state]
+  const emissionsFactor = TEST_DATA.emissionsFactors[state]
+  
+  // Calculate annual energy generation (kWh)
+  const energyGenerated = Math.round(
+    systemSizeKw * sunHours * 365 * TEST_DATA.systemEfficiency
+  )
+  
+  // Calculate CO2 saved (kg -> tonnes)
+  const co2SavedKg = energyGenerated * emissionsFactor
+  const co2Saved = (co2SavedKg / 1000).toFixed(2)
+  
+  // Calculate trees equivalent (1 tree = ~60kg CO2/year)
+  const treesEquivalent = Math.round(co2SavedKg / 60)
+  
+  // Calculate cars off road (average car = ~4 tonnes CO2/year)
+  const carsOffRoad = Math.round((co2SavedKg / 1000) / 4)
+  
+  // Calculate household percentage (average household = 14 tonnes CO2/year)
+  const householdPercent = Math.round(((co2SavedKg / 1000) / 14) * 100)
+  
+  // Calculate months powering average home (average home uses ~7,000 kWh/year)
+  const homePowered = Math.round((energyGenerated / 7000) * 12)
+  
+  results.value = {
+    co2Saved,
+    energyGenerated: energyGenerated.toLocaleString(),
+    treesEquivalent: treesEquivalent.toLocaleString(),
+    carsOffRoad: carsOffRoad.toLocaleString(),
+    householdPercent: householdPercent,
+    homePowered: homePowered,
+    systemSizeKw: systemSizeKw.toFixed(2),
+    numPanels,
+    panelWattage,
+    emissionsFactor,
+    sunHours
   }
 }
 
 const clearForm = () => {
   formData.value = {
-    postCode: '',
-    familySize: '',
-    electricityBill: '',
-    gasBill: '',
+    state: '',
+    numPanels: null,
+    panelWattage: null
   }
-  errors.value = {
-    postCode: null,
-    familySize: null,
-    electricityBill: null,
-    gasBill: null,
-  }
-}
-
-const errors = ref({
-  postCode: null,
-  familySize: null,
-  electricityBill: null,
-  gasBill: null,
-})
-
-const validatePostCode = (blur) => {
-  if (formData.value.postCode.length != 4) {
-    if (blur) errors.value.postCode = 'postcode must be at 4 numbers long'
-  } else {
-    errors.value.postCode = null
-  }
-}
-
-const validateFamilySize = (blur) => {
-  if (formData.value.familySize.length < 1) {
-    if (blur) errors.value.familySize = 'How many people in your family?'
-  } else {
-    errors.value.familySize = null
-  }
-}
-
-const validateElectricityBill = (blur) => {
-  if (formData.value.electricityBill.length < 1) {
-    if (blur) errors.value.electricityBill = 'Please enter your electricity bill amount'
-  } else {
-    errors.value.electricityBill = null
-  }
-}
-
-const validateGasBill = (blur) => {
-  if (formData.value.gasBill.length < 1) {
-    if (blur) errors.value.gasBill = 'Please enter your gas bill amount'
-  } else {
-    errors.value.gasBill = null
-  }
+  results.value = null
 }
 </script>
 
 <style scoped>
-.card {
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.solar-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
 }
-.card-header {
-  background-color: #275fda;
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+h1 {
   color: white;
-  padding: 10px;
-  border-radius: 10px 10px 0 0;
+  text-align: center;
+  margin-bottom: 10px;
 }
-.list-group-item {
-  padding: 10px;
+
+.subtitle {
+  color: white;
+  text-align: center;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.calculator-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+small {
+  display: block;
+  color: #666;
+  margin-top: 5px;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+button {
+  flex: 1;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-secondary:hover {
+  background: #d0d0d0;
+}
+
+.results-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s;
+}
+
+.results-card h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.result-item {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.result-item:hover {
+  transform: translateY(-5px);
+}
+
+.result-item.primary {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  color: white;
+}
+
+.result-value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.result-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.info-box {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.info-box p {
+  margin: 5px 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .solar-page {
+    padding: 20px 10px;
+  }
+  
+  .calculator-card {
+    padding: 20px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .result-value {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 375px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .result-value {
+    font-size: 1.8rem;
+  }
 }
 </style>
