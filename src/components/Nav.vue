@@ -29,17 +29,7 @@
             </li>
             <li class="nav-item">
               <router-link to="/solar" class="nav-link" active-class="active" aria-current="page"
-                >Solar Calculator</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link to="/ev" class="nav-link" active-class="active" aria-current="page"
-                >EV Calculator</router-link
-              >
-            </li>
-            <li class="nav-item">
-              <router-link to="/results" class="nav-link" active-class="active" aria-current="page"
-                >Results</router-link
+                >Household Carbon Calculator</router-link
               >
             </li>
           </ul>

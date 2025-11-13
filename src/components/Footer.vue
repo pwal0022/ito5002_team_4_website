@@ -9,17 +9,9 @@
               <a href="/" alt="Home" class="nav-link p-0 text-body-secondary">Home</a>
             </li>
             <li class="nav-item mb-6">
-              <a href="/solar" alt="Solar" class="nav-link p-0 text-body-secondary"
-                >Solar Calculator</a
+              <a href="/solar" alt="Household Carbon Calculator" class="nav-link p-0 text-body-secondary"
+                >Household Carbon Calculator</a
               >
-            </li>
-            <li class="nav-item mb-6">
-              <a href="/EV" alt="EV Calculator" class="nav-link p-0 text-body-secondary"
-                >EV Calculator</a
-              >
-            </li>
-            <li class="nav-item mb-6">
-              <a href="/results" alt="Results" class="nav-link p-0 text-body-secondary">Results</a>
             </li>
           </ul>
         </div>
