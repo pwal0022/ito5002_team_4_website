@@ -4,9 +4,7 @@
       <!-- Hero Section -->
       <div class="hero-section text-center mb-5">
         <h1 class="display-4 mb-3">🌏 Carbon Savings Calculator</h1>
-        <p class="lead">
-          See how much CO₂ you can save with solar panels and electric vehicles
-        </p>
+        <p class="lead">See how much CO₂ you can save with solar panels and electric vehicles</p>
         <p class="text-muted">It only takes 2 minutes to get your personalised results!</p>
       </div>
 
@@ -24,7 +22,12 @@
             <div class="row">
               <div class="col-md-6">
                 <label for="state" class="form-label fw-bold">Select your state *</label>
-                <select class="form-select form-select-lg" id="state" v-model="formData.state" required>
+                <select
+                  class="form-select form-select-lg"
+                  id="state"
+                  v-model="formData.state"
+                  required
+                >
                   <option value="">Choose your state...</option>
                   <option value="NSW">🏙️ New South Wales</option>
                   <option value="VIC">🎭 Victoria</option>
@@ -50,7 +53,7 @@
           </div>
           <div class="card-body">
             <p class="text-muted mb-4">Choose one or both options to see your potential savings</p>
-            
+
             <!-- Solar Option -->
             <div class="option-card mb-3" :class="{ 'option-selected': calculations.includeSolar }">
               <div class="form-check form-switch">
@@ -120,7 +123,10 @@
               <label class="form-label fw-bold mb-3">Do you already have solar panels?</label>
               <div class="row">
                 <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.solar.hasSolar === 'yes' }">
+                  <div
+                    class="radio-card"
+                    :class="{ 'radio-selected': formData.solar.hasSolar === 'yes' }"
+                  >
                     <input
                       class="form-check-input"
                       type="radio"
@@ -138,7 +144,10 @@
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.solar.hasSolar === 'no' }">
+                  <div
+                    class="radio-card"
+                    :class="{ 'radio-selected': formData.solar.hasSolar === 'no' }"
+                  >
                     <input
                       class="form-check-input"
                       type="radio"
@@ -169,6 +178,8 @@
                   class="form-control form-control-lg"
                   id="numberOfPanels"
                   v-model="formData.solar.numberOfPanels"
+                  @blur="() => validateSolarPanels(true)"
+                  @input="() => validateSolarPanels(false)"
                   step="1"
                   min="1"
                   max="100"
@@ -177,11 +188,18 @@
                 <small class="form-text text-muted">
                   💡 <strong>Typical homes:</strong> 15-25 panels (each panel = 400 watts)
                 </small>
-              </div>
 
+                <div v-if="errors.numberOfPanels" class="text-danger small mt-1">
+                  {{ errors.numberOfPanels }}
+                </div>
+              </div>
               <div class="col-md-6">
                 <label for="panelQuality" class="form-label fw-bold">Panel quality</label>
-                <select class="form-select form-select-lg" id="panelQuality" v-model="formData.solar.efficiency">
+                <select
+                  class="form-select form-select-lg"
+                  id="panelQuality"
+                  v-model="formData.solar.efficiency"
+                >
                   <option value="0.85">Good (Standard panels)</option>
                   <option value="0.90">Better (Premium panels)</option>
                   <option value="0.95">Best (High-efficiency panels)</option>
@@ -222,7 +240,11 @@
 
               <div class="col-md-6">
                 <label for="billFrequency" class="form-label fw-bold">How often do you pay?</label>
-                <select class="form-select form-select-lg" id="billFrequency" v-model="formData.solar.billFrequency">
+                <select
+                  class="form-select form-select-lg"
+                  id="billFrequency"
+                  v-model="formData.solar.billFrequency"
+                >
                   <option value="monthly">Every month</option>
                   <option value="quarterly">Every 3 months (quarter)</option>
                   <option value="annually">Once a year</option>
@@ -233,8 +255,14 @@
             <!-- Roof Details -->
             <div class="row mb-3">
               <div class="col-md-6">
-                <label for="roofOrientation" class="form-label fw-bold">Which way does your roof face?</label>
-                <select class="form-select form-select-lg" id="roofOrientation" v-model="formData.solar.orientation">
+                <label for="roofOrientation" class="form-label fw-bold"
+                  >Which way does your roof face?</label
+                >
+                <select
+                  class="form-select form-select-lg"
+                  id="roofOrientation"
+                  v-model="formData.solar.orientation"
+                >
                   <option value="north">⬆️ North (Best in Australia!)</option>
                   <option value="northeast">↗️ North-East (Great)</option>
                   <option value="northwest">↖️ North-West (Great)</option>
@@ -248,8 +276,14 @@
               </div>
 
               <div class="col-md-6">
-                <label for="roofShading" class="form-label fw-bold">How much shade is on your roof?</label>
-                <select class="form-select form-select-lg" id="roofShading" v-model="formData.solar.shading">
+                <label for="roofShading" class="form-label fw-bold"
+                  >How much shade is on your roof?</label
+                >
+                <select
+                  class="form-select form-select-lg"
+                  id="roofShading"
+                  v-model="formData.solar.shading"
+                >
                   <option value="none">☀️ No shade (full sun all day)</option>
                   <option value="minimal">🌤️ A little shade (trees/buildings)</option>
                   <option value="moderate">⛅ Moderate shade (part of the day)</option>
@@ -271,10 +305,15 @@
           <div class="card-body">
             <!-- Current EV Status -->
             <div class="mb-4">
-              <label class="form-label fw-bold mb-3">Do you already have an electric vehicle?</label>
+              <label class="form-label fw-bold mb-3"
+                >Do you already have an electric vehicle?</label
+              >
               <div class="row">
                 <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.ev.hasEV === 'yes' }">
+                  <div
+                    class="radio-card"
+                    :class="{ 'radio-selected': formData.ev.hasEV === 'yes' }"
+                  >
                     <input
                       class="form-check-input"
                       type="radio"
@@ -315,7 +354,9 @@
             <!-- Current Vehicle & Driving -->
             <div class="row mb-4">
               <div class="col-md-6">
-                <label for="currentVehicleType" class="form-label fw-bold">What do you drive now? *</label>
+                <label for="currentVehicleType" class="form-label fw-bold"
+                  >What do you drive now? *</label
+                >
                 <select
                   class="form-select form-select-lg"
                   id="currentVehicleType"
@@ -333,7 +374,9 @@
               </div>
 
               <div class="col-md-6">
-                <label for="annualKm" class="form-label fw-bold">How far do you drive per year? *</label>
+                <label for="annualKm" class="form-label fw-bold"
+                  >How far do you drive per year? *</label
+                >
                 <div class="input-group input-group-lg">
                   <input
                     type="number"
@@ -360,8 +403,14 @@
             <!-- EV Model & Charging -->
             <div class="row mb-3">
               <div class="col-md-6">
-                <label for="evModel" class="form-label fw-bold">Interested in a specific EV? (optional)</label>
-                <select class="form-select form-select-lg" id="evModel" v-model="formData.ev.evModel">
+                <label for="evModel" class="form-label fw-bold"
+                  >Interested in a specific EV? (optional)</label
+                >
+                <select
+                  class="form-select form-select-lg"
+                  id="evModel"
+                  v-model="formData.ev.evModel"
+                >
                   <option value="">Any electric car (we'll use average)</option>
                   <option value="tesla-model-3">Tesla Model 3</option>
                   <option value="tesla-model-y">Tesla Model Y</option>
@@ -373,8 +422,14 @@
               </div>
 
               <div class="col-md-6">
-                <label for="chargingType" class="form-label fw-bold">How would you charge it?</label>
-                <select class="form-select form-select-lg" id="chargingType" v-model="formData.ev.chargingType">
+                <label for="chargingType" class="form-label fw-bold"
+                  >How would you charge it?</label
+                >
+                <select
+                  class="form-select form-select-lg"
+                  id="chargingType"
+                  v-model="formData.ev.chargingType"
+                >
                   <option value="home">🏠 At home (standard power)</option>
                   <option value="home-solar">☀️ At home (with solar panels)</option>
                   <option value="mixed">🔌 Mix of home and public charging</option>
@@ -418,7 +473,7 @@
                   Solar Panel Savings
                 </h3>
               </div>
-              
+
               <div class="row g-3 mb-4">
                 <div class="col-md-4">
                   <div class="result-card bg-warning-light">
@@ -449,8 +504,10 @@
               <div class="impact-banner">
                 <h5>🌳 Environmental Impact</h5>
                 <p class="mb-0">
-                  This is like <strong>planting {{ results.solar.treesEquivalent }} trees</strong> or 
-                  taking <strong>{{ results.solar.carsOffRoad }} cars</strong> off the road for a whole year!
+                  This is like
+                  <strong>planting {{ results.solar.treesEquivalent }} trees</strong> or taking
+                  <strong>{{ results.solar.carsOffRoad }} cars</strong> off the road for a whole
+                  year!
                 </p>
               </div>
 
@@ -461,7 +518,9 @@
                     <div class="comparison-emoji">🏠</div>
                     <div class="comparison-text">
                       <strong>Powers your home</strong>
-                      <p class="mb-0 small text-muted">Enough energy for most of your daily needs</p>
+                      <p class="mb-0 small text-muted">
+                        Enough energy for most of your daily needs
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -469,7 +528,10 @@
                   <div class="comparison-card">
                     <div class="comparison-emoji">📱</div>
                     <div class="comparison-text">
-                      <strong>{{ Math.round(results.solar.kWhGenerated / 0.015).toLocaleString() }} phone charges</strong>
+                      <strong
+                        >{{ Math.round(results.solar.kWhGenerated / 0.015).toLocaleString() }} phone
+                        charges</strong
+                      >
                       <p class="mb-0 small text-muted">That's a lot of scrolling!</p>
                     </div>
                   </div>
@@ -478,7 +540,10 @@
                   <div class="comparison-card">
                     <div class="comparison-emoji">☕</div>
                     <div class="comparison-text">
-                      <strong>{{ Math.round(results.solar.kWhGenerated / 0.11).toLocaleString() }} cups of coffee</strong>
+                      <strong
+                        >{{ Math.round(results.solar.kWhGenerated / 0.11).toLocaleString() }} cups
+                        of coffee</strong
+                      >
                       <p class="mb-0 small text-muted">Made with an electric kettle</p>
                     </div>
                   </div>
@@ -494,7 +559,7 @@
                   Electric Vehicle Savings
                 </h3>
               </div>
-              
+
               <div class="row g-3 mb-4">
                 <div class="col-md-4">
                   <div class="result-card bg-info-light">
@@ -525,7 +590,8 @@
               <div class="impact-banner">
                 <h5>🌳 Environmental Impact</h5>
                 <p class="mb-0">
-                  This is like <strong>planting {{ results.ev.treesEquivalent }} trees</strong> every year!
+                  This is like
+                  <strong>planting {{ results.ev.treesEquivalent }} trees</strong> every year!
                 </p>
               </div>
 
@@ -535,7 +601,9 @@
                   <div class="comparison-card">
                     <div class="comparison-emoji">🛣️</div>
                     <div class="comparison-text">
-                      <strong>{{ Math.round(formData.ev.annualKm / 5).toLocaleString() }} trips</strong>
+                      <strong
+                        >{{ Math.round(formData.ev.annualKm / 5).toLocaleString() }} trips</strong
+                      >
                       <p class="mb-0 small text-muted">Around your local area (5km each)</p>
                     </div>
                   </div>
@@ -544,7 +612,10 @@
                   <div class="comparison-card">
                     <div class="comparison-emoji">✈️</div>
                     <div class="comparison-text">
-                      <strong>Same as {{ (results.ev.annualCO2Saved / 0.255).toFixed(0) }} flights</strong>
+                      <strong
+                        >Same as
+                        {{ (results.ev.annualCO2Saved / 0.255).toFixed(0) }} flights</strong
+                      >
                       <p class="mb-0 small text-muted">Melbourne to Sydney return trips saved</p>
                     </div>
                   </div>
@@ -553,7 +624,12 @@
                   <div class="comparison-card">
                     <div class="comparison-emoji">🍔</div>
                     <div class="comparison-text">
-                      <strong>{{ Math.round(results.ev.annualCO2Saved * 1000 / 2.5).toLocaleString() }} burgers</strong>
+                      <strong
+                        >{{
+                          Math.round((results.ev.annualCO2Saved * 1000) / 2.5).toLocaleString()
+                        }}
+                        burgers</strong
+                      >
                       <p class="mb-0 small text-muted">In CO₂ emissions (beef burgers)</p>
                     </div>
                   </div>
@@ -584,7 +660,9 @@
                 <div class="col-md-6">
                   <div class="result-card bg-success-light">
                     <div class="result-icon-large">💰</div>
-                    <h1 class="result-number-large">${{ results.combined.totalCostSavings.toLocaleString() }}</h1>
+                    <h1 class="result-number-large">
+                      ${{ results.combined.totalCostSavings.toLocaleString() }}
+                    </h1>
                     <p class="result-unit">total savings per year</p>
                   </div>
                 </div>
@@ -593,16 +671,18 @@
               <div class="achievement-banner">
                 <h4>🏆 Amazing Achievement!</h4>
                 <p class="mb-3">
-                  This is equivalent to <strong>planting {{ results.combined.totalTreesEquivalent }} trees</strong> or 
-                  removing <strong>{{ results.combined.totalCarsOffRoad }} cars</strong> from the road for an entire year!
+                  This is equivalent to
+                  <strong>planting {{ results.combined.totalTreesEquivalent }} trees</strong> or
+                  removing <strong>{{ results.combined.totalCarsOffRoad }} cars</strong> from the
+                  road for an entire year!
                 </p>
-                <div class="progress" style="height: 30px;">
-                  <div 
-                    class="progress-bar bg-success progress-bar-striped progress-bar-animated" 
-                    role="progressbar" 
+                <div class="progress" style="height: 30px">
+                  <div
+                    class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                    role="progressbar"
                     :style="{ width: Math.min(results.combined.percentageOfTarget, 100) + '%' }"
                     :aria-valuenow="results.combined.percentageOfTarget"
-                    aria-valuemin="0" 
+                    aria-valuemin="0"
                     aria-valuemax="100"
                   >
                     <strong>{{ results.combined.percentageOfTarget }}% of household target!</strong>
@@ -634,14 +714,18 @@
                   <div class="col-md-3 col-6">
                     <div class="fun-fact-box">
                       <div class="fun-fact-emoji">🏊</div>
-                      <div class="fun-fact-number">{{ Math.round(results.combined.totalCO2Saved * 385) }}</div>
+                      <div class="fun-fact-number">
+                        {{ Math.round(results.combined.totalCO2Saved * 385) }}
+                      </div>
                       <div class="fun-fact-label">Olympic pools of CO₂</div>
                     </div>
                   </div>
                   <div class="col-md-3 col-6">
                     <div class="fun-fact-box">
                       <div class="fun-fact-emoji">🎈</div>
-                      <div class="fun-fact-number">{{ Math.round(results.combined.totalCO2Saved * 509000).toLocaleString() }}</div>
+                      <div class="fun-fact-number">
+                        {{ Math.round(results.combined.totalCO2Saved * 509000).toLocaleString() }}
+                      </div>
                       <div class="fun-fact-label">Balloons of CO₂</div>
                     </div>
                   </div>
@@ -651,7 +735,7 @@
               <!-- Money & CO2 Over Time -->
               <div class="savings-timeline mt-4">
                 <h4 class="text-center mb-4">💰 Your Savings & Environmental Impact Over Time</h4>
-                
+
                 <!-- Money Savings -->
                 <div class="timeline-section mb-4">
                   <h5 class="timeline-heading">
@@ -662,25 +746,33 @@
                     <div class="col-md-3 col-6">
                       <div class="money-period-card">
                         <div class="money-period">1 Year</div>
-                        <div class="money-amount">${{ results.combined.totalCostSavings.toLocaleString() }}</div>
+                        <div class="money-amount">
+                          ${{ results.combined.totalCostSavings.toLocaleString() }}
+                        </div>
                       </div>
                     </div>
                     <div class="col-md-3 col-6">
                       <div class="money-period-card">
                         <div class="money-period">5 Years</div>
-                        <div class="money-amount">${{ (results.combined.totalCostSavings * 5).toLocaleString() }}</div>
+                        <div class="money-amount">
+                          ${{ (results.combined.totalCostSavings * 5).toLocaleString() }}
+                        </div>
                       </div>
                     </div>
                     <div class="col-md-3 col-6">
                       <div class="money-period-card">
                         <div class="money-period">10 Years</div>
-                        <div class="money-amount">${{ (results.combined.totalCostSavings * 10).toLocaleString() }}</div>
+                        <div class="money-amount">
+                          ${{ (results.combined.totalCostSavings * 10).toLocaleString() }}
+                        </div>
                       </div>
                     </div>
                     <div class="col-md-3 col-6">
                       <div class="money-period-card">
                         <div class="money-period">25 Years</div>
-                        <div class="money-amount">${{ (results.combined.totalCostSavings * 25).toLocaleString() }}</div>
+                        <div class="money-amount">
+                          ${{ (results.combined.totalCostSavings * 25).toLocaleString() }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -703,33 +795,46 @@
                     <div class="col-md-3 col-6">
                       <div class="co2-period-card">
                         <div class="co2-period">5 Years</div>
-                        <div class="co2-amount">{{ (results.combined.totalCO2Saved * 5).toFixed(1) }}</div>
+                        <div class="co2-amount">
+                          {{ (results.combined.totalCO2Saved * 5).toFixed(1) }}
+                        </div>
                         <div class="co2-unit">tonnes</div>
                       </div>
                     </div>
                     <div class="col-md-3 col-6">
                       <div class="co2-period-card">
                         <div class="co2-period">10 Years</div>
-                        <div class="co2-amount">{{ (results.combined.totalCO2Saved * 10).toFixed(1) }}</div>
+                        <div class="co2-amount">
+                          {{ (results.combined.totalCO2Saved * 10).toFixed(1) }}
+                        </div>
                         <div class="co2-unit">tonnes</div>
                       </div>
                     </div>
                     <div class="col-md-3 col-6">
                       <div class="co2-period-card">
                         <div class="co2-period">25 Years</div>
-                        <div class="co2-amount">{{ (results.combined.totalCO2Saved * 25).toFixed(1) }}</div>
+                        <div class="co2-amount">
+                          {{ (results.combined.totalCO2Saved * 25).toFixed(1) }}
+                        </div>
                         <div class="co2-unit">tonnes</div>
                       </div>
                     </div>
                   </div>
                   <p class="text-center text-muted mt-3 mb-0">
-                    <small>🌳 That's <strong>{{ (results.combined.totalTreesEquivalent * 25).toLocaleString() }} trees</strong> planted over 25 years!</small>
+                    <small
+                      >🌳 That's
+                      <strong
+                        >{{
+                          (results.combined.totalTreesEquivalent * 25).toLocaleString()
+                        }}
+                        trees</strong
+                      >
+                      planted over 25 years!</small
+                    >
                   </p>
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -778,6 +883,16 @@ export default {
     }
   },
   methods: {
+    validateSolarPanels(blur) {
+      if (
+        this.calculations.includeSolar &&
+        (!this.formData.solar.numberOfPanels || this.formData.solar.numberOfPanels <= 0)
+      ) {
+        if (blur) this.errors.numberOfPanels = 'Please enter your number of solar panels'
+      } else {
+        this.errors.electricityBill = null
+      }
+    },
     validateElectricityBill(blur) {
       if (
         this.calculations.includeSolar &&
@@ -962,11 +1077,9 @@ export default {
       // Calculate combined results
       if (this.calculations.includeSolar && this.calculations.includeEV) {
         const totalCO2Saved = (
-          parseFloat(this.results.solar.annualCO2Saved) +
-          parseFloat(this.results.ev.annualCO2Saved)
+          parseFloat(this.results.solar.annualCO2Saved) + parseFloat(this.results.ev.annualCO2Saved)
         ).toFixed(2)
-        const totalCostSavings =
-          this.results.solar.costSavings + this.results.ev.costSavings
+        const totalCostSavings = this.results.solar.costSavings + this.results.ev.costSavings
         const totalTreesEquivalent =
           this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
         const totalCarsOffRoad = (totalCO2Saved / 4.6).toFixed(1)
