@@ -169,11 +169,17 @@
                   class="form-control form-control-lg"
                   id="numberOfPanels"
                   v-model="formData.solar.numberOfPanels"
+                  @blur="() => validateNumberOfPanels(true)"
+                  @input="() => validateNumberOfPanels(false)"
                   step="1"
                   min="1"
                   max="100"
                   placeholder="20"
+                  required
                 />
+                <div v-if="errors.numberOfPanels" class="text-danger small mt-1">
+                  {{ errors.numberOfPanels }}
+                </div>
                 <small class="form-text text-muted">
                   💡 <strong>Typical homes:</strong> 15-25 panels (each panel = 400 watts)
                 </small>
@@ -728,8 +734,6 @@
                 </div>
               </div>
             </div>
-
-
           </div>
         </div>
       </div>
@@ -768,6 +772,7 @@ export default {
       errors: {
         electricityBill: null,
         annualKm: null,
+        numberOfPanels: null,
       },
       showResults: false,
       results: {
@@ -778,6 +783,16 @@ export default {
     }
   },
   methods: {
+    validateNumberOfPanels(blur) {
+      if (
+        this.calculations.includeSolar &&
+        (!this.formData.solar.numberOfPanels || this.formData.solar.numberOfPanels <= 0)
+      ) {
+        if (blur) this.errors.numberOfPanels = 'Please enter the number of solar panels'
+      } else {
+        this.errors.numberOfPanels = null
+      }
+    },
     validateElectricityBill(blur) {
       if (
         this.calculations.includeSolar &&
@@ -936,6 +951,7 @@ export default {
     submitForm() {
       // Validate all fields
       if (this.calculations.includeSolar) {
+        this.validateNumberOfPanels(true)
         this.validateElectricityBill(true)
       }
 
@@ -1021,6 +1037,7 @@ export default {
       this.errors = {
         electricityBill: null,
         annualKm: null,
+        numberOfPanels: null,
       }
       this.showResults = false
       this.results = {
@@ -1439,39 +1456,6 @@ export default {
   margin-top: 0.2rem;
 }
 
-/* Money Timeline (old - remove if not needed) */
-.money-timeline {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  padding: 2rem;
-  border-radius: 15px;
-}
-
-/* Next Steps */
-.next-steps {
-  margin-top: 3rem;
-  padding-top: 2rem;
-  border-top: 2px solid #e0e0e0;
-}
-
-.next-step-card {
-  padding: 1.5rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 15px;
-  margin-bottom: 1rem;
-  transition: all 0.3s ease;
-}
-
-.next-step-card:hover {
-  border-color: #667eea;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
-  transform: translateY(-2px);
-}
-
-.next-step-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-}
-
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .hero-section {
@@ -1531,5 +1515,34 @@ export default {
 
 .shadow-lg {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Placeholder text styling - lighter color */
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+  color: #bbb !important;
+  opacity: 1;
+}
+
+input::-webkit-input-placeholder,
+select::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+  color: #bbb !important;
+  opacity: 1;
+}
+
+input::-moz-placeholder,
+select::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: #bbb !important;
+  opacity: 1;
+}
+
+input:-ms-input-placeholder,
+select:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
+  color: #bbb !important;
+  opacity: 1;
 }
 </style>
