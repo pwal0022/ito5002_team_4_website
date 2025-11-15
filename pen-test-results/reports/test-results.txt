@@ -1,0 +1,57 @@
+PENETRATION TEST RESULTS
+Date: 15/11/2025
+Tester: Matt
+
+PART 1: DEPENDENCY SCANNING
+================================================================================
+Date/Time: November 15, 2025
+
+RESULTS (BEFORE FIX):
+Critical vulnerabilities: 0
+High vulnerabilities: 0
+Medium vulnerabilities: 1
+Low vulnerabilities: 0
+
+Vulnerability Details:
+- Package: js-yaml
+- Version: <4.1.1
+- Severity: Moderate
+- Issue: Prototype pollution in merge (<<)
+- CVE: GHSA-mh29-5h37-fv8m
+
+Actions Taken:
+☑ Ran npm audit fix
+☑ Updated packages
+☑ Re-verified with npm audit
+
+RESULTS (AFTER FIX):
+Critical vulnerabilities: 0
+High vulnerabilities: 0
+Medium vulnerabilities: 0
+Low vulnerabilities: 0
+
+Status:  RESOLVED
+
+Notes: js-yaml vulnerability successfully fixed by updating to version 4.1.1 or higher.
+The fix was applied automatically using npm audit fix.
+
+=== XSS TESTING ===
+Test 1: <script>alert('XSS')</script>
+Field: _____________
+Result: Pass/Fail
+Screenshot: Y/N
+Notes: _____________
+
+Test 2: <img src=x onerror=alert('XSS')>
+Field: _____________
+Result: Pass/Fail
+Screenshot: Y/N
+Notes: _____________
+
+[Continue for all tests below...]
+
+=== INPUT VALIDATION ===
+[Copy structure from XSS section]
+
+=== DEPENDENCY SCAN ===
+[Results from npm audit]

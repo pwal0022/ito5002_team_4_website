@@ -783,169 +783,288 @@ export default {
     }
   },
   methods: {
+    // Helper method to check if a value is a valid number
+    isValidNumber(value) {
+      return value !== '' && value !== null && value !== undefined && !isNaN(parseFloat(value)) && isFinite(value);
+    },
+
+    // Helper method to safely parse numbers
+    safeParseFloat(value, defaultValue = 0) {
+      const parsed = parseFloat(value);
+      return isNaN(parsed) || !isFinite(parsed) ? defaultValue : parsed;
+    },
+
     validateNumberOfPanels(blur) {
-      if (
-        this.calculations.includeSolar &&
-        (!this.formData.solar.numberOfPanels || this.formData.solar.numberOfPanels <= 0)
-      ) {
-        if (blur) this.errors.numberOfPanels = 'Please enter the number of solar panels'
+      if (!this.calculations.includeSolar) {
+        this.errors.numberOfPanels = null;
+        return;
+      }
+
+      const value = this.formData.solar.numberOfPanels;
+
+      if (!this.isValidNumber(value)) {
+        if (blur) {
+          this.errors.numberOfPanels = '⚠️ Please enter a valid number of solar panels';
+        }
+        return;
+      }
+
+      const numPanels = parseFloat(value);
+
+      if (numPanels <= 0) {
+        if (blur) {
+          this.errors.numberOfPanels = '⚠️ Number of panels must be greater than 0';
+        }
+      } else if (numPanels > 100) {
+        if (blur) {
+          this.errors.numberOfPanels = '⚠️ That seems like a lot of panels! Please check your input (max 100)';
+        }
       } else {
-        this.errors.numberOfPanels = null
+        this.errors.numberOfPanels = null;
       }
     },
+    
     validateElectricityBill(blur) {
-      if (
-        this.calculations.includeSolar &&
-        (!this.formData.solar.electricityBill || this.formData.solar.electricityBill <= 0)
-      ) {
-        if (blur) this.errors.electricityBill = 'Please enter your electricity bill'
+      if (!this.calculations.includeSolar) {
+        this.errors.electricityBill = null;
+        return;
+      }
+
+      const value = this.formData.solar.electricityBill;
+
+      if (!this.isValidNumber(value)) {
+        if (blur) {
+          this.errors.electricityBill = '⚠️ Please enter a valid electricity bill amount';
+        }
+        return;
+      }
+
+      const billAmount = parseFloat(value);
+
+      if (billAmount <= 0) {
+        if (blur) {
+          this.errors.electricityBill = '⚠️ Bill amount must be greater than $0';
+        }
+      } else if (billAmount > 10000) {
+        if (blur) {
+          this.errors.electricityBill = '⚠️ That seems very high! Please check your bill amount';
+        }
       } else {
-        this.errors.electricityBill = null
+        this.errors.electricityBill = null;
       }
     },
+    
     validateAnnualKm(blur) {
-      if (
-        this.calculations.includeEV &&
-        (!this.formData.ev.annualKm || this.formData.ev.annualKm <= 0)
-      ) {
-        if (blur) this.errors.annualKm = 'Please enter how far you drive per year'
+      if (!this.calculations.includeEV) {
+        this.errors.annualKm = null;
+        return;
+      }
+
+      const value = this.formData.ev.annualKm;
+
+      if (!this.isValidNumber(value)) {
+        if (blur) {
+          this.errors.annualKm = '⚠️ Please enter a valid distance in kilometers';
+        }
+        return;
+      }
+
+      const km = parseFloat(value);
+
+      if (km <= 0) {
+        if (blur) {
+          this.errors.annualKm = '⚠️ Distance must be greater than 0 km';
+        }
+      } else if (km > 100000) {
+        if (blur) {
+          this.errors.annualKm = '⚠️ That seems very high! Average is 13,300 km/year. Please check your input';
+        }
       } else {
-        this.errors.annualKm = null
+        this.errors.annualKm = null;
       }
     },
     calculateSolarSavings() {
-      // State-specific emissions factors (kg CO2e per kWh)
-      const emissionsFactors = {
-        NSW: 0.79,
-        VIC: 1.02,
-        QLD: 0.81,
-        SA: 0.47,
-        WA: 0.7,
-        TAS: 0.16,
-        NT: 0.59,
-        ACT: 0.79,
-      }
+      try {
+        // State-specific emissions factors (kg CO2e per kWh)
+        const emissionsFactors = {
+          NSW: 0.79,
+          VIC: 1.02,
+          QLD: 0.81,
+          SA: 0.47,
+          WA: 0.7,
+          TAS: 0.16,
+          NT: 0.59,
+          ACT: 0.79,
+        }
 
-      // Orientation multipliers
-      const orientationFactors = {
-        north: 1.0,
-        northeast: 0.95,
-        northwest: 0.95,
-        east: 0.85,
-        west: 0.85,
-        south: 0.65,
-      }
+        // Orientation multipliers
+        const orientationFactors = {
+          north: 1.0,
+          northeast: 0.95,
+          northwest: 0.95,
+          east: 0.85,
+          west: 0.85,
+          south: 0.65,
+        }
 
-      // Shading multipliers
-      const shadingFactors = {
-        none: 1.0,
-        minimal: 0.9,
-        moderate: 0.75,
-        heavy: 0.5,
-      }
+        // Shading multipliers
+        const shadingFactors = {
+          none: 1.0,
+          minimal: 0.9,
+          moderate: 0.75,
+          heavy: 0.5,
+        }
 
-      // Convert number of panels to system size in kW
-      // Assuming standard 400W (0.4kW) panels
-      const panelWattage = 0.4 // 400W per panel
-      const numberOfPanels = parseFloat(this.formData.solar.numberOfPanels)
-      const systemSize = numberOfPanels * panelWattage
+        // Safely parse number of panels
+        const numberOfPanels = this.safeParseFloat(this.formData.solar.numberOfPanels, 0);
+        
+        if (numberOfPanels <= 0) {
+          throw new Error('Invalid number of panels');
+        }
 
-      const efficiency = parseFloat(this.formData.solar.efficiency)
-      const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
-      const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
-      const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
+        // Convert number of panels to system size in kW
+        // Assuming standard 400W (0.4kW) panels
+        const panelWattage = 0.4 // 400W per panel
+        const systemSize = numberOfPanels * panelWattage
 
-      // Average sun hours per day in Australia (conservative estimate)
-      const avgSunHours = 4.5
+        const efficiency = this.safeParseFloat(this.formData.solar.efficiency, 0.85);
+        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
+        const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
+        const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
 
-      // Annual kWh generated
-      const kWhGenerated = Math.round(
-        systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
-      )
+        // Average sun hours per day in Australia (conservative estimate)
+        const avgSunHours = 4.5
 
-      // Annual CO2 saved (in tonnes)
-      const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
+        // Annual kWh generated
+        const kWhGenerated = Math.round(
+          systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
+        )
 
-      // Cost savings (assuming $0.30 per kWh)
-      const costSavings = Math.round(kWhGenerated * 0.3)
+        // Ensure we have a valid number
+        if (!isFinite(kWhGenerated) || isNaN(kWhGenerated)) {
+          throw new Error('Calculation error');
+        }
 
-      // Trees equivalent (1 tree absorbs ~21kg CO2 per year)
-      const treesEquivalent = Math.round((annualCO2Saved * 1000) / 21)
+        // Annual CO2 saved (in tonnes)
+        const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
 
-      // Cars off road (average car emits ~4.6 tonnes CO2 per year)
-      const carsOffRoad = (annualCO2Saved / 4.6).toFixed(1)
+        // Cost savings (assuming $0.30 per kWh)
+        const costSavings = Math.round(kWhGenerated * 0.3)
 
-      return {
-        annualCO2Saved,
-        kWhGenerated,
-        costSavings,
-        treesEquivalent,
-        carsOffRoad,
+        // Trees equivalent (1 tree absorbs ~21kg CO2 per year)
+        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
+
+        // Cars off road (average car emits ~4.6 tonnes CO2 per year)
+        const carsOffRoad = (parseFloat(annualCO2Saved) / 4.6).toFixed(1)
+
+        return {
+          annualCO2Saved: parseFloat(annualCO2Saved),
+          kWhGenerated,
+          costSavings,
+          treesEquivalent,
+          carsOffRoad: parseFloat(carsOffRoad),
+        }
+      } catch (error) {
+        console.error('Solar calculation error:', error);
+        // Return default values instead of NaN
+        return {
+          annualCO2Saved: 0,
+          kWhGenerated: 0,
+          costSavings: 0,
+          treesEquivalent: 0,
+          carsOffRoad: 0,
+        };
       }
     },
     calculateEVSavings() {
-      // State-specific emissions factors (kg CO2e per kWh)
-      const emissionsFactors = {
-        NSW: 0.79,
-        VIC: 1.02,
-        QLD: 0.81,
-        SA: 0.47,
-        WA: 0.7,
-        TAS: 0.16,
-        NT: 0.59,
-        ACT: 0.79,
-      }
+      try {
+        // State-specific emissions factors (kg CO2e per kWh)
+        const emissionsFactors = {
+          NSW: 0.79,
+          VIC: 1.02,
+          QLD: 0.81,
+          SA: 0.47,
+          WA: 0.7,
+          TAS: 0.16,
+          NT: 0.59,
+          ACT: 0.79,
+        }
 
-      // Vehicle emissions (kg CO2 per liter of fuel)
-      const vehicleEmissions = {
-        'petrol-small': { emissionsPerKm: 0.15, fuelConsumption: 6.5 },
-        'petrol-medium': { emissionsPerKm: 0.18, fuelConsumption: 8.0 },
-        'petrol-large': { emissionsPerKm: 0.25, fuelConsumption: 11.0 },
-        'diesel-small': { emissionsPerKm: 0.14, fuelConsumption: 5.5 },
-        'diesel-medium': { emissionsPerKm: 0.17, fuelConsumption: 7.0 },
-        'diesel-large': { emissionsPerKm: 0.23, fuelConsumption: 9.5 },
-        hybrid: { emissionsPerKm: 0.1, fuelConsumption: 4.5 },
-      }
+        // Vehicle emissions (kg CO2 per liter of fuel)
+        const vehicleEmissions = {
+          'petrol-small': { emissionsPerKm: 0.15, fuelConsumption: 6.5 },
+          'petrol-medium': { emissionsPerKm: 0.18, fuelConsumption: 8.0 },
+          'petrol-large': { emissionsPerKm: 0.25, fuelConsumption: 11.0 },
+          'diesel-small': { emissionsPerKm: 0.14, fuelConsumption: 5.5 },
+          'diesel-medium': { emissionsPerKm: 0.17, fuelConsumption: 7.0 },
+          'diesel-large': { emissionsPerKm: 0.23, fuelConsumption: 9.5 },
+          hybrid: { emissionsPerKm: 0.1, fuelConsumption: 4.5 },
+        }
 
-      // EV efficiency (kWh per 100km)
-      const evEfficiency = 18
+        // EV efficiency (kWh per 100km)
+        const evEfficiency = 18
 
-      const annualKm = parseFloat(this.formData.ev.annualKm)
-      const vehicleType = vehicleEmissions[this.formData.ev.currentVehicleType]
-      const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
+        const annualKm = this.safeParseFloat(this.formData.ev.annualKm, 0);
+        
+        if (annualKm <= 0) {
+          throw new Error('Invalid annual kilometers');
+        }
 
-      // Current vehicle emissions (in kg CO2)
-      const currentEmissions = annualKm * vehicleType.emissionsPerKm
+        const vehicleType = vehicleEmissions[this.formData.ev.currentVehicleType]
+        
+        if (!vehicleType) {
+          throw new Error('Invalid vehicle type');
+        }
 
-      // EV emissions (accounting for grid emissions)
-      const evKWhUsed = (annualKm / 100) * evEfficiency
-      const evEmissions = evKWhUsed * emissionsFactor
+        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
 
-      // If charging with solar, reduce EV emissions by 70%
-      let annualCO2Saved
-      if (this.formData.ev.chargingType === 'home-solar') {
-        const evEmissionsReduced = evEmissions * 0.3
-        annualCO2Saved = ((currentEmissions - evEmissionsReduced) / 1000).toFixed(2)
-      } else {
-        annualCO2Saved = ((currentEmissions - evEmissions) / 1000).toFixed(2)
-      }
+        // Current vehicle emissions (in kg CO2)
+        const currentEmissions = annualKm * vehicleType.emissionsPerKm
 
-      // Fuel saved
-      const fuelSaved = Math.round((annualKm / 100) * vehicleType.fuelConsumption)
+        // EV emissions (accounting for grid emissions)
+        const evKWhUsed = (annualKm / 100) * evEfficiency
+        const evEmissions = evKWhUsed * emissionsFactor
 
-      // Cost savings (assuming $2.00/L petrol vs $0.30/kWh electricity)
-      const fuelCost = fuelSaved * 2.0
-      const electricityCost = evKWhUsed * 0.3
-      const costSavings = Math.round(fuelCost - electricityCost)
+        // If charging with solar, reduce EV emissions by 70%
+        let annualCO2Saved
+        if (this.formData.ev.chargingType === 'home-solar') {
+          const evEmissionsReduced = evEmissions * 0.3
+          annualCO2Saved = ((currentEmissions - evEmissionsReduced) / 1000).toFixed(2)
+        } else {
+          annualCO2Saved = ((currentEmissions - evEmissions) / 1000).toFixed(2)
+        }
 
-      // Trees equivalent
-      const treesEquivalent = Math.round((annualCO2Saved * 1000) / 21)
+        // Ensure we have a valid number
+        if (!isFinite(parseFloat(annualCO2Saved)) || isNaN(parseFloat(annualCO2Saved))) {
+          throw new Error('Calculation error');
+        }
 
-      return {
-        annualCO2Saved,
-        fuelSaved,
-        costSavings,
-        treesEquivalent,
+        // Fuel saved
+        const fuelSaved = Math.round((annualKm / 100) * vehicleType.fuelConsumption)
+
+        // Cost savings (assuming $2.00/L petrol vs $0.30/kWh electricity)
+        const fuelCost = fuelSaved * 2.0
+        const electricityCost = evKWhUsed * 0.3
+        const costSavings = Math.round(fuelCost - electricityCost)
+
+        // Trees equivalent
+        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
+
+        return {
+          annualCO2Saved: parseFloat(annualCO2Saved),
+          fuelSaved,
+          costSavings,
+          treesEquivalent,
+        }
+      } catch (error) {
+        console.error('EV calculation error:', error);
+        // Return default values instead of NaN
+        return {
+          annualCO2Saved: 0,
+          fuelSaved: 0,
+          costSavings: 0,
+          treesEquivalent: 0,
+        };
       }
     },
     submitForm() {
@@ -961,54 +1080,99 @@ export default {
 
       // Check for errors
       const hasErrors = Object.values(this.errors).some((error) => error !== null)
+      
       if (hasErrors) {
-        alert('Please fill in all required fields before calculating.')
-        return
+        // Show user-friendly error message
+        const errorMessages = [];
+        if (this.errors.numberOfPanels) errorMessages.push(this.errors.numberOfPanels);
+        if (this.errors.electricityBill) errorMessages.push(this.errors.electricityBill);
+        if (this.errors.annualKm) errorMessages.push(this.errors.annualKm);
+        
+        alert('Please fix the following errors:\n\n' + errorMessages.join('\n'));
+        
+        // Scroll to first error
+        setTimeout(() => {
+          const firstError = document.querySelector('.text-danger');
+          if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 100);
+        return;
+      }
+
+      // Additional validation - ensure at least one calculator is selected
+      if (!this.calculations.includeSolar && !this.calculations.includeEV) {
+        alert('⚠️ Please select at least one calculator (Solar or EV) to continue.');
+        return;
+      }
+
+      // Validate state selection
+      if (!this.formData.state) {
+        alert('⚠️ Please select your state before calculating.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
       }
 
       // Calculate results
-      if (this.calculations.includeSolar) {
-        this.results.solar = this.calculateSolarSavings()
-      }
-
-      if (this.calculations.includeEV) {
-        this.results.ev = this.calculateEVSavings()
-      }
-
-      // Calculate combined results
-      if (this.calculations.includeSolar && this.calculations.includeEV) {
-        const totalCO2Saved = (
-          parseFloat(this.results.solar.annualCO2Saved) +
-          parseFloat(this.results.ev.annualCO2Saved)
-        ).toFixed(2)
-        const totalCostSavings =
-          this.results.solar.costSavings + this.results.ev.costSavings
-        const totalTreesEquivalent =
-          this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
-        const totalCarsOffRoad = (totalCO2Saved / 4.6).toFixed(1)
-
-        // Australian household average emissions: ~20 tonnes CO2e per year
-        // Target: 50% reduction = 10 tonnes
-        const percentageOfTarget = ((totalCO2Saved / 10) * 100).toFixed(0)
-
-        this.results.combined = {
-          totalCO2Saved,
-          totalCostSavings,
-          totalTreesEquivalent,
-          totalCarsOffRoad,
-          percentageOfTarget,
+      try {
+        if (this.calculations.includeSolar) {
+          this.results.solar = this.calculateSolarSavings();
+          
+          // Check if calculation returned errors (all zeros)
+          if (this.results.solar.annualCO2Saved === 0 && this.results.solar.kWhGenerated === 0) {
+            alert('⚠️ There was an error calculating solar savings. Please check your inputs.');
+            return;
+          }
         }
-      }
 
-      this.showResults = true
-
-      // Scroll to results
-      setTimeout(() => {
-        const resultsElement = document.querySelector('.results-section')
-        if (resultsElement) {
-          resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        if (this.calculations.includeEV) {
+          this.results.ev = this.calculateEVSavings();
+          
+          // Check if calculation returned errors (all zeros)
+          if (this.results.ev.annualCO2Saved === 0 && this.results.ev.fuelSaved === 0) {
+            alert('⚠️ There was an error calculating EV savings. Please check your inputs.');
+            return;
+          }
         }
-      }, 100)
+
+        // Calculate combined results
+        if (this.calculations.includeSolar && this.calculations.includeEV) {
+          const solarCO2 = this.safeParseFloat(this.results.solar.annualCO2Saved, 0);
+          const evCO2 = this.safeParseFloat(this.results.ev.annualCO2Saved, 0);
+          const totalCO2Saved = (solarCO2 + evCO2).toFixed(2);
+          
+          const totalCostSavings =
+            this.results.solar.costSavings + this.results.ev.costSavings
+          const totalTreesEquivalent =
+            this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
+          const totalCarsOffRoad = (parseFloat(totalCO2Saved) / 4.6).toFixed(1)
+
+          // Australian household average emissions: ~20 tonnes CO2e per year
+          // Target: 50% reduction = 10 tonnes
+          const percentageOfTarget = ((parseFloat(totalCO2Saved) / 10) * 100).toFixed(0)
+
+          this.results.combined = {
+            totalCO2Saved: parseFloat(totalCO2Saved),
+            totalCostSavings,
+            totalTreesEquivalent,
+            totalCarsOffRoad: parseFloat(totalCarsOffRoad),
+            percentageOfTarget: parseInt(percentageOfTarget),
+          }
+        }
+
+        this.showResults = true
+
+        // Scroll to results
+        setTimeout(() => {
+          const resultsElement = document.querySelector('.results-section')
+          if (resultsElement) {
+            resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }
+        }, 100)
+      } catch (error) {
+        console.error('Calculation error:', error);
+        alert('⚠️ An error occurred while calculating your savings. Please check your inputs and try again.');
+      }
     },
     clearForm() {
       this.formData = {
