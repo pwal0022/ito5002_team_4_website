@@ -1187,37 +1187,27 @@ export default {
 
       // Additional validation - ensure at least one calculator is selected
       if (!this.calculations.includeSolar && !this.calculations.includeEV) {
-        alert('⚠️ Please select at least one calculator (Solar or EV) to continue.');
+        alert('Please select at least one calculator (Solar or EV) to continue.');
         return;
       }
 
       // Validate state selection
       if (!this.formData.state) {
-        alert('⚠️ Please select your state before calculating.');
+        alert('Please select your state before calculating.');
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
 
-      // Calculate combined results
-      if (this.calculations.includeSolar && this.calculations.includeEV) {
-        const totalCO2Saved = (
-          parseFloat(this.results.solar.annualCO2Saved) + parseFloat(this.results.ev.annualCO2Saved)
-        ).toFixed(2)
-        const totalCostSavings = this.results.solar.costSavings + this.results.ev.costSavings
-        const totalTreesEquivalent =
-          this.results.solar.treesEquivalent + this.results.ev.treesEquivalent
-        const totalCarsOffRoad = (totalCO2Saved / 4.6).toFixed(1)
-
-        // Australian household average emissions: ~20 tonnes CO2e per year
-        // Target: 50% reduction = 10 tonnes
-        const percentageOfTarget = ((totalCO2Saved / 10) * 100).toFixed(0)
-
-        this.results.combined = {
-          totalCO2Saved,
-          totalCostSavings,
-          totalTreesEquivalent,
-          totalCarsOffRoad,
-          percentageOfTarget,
+      try {
+        // Calculate solar savings if selected
+        if (this.calculations.includeSolar) {
+          this.results.solar = this.calculateSolarSavings();
+          
+          // Check if calculation returned errors (all zeros)
+          if (this.results.solar.annualCO2Saved === 0 && this.results.solar.kWhGenerated === 0) {
+            alert('There was an error calculating solar savings. Please check your inputs.');
+            return;
+          }
         }
 
         if (this.calculations.includeEV) {
@@ -1225,7 +1215,7 @@ export default {
           
           // Check if calculation returned errors (all zeros)
           if (this.results.ev.annualCO2Saved === 0 && this.results.ev.fuelSaved === 0) {
-            alert('⚠️ There was an error calculating EV savings. Please check your inputs.');
+            alert('There was an error calculating EV savings. Please check your inputs.');
             return;
           }
         }
@@ -1266,7 +1256,7 @@ export default {
         }, 100)
       } catch (error) {
         console.error('Calculation error:', error);
-        alert('⚠️ An error occurred while calculating your savings. Please check your inputs and try again.');
+        alert('An error occurred while calculating your savings. Please check your inputs and try again.');
       }
     },
     clearForm() {
