@@ -8,106 +8,125 @@ defineProps({
 </script>
 
 <template>
-  <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <h3>
-      <div class="container-fluid p-0 mb-5">
-        <div class="position-relative">
-          <!-- Background image -->
-          <img
-            src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=60"
-            class="img-fluid w-100"
-            style="height: 350px; object-fit: cover; filter: brightness(0.55)"
-            alt="Australian nature banner"
-          />
+  <div class="landing-page">
+    <!-- HERO BANNER -->
+    <div class="container-fluid p-0 mb-5">
+      <div class="position-relative">
+        <!-- Background -->
+        <img
+          src="https://streetfurniture.com/wp-content/uploads/2024/06/Top-Banner.jpg"
+          class="img-fluid w-100 rounded-3 shadow-sm"
+          style="height: 360px; object-fit: cover; filter: brightness(0.55)"
+          alt="Australian nature banner"
+        />
 
-          <!-- Text content -->
-          <div
-            class="position-absolute top-50 start-50 translate-middle text-center text-white px-3 px-md-5"
-          >
-            <h1 class="fw-bold display-5 display-md-3">Australian Household Carbon Calculator</h1>
-
-            <p class="lead mt-3">
-              Helping Australians understand, measure, and reduce their carbon emissions.
-            </p>
-
-            <a href="#start" class="btn btn-success btn-lg mt-3"> Get Started </a>
-          </div>
+        <!-- Text -->
+        <div
+          class="position-absolute top-50 start-50 translate-middle text-center text-white px-3 px-md-5"
+        >
+          <h1 class="fw-bold display-5 mb-3">Australian Household Carbon Calculator</h1>
+          <p class="lead mb-4">
+            Helping Australians measure, understand, and reduce their carbon emissions.
+          </p>
+          <!-- <a href="/solar" class="btn btn-success btn-lg px-4 py-2 shadow"> Get Started </a> -->
         </div>
       </div>
-      <div class="container my-5">
-        <div class="row g-4">
-          <!-- Card 1 -->
-          <div class="col-lg-4">
-            <div class="card h-100 shadow-lg">
-              <img
-                src="https://images.unsplash.com/photo-1482192596544-9eb780fc7f66?auto=format&fit=crop&w=900&q=60"
-                class="card-img-top"
-                alt="Australian landscape heat"
-              />
-              <div class="card-body">
-                <h4 class="card-title">Australians Are Concerned</h4>
-                <p class="card-text">
-                  Climate change is a pressing concern for <strong>70–75% of Australians</strong>
-                  (Climate Safety, 2024). This growing awareness highlights the need for accessible
-                  tools that help people understand and reduce their individual carbon footprint.
-                </p>
-              </div>
-            </div>
-          </div>
+    </div>
 
-          <!-- Card 2 -->
-          <div class="col-lg-4">
-            <div class="card h-100 shadow-lg">
-              <img
-                src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?auto=format&fit=crop&w=900&q=60"
-                class="card-img-top"
-                alt="Australian city emissions"
-              />
-              <div class="card-body">
-                <h4 class="card-title">High Household Emissions</h4>
-                <p class="card-text">
-                  The average Australian household emits
-                  <strong>15–20 tonnes of CO₂e per year</strong> — nearly
-                  <strong>three times</strong> the global average. Understanding these emissions is
-                  crucial for taking meaningful action.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="col-lg-4">
-            <div class="card h-100 shadow-lg">
-              <img
-                src="https://images.unsplash.com/photo-1523978591478-c753949ff840?auto=format&fit=crop&w=900&q=60"
-                class="card-img-top"
-                alt="Climate action UN goals"
-              />
-              <div class="card-body">
-                <h4 class="card-title">Aligned With Global Goals</h4>
-                <p class="card-text">
-                  Our project directly supports the United Nations’
-                  <strong>SDG 13: Climate Action</strong>. Through
-                  <strong>education, awareness, and empowerment</strong>, we help households adopt
-                  sustainable habits and reduce their overall environmental impact.
-                </p>
-              </div>
+    <!-- INTRO CARDS -->
+    <div class="container my-5">
+      <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-lg-4">
+          <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+            <img
+              src="https://grist.org/wp-content/uploads/2015/12/emissions.jpg?resize=1536%2C864&quality=75&strip=all"
+              class="card-img-top"
+              alt="Australia emissions"
+              style="height: 190px; object-fit: cover"
+            />
+            <div class="card-body">
+              <h4 class="card-title fw-semibold mb-3">Why Reducing Emissions Matters</h4>
+              <p class="card-text text-secondary">
+                Australia remains one of the world’s highest per-capita emitters. Energy use and
+                transport are major contributors, making personal awareness crucial for climate
+                action.
+              </p>
             </div>
           </div>
         </div>
-      </div>
 
-      <p>
-        Welcome to the Australian Household Carbon Calculator where you can compare your energy
-        usage and see how you compare to others in your area and get suggestions for how you can
-        reduce your carbon footprint
-      </p>
-      <p>This is a group project for ITO5002 completed by HS, DW, MW and PW</p>
-      <br />
-      <p>To add and change content, do so by modifying the Landing.vue component</p>
-      <p>found in ito5002_team_4_website\src\components\Landing.vue</p>
-    </h3>
+        <!-- Card 2 -->
+        <div class="col-lg-4">
+          <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+            <img
+              src="https://i0.wp.com/1charging.com/wp-content/uploads/2023/10/solar-EV-charging-stations-1.webp?fit=800%2C450&ssl=1"
+              class="card-img-top"
+              alt="Solar and EV solutions"
+              style="height: 190px; object-fit: cover"
+            />
+            <div class="card-body">
+              <h4 class="card-title fw-semibold mb-3">Solar & EVs Are Powerful Solutions</h4>
+              <p class="card-text text-secondary">
+                Switching to solar panels or an electric vehicle can significantly lower household
+                carbon emissions while reducing long-term costs.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-lg-4">
+          <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+            <img
+              src="https://assets-us-01.kc-usercontent.com/99f113b4-e5f7-00d2-23c0-c83ca2e4cfa2/67c3ad66-e302-4ce7-b12e-de172f28edb2/E_SDG_poster_UN_emblem_WEB%202020.png"
+              class="card-img-top"
+              alt="UN SDG 13"
+              style="height: 190px; object-fit: cover"
+            />
+            <div class="card-body">
+              <h4 class="card-title fw-semibold mb-3">Our Calculator Makes It Simple</h4>
+              <p class="card-text text-secondary">
+                Get personalised insights into your carbon footprint and see how your choices align
+                with the United Nations’ SDG 13: Climate Action.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+            <div class="card-body">
+              <h4 class="card-title fw-semibold mb-3" style="text-align: center">
+                Complete this simple questionaire to see how much CO₂ you can save with solar panels
+                and electric vehicles.
+              </h4>
+              <p class="card-text text-secondary" style="text-align: center">
+                <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
+                  <span class="btn-icon">🧮</span>
+                  <a href="/solar" class="btn btn-lg shadow-lg" style="text-align: center">
+                    Click here to find out how much carbon emission you can save. </a
+                  ><span class="btn-icon">🧮</span>
+                </button>
+                <!-- <a
+                  href="/solar"
+                  class="btn btn-primary btn-lg btn-calculate shadow-lg"
+                  style="text-align: center"
+                >
+                  Click here to find out how much carbon emission you can save.
+                </a> -->
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- <h1>
+          Complete this simple questionaire to see how much CO₂ you can save with solar panels and
+          electric vehicles.
+        </h1>
+        <a href="/solar" class="btn btn-success btn-lg px-4 py-2 shadow">
+          Click here to find out how much carbon emission you can save.
+        </a> -->
+      </div>
+    </div>
   </div>
 </template>
 
@@ -139,5 +158,191 @@ h3 {
   .greetings h3 {
     text-align: left;
   }
+}
+.landing-page h1 {
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+}
+
+.card-text {
+  line-height: 1.5;
+}
+</style>
+
+<style scoped>
+/* Hero Section */
+.hero-section {
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+}
+
+.hero-section h1 {
+  font-weight: 700;
+}
+
+/* Step Badges */
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: white;
+  color: #333;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+/* Card Gradients */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Calculate Button */
+.btn-calculate {
+  padding: 1rem 3rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-calculate:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.btn-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+}
+
+/* Results Section */
+.results-section {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: slideUp 0.5s ease-out;
+}
+
+.result-header {
+  border-bottom: 3px solid #e0e0e0;
+  padding-bottom: 1rem;
+}
+
+.result-icon {
+  font-size: 2rem;
+}
+
+.result-number-large {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.result-unit {
+  font-size: 1.2rem;
+  color: #666;
+  margin: 0.5rem 0 0 0;
+}
+
+.result-label {
+  font-size: 1rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 1rem;
+  }
+
+  .hero-section h1 {
+    font-size: 2rem;
+  }
+
+  .option-icon {
+    font-size: 2rem;
+  }
+
+  .radio-icon {
+    font-size: 2rem;
+  }
+
+  .result-number {
+    font-size: 2rem;
+  }
+
+  .result-number-large {
+    font-size: 2.5rem;
+  }
+
+  .btn-calculate {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .comparison-emoji {
+    font-size: 2rem;
+  }
+
+  .fun-fact-emoji {
+    font-size: 2rem;
+  }
+
+  .fun-fact-number {
+    font-size: 1.5rem;
+  }
+
+  .money-amount {
+    font-size: 1.5rem;
+  }
+
+  .co2-amount {
+    font-size: 1.5rem;
+  }
+}
+
+/* Shadow utilities */
+.shadow-sm {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 </style>
