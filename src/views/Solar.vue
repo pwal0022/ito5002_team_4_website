@@ -895,20 +895,9 @@ export default {
       ) {
         if (blur) this.errors.numberOfPanels = 'Please enter your number of solar panels'
       } else {
-        this.errors.electricityBill = null
+        this.errors.numberOfPanels = null
       }
     },
-    validateElectricityBill(blur) {
-      if (
-        this.calculations.includeSolar &&
-        (!this.formData.solar.electricityBill || this.formData.solar.electricityBill <= 0)
-      ) {
-        if (blur) this.errors.electricityBill = 'Please enter your electricity bill'
-      } else {
-        this.errors.numberOfPanels = null;
-      }
-    },
-    
     validateElectricityBill(blur) {
       if (!this.calculations.includeSolar) {
         this.errors.electricityBill = null;
@@ -967,6 +956,20 @@ export default {
       } else {
         this.errors.annualKm = null;
       }
+    },
+    isValidNumber(value) {
+      if (value === null || value === undefined || value === '') {
+        return false;
+      }
+      const num = parseFloat(value);
+      return !isNaN(num) && isFinite(num);
+    },
+    safeParseFloat(value, defaultValue = 0) {
+      if (value === null || value === undefined || value === '') {
+        return defaultValue;
+      }
+      const parsed = parseFloat(value);
+      return !isNaN(parsed) && isFinite(parsed) ? parsed : defaultValue;
     },
     calculateSolarSavings() {
       try {
@@ -1155,7 +1158,7 @@ export default {
     submitForm() {
       // Validate all fields
       if (this.calculations.includeSolar) {
-        this.validateNumberOfPanels(true)
+        this.validateSolarPanels(true)
         this.validateElectricityBill(true)
       }
 
