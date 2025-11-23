@@ -1,8 +1,11 @@
 <template>
   <div class="ev-page">
     <div class="container">
-      <h1>Electric Vehicle CO2 Calculator</h1>
-      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+      <!-- Hero Section -->
+      <div class="hero-section text-center mb-4">
+        <h1>🚗 Electric Vehicle CO2 Calculator</h1>
+        <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+      </div>
 
       <div class="calculator-card">
         <form @submit.prevent="calculateSavings">
@@ -78,7 +81,7 @@
 
       <!-- Results -->
       <div v-if="results" class="results-card">
-        <h2>Your EV Impact</h2>
+        <h2>🌱 Your EV Impact</h2>
 
         <!-- Comparison Cards -->
         <div class="comparison-grid">
@@ -112,21 +115,25 @@
         <!-- Additional Metrics -->
         <div class="results-grid">
           <div class="result-item">
+            <div class="result-icon">🚗</div>
             <div class="result-value">{{ results.carsOffRoad }}</div>
             <div class="result-label">Cars Off Road (Equivalent)</div>
           </div>
 
           <div class="result-item">
+            <div class="result-icon">🌳</div>
             <div class="result-value">{{ results.treesEquivalent }}</div>
             <div class="result-label">Trees Planted Equivalent</div>
           </div>
 
           <div class="result-item">
+            <div class="result-icon">🏠</div>
             <div class="result-value">{{ results.householdPercent }}%</div>
             <div class="result-label">Of Avg Household Emissions</div>
           </div>
 
           <div class="result-item">
+            <div class="result-icon">💰</div>
             <div class="result-value">${{ results.fuelSavings }}</div>
             <div class="result-label">Estimated Fuel Savings/Year</div>
           </div>
@@ -134,10 +141,17 @@
 
         <!-- Info Box -->
         <div class="info-box">
-          <p><strong>Annual distance:</strong> {{ formData.annualKm.toLocaleString() }} km</p>
-          <p><strong>State grid emissions:</strong> {{ results.gridEmissions }} kg CO2-e per kWh</p>
-          <p><strong>EV efficiency:</strong> {{ results.evEfficiency }} kWh/100km</p>
-          <p><strong>ICE emissions:</strong> {{ results.iceEmissionsPerKm }} kg CO2/km</p>
+          <h5>📊 Technical Details</h5>
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Annual distance:</strong> {{ formData.annualKm.toLocaleString() }} km</p>
+              <p><strong>State grid emissions:</strong> {{ results.gridEmissions }} kg CO2-e per kWh</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>EV efficiency:</strong> {{ results.evEfficiency }} kWh/100km</p>
+              <p><strong>ICE emissions:</strong> {{ results.iceEmissionsPerKm }} kg CO2/km</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -250,6 +264,14 @@ const calculateSavings = () => {
     evEfficiency: evData.efficiency,
     iceEmissionsPerKm: iceData.emissions
   }
+  
+  // Scroll to results
+  setTimeout(() => {
+    const resultsElement = document.querySelector('.results-card')
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, 100)
 }
 
 const clearForm = () => {
@@ -264,9 +286,21 @@ const clearForm = () => {
 </script>
 
 <style scoped>
+/* Energy-Friendly Color Palette */
+:root {
+  --olive-primary: #6b8e23;
+  --olive-dark: #556b2f;
+  --olive-light: #9acd32;
+  --sage-green: #87a96b;
+  --earth-brown: #8b7355;
+  --sky-blue: #87ceeb;
+  --leaf-green: #90ee90;
+  --sand-beige: #f5f5dc;
+}
+
 .ev-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #87a96b 0%, #9acd32 100%);
   padding: 40px 20px;
 }
 
@@ -275,17 +309,23 @@ const clearForm = () => {
   margin: 0 auto;
 }
 
-h1 {
+/* Hero Section */
+.hero-section {
+  padding: 2rem 1rem;
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
   color: white;
-  text-align: center;
+  border-radius: 15px;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
   margin-bottom: 10px;
 }
 
 .subtitle {
-  color: white;
-  text-align: center;
-  margin-bottom: 30px;
-  opacity: 0.9;
+  font-size: 1.1rem;
+  opacity: 0.95;
 }
 
 .calculator-card {
@@ -313,18 +353,20 @@ input, select {
   border: 2px solid #e0e0e0;
   border-radius: 8px;
   font-size: 1rem;
+  transition: all 0.3s ease;
 }
 
 input:focus, select:focus {
   outline: none;
-  border-color: #4facfe;
-  box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+  border-color: #6b8e23;
+  box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.1);
 }
 
 small {
   display: block;
   color: #666;
   margin-top: 5px;
+  font-size: 0.9rem;
 }
 
 .button-group {
@@ -345,13 +387,14 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
   color: white;
 }
 
 .btn-primary:hover {
+  background: linear-gradient(135deg, #556b2f 0%, #6b8e23 100%);
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(79, 172, 254, 0.4);
+  box-shadow: 0 5px 20px rgba(107, 142, 35, 0.4);
 }
 
 .btn-secondary {
@@ -373,8 +416,9 @@ button {
 
 .results-card h2 {
   text-align: center;
-  color: #333;
+  color: #556b2f;
   margin-bottom: 30px;
+  font-size: 2rem;
 }
 
 .comparison-grid {
@@ -390,19 +434,26 @@ button {
   padding: 25px;
   border-radius: 12px;
   text-align: center;
+  transition: all 0.3s ease;
 }
 
 .comparison-card.ice {
-  border: 3px solid #ff6b6b;
+  border: 3px solid #dc3545;
 }
 
 .comparison-card.ev {
-  border: 3px solid #51cf66;
+  border: 3px solid #6b8e23;
+}
+
+.comparison-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
 .comparison-card h3 {
   margin: 0 0 10px 0;
   font-size: 1.1rem;
+  color: #333;
 }
 
 .vehicle-name {
@@ -424,7 +475,7 @@ button {
 }
 
 .vs-badge {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
   color: white;
   font-weight: 700;
   font-size: 1.5rem;
@@ -438,7 +489,7 @@ button {
 }
 
 .savings-highlight {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
   color: white;
   padding: 30px;
   border-radius: 12px;
@@ -446,6 +497,7 @@ button {
   align-items: center;
   gap: 20px;
   margin-bottom: 30px;
+  box-shadow: 0 5px 20px rgba(107, 142, 35, 0.3);
 }
 
 .savings-icon {
@@ -455,7 +507,7 @@ button {
 .savings-content h3 {
   margin: 0 0 10px 0;
   font-size: 1.2rem;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .savings-value {
@@ -466,7 +518,7 @@ button {
 
 .savings-percent {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .results-grid {
@@ -477,16 +529,29 @@ button {
 }
 
 .result-item {
-  background: #f8f9fa;
+  background: #f5f9f0;
   padding: 20px;
   border-radius: 12px;
   text-align: center;
+  border: 2px solid #e8f5e8;
+  transition: all 0.3s ease;
+}
+
+.result-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(107, 142, 35, 0.2);
+  border-color: #6b8e23;
+}
+
+.result-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
 }
 
 .result-value {
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: #556b2f;
   margin-bottom: 5px;
 }
 
@@ -496,14 +561,26 @@ button {
 }
 
 .info-box {
-  background: #e3f2fd;
-  border-left: 4px solid #2196f3;
+  background: #f5f9f0;
+  border-left: 4px solid #6b8e23;
   padding: 20px;
   border-radius: 8px;
 }
 
+.info-box h5 {
+  color: #556b2f;
+  margin-bottom: 15px;
+}
+
 .info-box p {
   margin: 5px 0;
+  color: #333;
+}
+
+.info-box .row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 @keyframes fadeIn {
@@ -521,6 +598,10 @@ button {
 @media (max-width: 768px) {
   .ev-page {
     padding: 20px 10px;
+  }
+  
+  h1 {
+    font-size: 1.8rem;
   }
   
   .calculator-card {
@@ -548,6 +629,10 @@ button {
   .emission-value,
   .savings-value {
     font-size: 2rem;
+  }
+  
+  .info-box .row {
+    grid-template-columns: 1fr;
   }
 }
 

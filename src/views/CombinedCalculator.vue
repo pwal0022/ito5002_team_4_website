@@ -1,4 +1,3 @@
-
 <template>
   <div class="combined-calculator">
     <div class="container">
@@ -6,7 +5,7 @@
       <div class="hero-section text-center mb-5">
         <h1 class="display-4 mb-3">🌏 Combined Carbon Calculator</h1>
         <p class="lead">Calculate your total impact from both solar panels AND electric vehicles</p>
-        <p class="text-muted">See your complete household carbon reduction potential!</p>
+        <p class="text-light">See your complete household carbon reduction potential!</p>
       </div>
 
       <form @submit.prevent="submitForm">
@@ -46,7 +45,7 @@
 
         <!-- Step 2: Solar Details -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-warning">
+          <div class="card-header bg-gradient-secondary text-white">
             <div class="d-flex align-items-center">
               <span class="step-badge me-3">2</span>
               <h3 class="mb-0">☀️ Tell us about your solar setup</h3>
@@ -231,7 +230,7 @@
 
         <!-- Step 3: EV Details -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-info text-white">
+          <div class="card-header bg-gradient-tertiary text-white">
             <div class="d-flex align-items-center">
               <span class="step-badge me-3">3</span>
               <h3 class="mb-0">🚗 Tell us about your driving</h3>
@@ -260,13 +259,16 @@
                     <label class="form-check-label w-100" for="hasEVYes">
                       <div class="text-center">
                         <div class="radio-icon">⚡</div>
-                        <strong>Yes, I drive an EV</strong>
+                        <strong>Yes, I drive electric</strong>
                       </div>
                     </label>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.ev.hasEV === 'no' }">
+                  <div
+                    class="radio-card"
+                    :class="{ 'radio-selected': formData.ev.hasEV === 'no' }"
+                  >
                     <input
                       class="form-check-input"
                       type="radio"
@@ -277,7 +279,7 @@
                     />
                     <label class="form-check-label w-100" for="hasEVNo">
                       <div class="text-center">
-                        <div class="radio-icon">💭</div>
+                        <div class="radio-icon">🚗</div>
                         <strong>No, I'm considering it</strong>
                       </div>
                     </label>
@@ -286,11 +288,11 @@
               </div>
             </div>
 
-            <!-- Current Vehicle & Driving -->
+            <!-- Current Vehicle Type -->
             <div class="row mb-4">
               <div class="col-md-6">
                 <label for="currentVehicleType" class="form-label fw-bold"
-                  >What do you drive now? *</label
+                  >What type of car do you currently drive? *</label
                 >
                 <select
                   class="form-select form-select-lg"
@@ -298,79 +300,77 @@
                   v-model="formData.ev.currentVehicleType"
                   required
                 >
-                  <option value="">Choose your car type...</option>
-                  <option value="petrol-small">🚗 Small petrol car (e.g., Mazda 3, Corolla)</option>
-                  <option value="petrol-medium">🚙 Medium petrol car (e.g., Camry, Accord)</option>
-                  <option value="petrol-large">🚐 Large petrol car/SUV (e.g., RAV4, CX-5)</option>
-                  <option value="diesel-small">🚗 Small diesel car</option>
-                  <option value="diesel-medium">🚙 Medium diesel car</option>
-                  <option value="diesel-large">🚐 Large diesel car/SUV</option>
-                  <option value="hybrid">⚡ Hybrid car (petrol + electric)</option>
+                  <option value="">Select vehicle type...</option>
+                  <option value="petrol-small">Small Petrol Car (e.g., Toyota Corolla)</option>
+                  <option value="petrol-medium">Medium Petrol Car (e.g., Mazda CX-5)</option>
+                  <option value="petrol-large">Large Petrol Car (e.g., Ford Ranger)</option>
+                  <option value="diesel-small">Small Diesel Car</option>
+                  <option value="diesel-medium">Medium Diesel Car</option>
+                  <option value="diesel-large">Large Diesel Car/4WD</option>
                 </select>
               </div>
 
               <div class="col-md-6">
                 <label for="annualKm" class="form-label fw-bold"
-                  >How far do you drive per year? *</label
+                  >How many kilometers do you drive per year? *</label
                 >
-                <div class="input-group input-group-lg">
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="annualKm"
-                    v-model="formData.ev.annualKm"
-                    @blur="() => validateAnnualKm(true)"
-                    @input="() => validateAnnualKm(false)"
-                    min="0"
-                    step="1000"
-                    placeholder="15000"
-                    required
-                  />
-                  <span class="input-group-text">km</span>
-                </div>
+                <input
+                  type="number"
+                  class="form-control form-control-lg"
+                  id="annualKm"
+                  v-model="formData.ev.annualKm"
+                  @blur="() => validateAnnualKm(true)"
+                  @input="() => validateAnnualKm(false)"
+                  min="1000"
+                  max="50000"
+                  placeholder="15000"
+                  required
+                />
                 <div v-if="errors.annualKm" class="text-danger small mt-1">
                   {{ errors.annualKm }}
                 </div>
                 <small class="form-text text-muted">
-                  💡 <strong>Average Australian:</strong> 10,000-15,000 km per year
+                  💡 <strong>Average Australian:</strong> 12,000-15,000 km/year
                 </small>
               </div>
             </div>
 
-            <!-- EV Model & Charging -->
+            <!-- EV Model -->
             <div class="row mb-3">
               <div class="col-md-6">
                 <label for="evModel" class="form-label fw-bold"
-                  >Interested in a specific EV? (optional)</label
+                  >Which electric vehicle are you considering? *</label
                 >
                 <select
                   class="form-select form-select-lg"
                   id="evModel"
                   v-model="formData.ev.evModel"
+                  required
                 >
-                  <option value="">Any electric car (we'll use average)</option>
-                  <option value="tesla-model-3">Tesla Model 3</option>
-                  <option value="tesla-model-y">Tesla Model Y</option>
-                  <option value="mg-zs-ev">MG ZS EV</option>
+                  <option value="">Select EV model...</option>
+                  <option value="tesla-model3">Tesla Model 3</option>
+                  <option value="tesla-modely">Tesla Model Y</option>
                   <option value="nissan-leaf">Nissan Leaf</option>
-                  <option value="hyundai-ioniq">Hyundai Ioniq</option>
-                  <option value="byd-atto-3">BYD Atto 3</option>
+                  <option value="hyundai-kona">Hyundai Kona Electric</option>
+                  <option value="mg-zs">MG ZS EV</option>
+                  <option value="byd-atto3">BYD Atto 3</option>
+                  <option value="polestar-2">Polestar 2</option>
+                  <option value="bmw-i4">BMW i4</option>
                 </select>
               </div>
 
               <div class="col-md-6">
                 <label for="chargingType" class="form-label fw-bold"
-                  >How would you charge it?</label
+                  >How would you mainly charge your EV?</label
                 >
                 <select
                   class="form-select form-select-lg"
                   id="chargingType"
                   v-model="formData.ev.chargingType"
                 >
-                  <option value="home">🏠 At home (standard power)</option>
-                  <option value="home-solar">☀️ At home (with solar panels)</option>
-                  <option value="mixed">🔌 Mix of home and public charging</option>
-                  <option value="public">⚡ Mainly public charging stations</option>
+                  <option value="home">🏠 At home (cheapest)</option>
+                  <option value="work">🏢 At work</option>
+                  <option value="public">⚡ Public charging stations</option>
                 </select>
               </div>
             </div>
@@ -379,9 +379,9 @@
 
         <!-- Submit Button -->
         <div class="text-center mb-5">
-          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
-            <span class="btn-icon">🧮</span>
-            Calculate My Combined Savings
+          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg px-5">
+            <span class="btn-icon">🌏</span>
+            Calculate Combined Impact
           </button>
           <br />
           <button type="button" class="btn btn-link mt-3" @click="clearForm">
@@ -391,118 +391,115 @@
       </form>
 
       <!-- Results Section -->
-      <div v-if="showResults" class="results-section animate-in">
-        <div class="card border-success shadow-lg mb-5">
-          <div class="card-header bg-gradient-success text-white text-center py-4">
-            <h2 class="mb-0">🎉 Your Combined Carbon Savings!</h2>
-            <p class="mb-0 mt-2">Here's your complete household impact</p>
+      <div v-if="showResults" class="results-section">
+        <!-- Combined Impact Card -->
+        <div class="card border-success shadow-lg mb-4">
+          <div class="card-header bg-gradient-primary text-white text-center py-4">
+            <h2 class="mb-0">🎉 Your Combined Environmental Impact!</h2>
+            <p class="mb-0 mt-2">Here's what solar + EV means for the planet and your wallet</p>
           </div>
           <div class="card-body p-4">
-            <!-- Combined Total First -->
-            <div class="combined-results-top mb-5">
-              <div class="result-header text-center mb-4">
-                <h3>🌟 Your Total Household Impact</h3>
-              </div>
-
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="result-card bg-success-light">
-                    <div class="result-icon-large">🌍</div>
-                    <h1 class="result-number-large">{{ results.combined.totalCO2Saved }}</h1>
-                    <p class="result-unit">tonnes of CO₂ saved per year</p>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="result-card bg-success-light">
-                    <div class="result-icon-large">💰</div>
-                    <h1 class="result-number-large">
-                      ${{ results.combined.totalCostSavings.toLocaleString() }}
-                    </h1>
-                    <p class="result-unit">total savings per year</p>
-                  </div>
+            <!-- Main Combined Results -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-3">
+                <div class="result-card bg-primary-light">
+                  <div class="result-icon-large">🌍</div>
+                  <div class="result-number-large">{{ results.combined.totalCO2Saved }}</div>
+                  <div class="result-unit">tonnes CO₂/year saved</div>
                 </div>
               </div>
 
-              <div class="achievement-banner">
-                <h4>🏆 Amazing Achievement!</h4>
-                <p class="mb-3">
-                  This is equivalent to
-                  <strong>planting {{ results.combined.totalTreesEquivalent }} trees</strong> or
-                  removing <strong>{{ results.combined.totalCarsOffRoad }} cars</strong> from the
-                  road for an entire year!
-                </p>
-                <div class="progress" style="height: 30px">
-                  <div
-                    class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                    role="progressbar"
-                    :style="{ width: Math.min(results.combined.percentageOfTarget, 100) + '%' }"
-                  >
-                    <strong>{{ results.combined.percentageOfTarget }}% of household target!</strong>
-                  </div>
+              <div class="col-md-3">
+                <div class="result-card bg-success-light">
+                  <div class="result-icon-large">💰</div>
+                  <div class="result-number-large">${{ results.combined.totalCostSavings.toLocaleString() }}</div>
+                  <div class="result-unit">total savings/year</div>
                 </div>
-                <p class="text-muted small mt-2 mb-0">
-                  Australia's target: Reduce household emissions by 43%. You're making a difference! 🎯
-                </p>
+              </div>
+
+              <div class="col-md-3">
+                <div class="result-card bg-secondary-light">
+                  <div class="result-icon-large">🌳</div>
+                  <div class="result-number-large">{{ results.combined.totalTreesEquivalent }}</div>
+                  <div class="result-unit">trees planted equivalent</div>
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <div class="result-card bg-accent-light">
+                  <div class="result-icon-large">🚗</div>
+                  <div class="result-number-large">{{ results.combined.totalCarsOffRoad }}</div>
+                  <div class="result-unit">cars off road equivalent</div>
+                </div>
               </div>
             </div>
 
-            <!-- Individual Breakdowns -->
-            <div class="individual-breakdowns mt-5 pt-4 border-top">
-              <h4 class="text-center mb-4">📋 Individual Breakdown</h4>
+            <!-- Achievement Banner -->
+            <div class="achievement-banner">
+              <h3 class="mb-3">🏆 Outstanding Climate Action!</h3>
+              <p class="lead mb-2">
+                You could save <strong>{{ results.combined.totalCO2Saved }} tonnes of CO₂</strong> per year!
+              </p>
+              <p>
+                That's <strong>{{ results.combined.percentageOfTarget }}%</strong> of the way to Australia's target
+                of 10 tonnes per person per year.
+              </p>
+            </div>
+          </div>
+        </div>
 
-              <!-- Solar Breakdown -->
-              <div class="mb-4">
-                <h5>☀️ Solar Panel Contribution</h5>
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">🌍</div>
-                      <h3 class="result-number">{{ results.solar.annualCO2Saved }}</h3>
-                      <p class="result-unit">tonnes CO₂/year</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">⚡</div>
-                      <h3 class="result-number">{{ results.solar.kWhGenerated.toLocaleString() }}</h3>
-                      <p class="result-unit">kWh generated</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">💰</div>
-                      <h3 class="result-number">${{ results.solar.costSavings.toLocaleString() }}</h3>
-                      <p class="result-unit">saved/year</p>
-                    </div>
-                  </div>
+        <!-- Breakdown: Solar -->
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-gradient-secondary text-white">
+            <h4 class="mb-0">☀️ Solar Panel Contribution</h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">{{ results.solar.annualCO2Saved }}</div>
+                  <div class="result-label">tonnes CO₂ saved/year</div>
                 </div>
               </div>
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">${{ results.solar.costSavings.toLocaleString() }}</div>
+                  <div class="result-label">cost savings/year</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">{{ results.solar.kWhGenerated.toLocaleString() }}</div>
+                  <div class="result-label">kWh generated/year</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <!-- EV Breakdown -->
-              <div>
-                <h5>🚗 Electric Vehicle Contribution</h5>
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
-                      <div class="result-icon-large">🌍</div>
-                      <h3 class="result-number">{{ results.ev.annualCO2Saved }}</h3>
-                      <p class="result-unit">tonnes CO₂/year</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
-                      <div class="result-icon-large">⛽</div>
-                      <h3 class="result-number">{{ results.ev.fuelSaved.toLocaleString() }}</h3>
-                      <p class="result-unit">litres fuel saved</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
-                      <div class="result-icon-large">💰</div>
-                      <h3 class="result-number">${{ results.ev.costSavings.toLocaleString() }}</h3>
-                      <p class="result-unit">saved/year</p>
-                    </div>
-                  </div>
+        <!-- Breakdown: EV -->
+        <div class="card shadow-sm mb-5">
+          <div class="card-header bg-gradient-tertiary text-white">
+            <h4 class="mb-0">🚗 Electric Vehicle Contribution</h4>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">{{ results.ev.co2Saved }}</div>
+                  <div class="result-label">tonnes CO₂ saved/year</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">${{ results.ev.costSavings.toLocaleString() }}</div>
+                  <div class="result-label">fuel savings/year</div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="result-card-small">
+                  <div class="result-number">{{ results.ev.reductionPercent }}%</div>
+                  <div class="result-label">emissions reduction</div>
                 </div>
               </div>
             </div>
@@ -551,276 +548,183 @@ export default {
     }
   },
   methods: {
-    validateSolarPanels(blur) {
-      if (!this.formData.solar.numberOfPanels || this.formData.solar.numberOfPanels <= 0) {
-        if (blur) this.errors.numberOfPanels = 'Please enter your number of solar panels'
-      } else {
-        this.errors.numberOfPanels = null
-      }
-    },
-    validateElectricityBill(blur) {
-      const value = this.formData.solar.electricityBill
-
-      if (!this.isValidNumber(value)) {
-        if (blur) {
-          this.errors.electricityBill = 'Please enter a valid electricity bill amount'
-        }
-        return
-      }
-
-      const billAmount = parseFloat(value)
-
-      if (billAmount <= 0) {
-        if (blur) {
-          this.errors.electricityBill = 'Bill amount must be greater than $0'
-        }
-      } else if (billAmount > 10000) {
-        if (blur) {
-          this.errors.electricityBill = 'That seems very high! Please check your bill amount'
-        }
-      } else {
-        this.errors.electricityBill = null
-      }
-    },
-
-    validateAnnualKm(blur) {
-      const value = this.formData.ev.annualKm
-
-      if (!this.isValidNumber(value)) {
-        if (blur) {
-          this.errors.annualKm = 'Please enter a valid distance in kilometers'
-        }
-        return
-      }
-
-      const km = parseFloat(value)
-
-      if (km <= 0) {
-        if (blur) {
-          this.errors.annualKm = 'Distance must be greater than 0 km'
-        }
-      } else if (km > 100000) {
-        if (blur) {
-          this.errors.annualKm =
-            'That seems very high! Average is 13,300 km/year. Please check your input'
-        }
-      } else {
-        this.errors.annualKm = null
-      }
-    },
-    isValidNumber(value) {
-      if (value === null || value === undefined || value === '') {
+    validateSolarPanels(showError) {
+      const panels = parseInt(this.formData.solar.numberOfPanels)
+      if (!panels || panels < 1) {
+        if (showError) this.errors.numberOfPanels = 'Please enter at least 1 panel'
         return false
       }
-      const num = parseFloat(value)
-      return !isNaN(num) && isFinite(num)
-    },
-    safeParseFloat(value, defaultValue = 0) {
-      if (value === null || value === undefined || value === '') {
-        return defaultValue
+      if (panels > 100) {
+        if (showError) this.errors.numberOfPanels = 'Maximum 100 panels allowed'
+        return false
       }
-      const parsed = parseFloat(value)
-      return !isNaN(parsed) && isFinite(parsed) ? parsed : defaultValue
+      this.errors.numberOfPanels = null
+      return true
+    },
+    validateElectricityBill(showError) {
+      const bill = parseFloat(this.formData.solar.electricityBill)
+      if (!bill || bill < 1) {
+        if (showError) this.errors.electricityBill = 'Please enter a valid bill amount'
+        return false
+      }
+      this.errors.electricityBill = null
+      return true
+    },
+    validateAnnualKm(showError) {
+      const km = parseInt(this.formData.ev.annualKm)
+      if (!km || km < 1000) {
+        if (showError) this.errors.annualKm = 'Please enter at least 1000 km'
+        return false
+      }
+      if (km > 50000) {
+        if (showError) this.errors.annualKm = 'Maximum 50,000 km allowed'
+        return false
+      }
+      this.errors.annualKm = null
+      return true
     },
     calculateSolarSavings() {
-      try {
-        const emissionsFactors = {
-          NSW: 0.79,
-          VIC: 1.02,
-          QLD: 0.81,
-          SA: 0.47,
-          WA: 0.7,
-          TAS: 0.16,
-          NT: 0.59,
-          ACT: 0.79,
-        }
+      const stateData = {
+        NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.3 },
+        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
+        QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.27 },
+        SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.32 },
+        WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
+        TAS: { sunHours: 4.2, emissionsFactor: 0.15, electricityRate: 0.26 },
+        NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.25 },
+        ACT: { sunHours: 5.1, emissionsFactor: 0.0, electricityRate: 0.28 },
+      }
 
-        const orientationFactors = {
-          north: 1.0,
-          northeast: 0.95,
-          northwest: 0.95,
-          east: 0.85,
-          west: 0.85,
-          south: 0.65,
-        }
+      const orientationFactors = {
+        north: 1.0,
+        northeast: 0.95,
+        northwest: 0.95,
+        east: 0.85,
+        west: 0.85,
+        south: 0.6,
+      }
 
-        const shadingFactors = {
-          none: 1.0,
-          minimal: 0.9,
-          moderate: 0.75,
-          heavy: 0.5,
-        }
+      const shadingFactors = {
+        none: 1.0,
+        minimal: 0.9,
+        moderate: 0.75,
+        heavy: 0.5,
+      }
 
-        const numberOfPanels = this.safeParseFloat(this.formData.solar.numberOfPanels, 0)
+      const state = stateData[this.formData.state]
+      const numberOfPanels = parseInt(this.formData.solar.numberOfPanels)
+      const efficiency = parseFloat(this.formData.solar.efficiency)
+      const orientation = orientationFactors[this.formData.solar.orientation]
+      const shading = shadingFactors[this.formData.solar.shading]
 
-        if (numberOfPanels <= 0) {
-          throw new Error('Invalid number of panels')
-        }
+      const systemSizeKW = (numberOfPanels * 0.4).toFixed(2)
+      const kWhGenerated = Math.round(
+        numberOfPanels * 0.4 * state.sunHours * 365 * efficiency * orientation * shading
+      )
+      const annualCO2Saved = ((kWhGenerated * state.emissionsFactor) / 1000).toFixed(2)
 
-        const panelWattage = 0.4
-        const systemSize = numberOfPanels * panelWattage
+      let annualBill = parseFloat(this.formData.solar.electricityBill)
+      if (this.formData.solar.billFrequency === 'monthly') {
+        annualBill *= 12
+      } else if (this.formData.solar.billFrequency === 'quarterly') {
+        annualBill *= 4
+      }
 
-        const efficiency = this.safeParseFloat(this.formData.solar.efficiency, 0.85)
-        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
-        const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
-        const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
+      const costSavings = Math.round(kWhGenerated * state.electricityRate * 0.7)
+      const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
 
-        const avgSunHours = 4.5
-
-        const kWhGenerated = Math.round(
-          systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
-        )
-
-        if (!isFinite(kWhGenerated) || isNaN(kWhGenerated)) {
-          throw new Error('Calculation error')
-        }
-
-        const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
-        const costSavings = Math.round(kWhGenerated * 0.3)
-        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
-        const carsOffRoad = (parseFloat(annualCO2Saved) / 4.6).toFixed(1)
-
-        return {
-          annualCO2Saved: parseFloat(annualCO2Saved),
-          kWhGenerated,
-          costSavings,
-          treesEquivalent,
-          carsOffRoad: parseFloat(carsOffRoad),
-        }
-      } catch (error) {
-        console.error('Solar calculation error:', error)
-        return {
-          annualCO2Saved: 0,
-          kWhGenerated: 0,
-          costSavings: 0,
-          treesEquivalent: 0,
-          carsOffRoad: 0,
-        }
+      return {
+        systemSizeKW,
+        kWhGenerated,
+        annualCO2Saved: parseFloat(annualCO2Saved),
+        costSavings,
+        treesEquivalent,
       }
     },
     calculateEVSavings() {
-      try {
-        const emissionsFactors = {
-          NSW: 0.79,
-          VIC: 1.02,
-          QLD: 0.81,
-          SA: 0.47,
-          WA: 0.7,
-          TAS: 0.16,
-          NT: 0.59,
-          ACT: 0.79,
-        }
+      const gridEmissions = {
+        NSW: 0.79,
+        VIC: 0.98,
+        QLD: 0.82,
+        SA: 0.42,
+        WA: 0.64,
+        TAS: 0.15,
+        NT: 0.59,
+        ACT: 0.0,
+      }
 
-        const vehicleEmissions = {
-          'petrol-small': { emissionsPerKm: 0.15, fuelConsumption: 6.5 },
-          'petrol-medium': { emissionsPerKm: 0.18, fuelConsumption: 8.0 },
-          'petrol-large': { emissionsPerKm: 0.25, fuelConsumption: 11.0 },
-          'diesel-small': { emissionsPerKm: 0.14, fuelConsumption: 5.5 },
-          'diesel-medium': { emissionsPerKm: 0.17, fuelConsumption: 7.0 },
-          'diesel-large': { emissionsPerKm: 0.23, fuelConsumption: 9.5 },
-          hybrid: { emissionsPerKm: 0.1, fuelConsumption: 4.5 },
-        }
+      const iceVehicles = {
+        'petrol-small': { emissions: 0.15, fuelCost: 0.18 },
+        'petrol-medium': { emissions: 0.2, fuelCost: 0.22 },
+        'petrol-large': { emissions: 0.28, fuelCost: 0.3 },
+        'diesel-small': { emissions: 0.14, fuelCost: 0.16 },
+        'diesel-medium': { emissions: 0.18, fuelCost: 0.2 },
+        'diesel-large': { emissions: 0.25, fuelCost: 0.28 },
+      }
 
-        const evEfficiency = 18
+      const evModels = {
+        'tesla-model3': 15.0,
+        'tesla-modely': 16.5,
+        'nissan-leaf': 17.0,
+        'hyundai-kona': 14.5,
+        'mg-zs': 16.0,
+        'byd-atto3': 15.5,
+        'polestar-2': 18.0,
+        'bmw-i4': 17.5,
+      }
 
-        const annualKm = this.safeParseFloat(this.formData.ev.annualKm, 0)
+      const annualKm = parseInt(this.formData.ev.annualKm)
+      const iceData = iceVehicles[this.formData.ev.currentVehicleType]
+      const evEfficiency = evModels[this.formData.ev.evModel]
+      const gridEmissionsFactor = gridEmissions[this.formData.state]
 
-        if (annualKm <= 0) {
-          throw new Error('Invalid annual kilometers')
-        }
+      const iceEmissionsKg = annualKm * iceData.emissions
+      const evEnergyKwh = (annualKm / 100) * evEfficiency
+      const evEmissionsKg = evEnergyKwh * gridEmissionsFactor
 
-        const vehicleType = vehicleEmissions[this.formData.ev.currentVehicleType]
+      const co2SavedKg = iceEmissionsKg - evEmissionsKg
+      const co2Saved = (co2SavedKg / 1000).toFixed(2)
+      const reductionPercent = Math.round((co2SavedKg / iceEmissionsKg) * 100)
 
-        if (!vehicleType) {
-          throw new Error('Invalid vehicle type')
-        }
+      const treesEquivalent = Math.round(co2SavedKg / 60)
 
-        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
+      const fuelCostAnnual = annualKm * iceData.fuelCost
+      const electricityCostAnnual = evEnergyKwh * 0.3
+      const costSavings = Math.round(fuelCostAnnual - electricityCostAnnual)
 
-        const currentEmissions = annualKm * vehicleType.emissionsPerKm
-
-        const evKWhUsed = (annualKm / 100) * evEfficiency
-        const evEmissions = evKWhUsed * emissionsFactor
-
-        let annualCO2Saved
-        if (this.formData.ev.chargingType === 'home-solar') {
-          const evEmissionsReduced = evEmissions * 0.3
-          annualCO2Saved = ((currentEmissions - evEmissionsReduced) / 1000).toFixed(2)
-        } else {
-          annualCO2Saved = ((currentEmissions - evEmissions) / 1000).toFixed(2)
-        }
-
-        if (!isFinite(parseFloat(annualCO2Saved)) || isNaN(parseFloat(annualCO2Saved))) {
-          throw new Error('Calculation error')
-        }
-
-        const fuelSaved = Math.round((annualKm / 100) * vehicleType.fuelConsumption)
-
-        const fuelCost = fuelSaved * 2.0
-        const electricityCost = evKWhUsed * 0.3
-        const costSavings = Math.round(fuelCost - electricityCost)
-
-        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
-
-        return {
-          annualCO2Saved: parseFloat(annualCO2Saved),
-          fuelSaved,
-          costSavings,
-          treesEquivalent,
-        }
-      } catch (error) {
-        console.error('EV calculation error:', error)
-        return {
-          annualCO2Saved: 0,
-          fuelSaved: 0,
-          costSavings: 0,
-          treesEquivalent: 0,
-        }
+      return {
+        co2Saved: parseFloat(co2Saved),
+        reductionPercent,
+        treesEquivalent,
+        costSavings,
       }
     },
     submitForm() {
-      this.validateSolarPanels(true)
-      this.validateElectricityBill(true)
-      this.validateAnnualKm(true)
-
-      const hasErrors = Object.values(this.errors).some((error) => error !== null)
-
-      if (hasErrors) {
-        const errorMessages = []
-        if (this.errors.numberOfPanels) errorMessages.push(this.errors.numberOfPanels)
-        if (this.errors.electricityBill) errorMessages.push(this.errors.electricityBill)
-        if (this.errors.annualKm) errorMessages.push(this.errors.annualKm)
-
-        alert('Please fix the following errors:\n\n' + errorMessages.join('\n'))
-        return
-      }
-
-      if (!this.formData.state) {
-        alert('Please select your state before calculating.')
-        return
-      }
-
-      if (!this.formData.ev.currentVehicleType) {
-        alert('Please select your current vehicle type.')
-        return
-      }
-
       try {
+        const panelsValid = this.validateSolarPanels(true)
+        const billValid = this.validateElectricityBill(true)
+        const kmValid = this.validateAnnualKm(true)
+
+        if (!panelsValid || !billValid || !kmValid) {
+          alert('Please fix the errors before calculating.')
+          return
+        }
+
+        if (!this.formData.state) {
+          alert('Please select your state.')
+          return
+        }
+
+        if (!this.formData.ev.currentVehicleType || !this.formData.ev.evModel) {
+          alert('Please complete all EV fields.')
+          return
+        }
+
         this.results.solar = this.calculateSolarSavings()
         this.results.ev = this.calculateEVSavings()
 
-        if (this.results.solar.annualCO2Saved === 0) {
-          alert('There was an error calculating solar savings. Please check your inputs.')
-          return
-        }
-
-        if (this.results.ev.annualCO2Saved === 0) {
-          alert('There was an error calculating EV savings. Please check your inputs.')
-          return
-        }
-
-        const solarCO2 = this.safeParseFloat(this.results.solar.annualCO2Saved, 0)
-        const evCO2 = this.safeParseFloat(this.results.ev.annualCO2Saved, 0)
+        const solarCO2 = this.results.solar.annualCO2Saved
+        const evCO2 = this.results.ev.co2Saved
         const totalCO2Saved = (solarCO2 + evCO2).toFixed(2)
 
         const totalCostSavings = this.results.solar.costSavings + this.results.ev.costSavings
@@ -890,14 +794,32 @@ export default {
 </script>
 
 <style scoped>
+/* Energy-Friendly Color Palette */
+:root {
+  --olive-primary: #6b8e23;
+  --olive-dark: #556b2f;
+  --olive-light: #9acd32;
+  --sage-green: #87a96b;
+  --earth-brown: #8b7355;
+  --sky-blue: #87ceeb;
+  --leaf-green: #90ee90;
+  --sand-beige: #f5f5dc;
+}
+
+/* Hero Section */
 .hero-section {
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
   color: white;
   border-radius: 15px;
   margin-bottom: 2rem;
 }
 
+.text-light {
+  opacity: 0.95;
+}
+
+/* Step Badge */
 .step-badge {
   display: inline-flex;
   align-items: center;
@@ -905,28 +827,26 @@ export default {
   width: 40px;
   height: 40px;
   background: white;
-  color: #333;
+  color: #556b2f;
   border-radius: 50%;
   font-weight: bold;
   font-size: 1.2rem;
 }
 
+/* Card Headers */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
 }
 
-.bg-gradient-success {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, #87a96b 0%, #9acd32 100%);
 }
 
-.bg-gradient-warning {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+.bg-gradient-tertiary {
+  background: linear-gradient(135deg, #9acd32 0%, #b8d94d 100%);
 }
 
-.bg-gradient-info {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
+/* Radio Cards */
 .radio-card {
   padding: 2rem 1rem;
   border: 3px solid #e0e0e0;
@@ -934,17 +854,18 @@ export default {
   transition: all 0.3s ease;
   cursor: pointer;
   text-align: center;
+  background: white;
 }
 
 .radio-card:hover {
-  border-color: #667eea;
+  border-color: #6b8e23;
   transform: translateY(-2px);
 }
 
 .radio-selected {
-  border-color: #667eea;
-  background-color: #f0f4ff;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  border-color: #6b8e23;
+  background-color: #f5f9f0;
+  box-shadow: 0 5px 15px rgba(107, 142, 35, 0.3);
 }
 
 .radio-icon {
@@ -957,6 +878,24 @@ export default {
   opacity: 0;
 }
 
+/* Form Controls */
+.form-select:focus,
+.form-control:focus {
+  border-color: #6b8e23;
+  box-shadow: 0 0 0 0.2rem rgba(107, 142, 35, 0.25);
+}
+
+/* Calculate Button */
+.btn-primary {
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #556b2f 0%, #6b8e23 100%);
+}
+
 .btn-calculate {
   padding: 1rem 3rem;
   font-size: 1.3rem;
@@ -967,7 +906,7 @@ export default {
 
 .btn-calculate:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 10px 30px rgba(107, 142, 35, 0.4);
 }
 
 .btn-icon {
@@ -975,6 +914,7 @@ export default {
   margin-right: 0.5rem;
 }
 
+/* Results Section */
 .results-section {
   animation: slideUp 0.5s ease-out;
 }
@@ -990,6 +930,7 @@ export default {
   }
 }
 
+/* Result Cards */
 .result-card {
   padding: 2rem;
   border-radius: 15px;
@@ -1003,19 +944,24 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.bg-warning-light {
-  background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
-  border-color: #ffc107;
+.bg-primary-light {
+  background: linear-gradient(135deg, #f5f9f0 0%, #e8f5e8 100%);
+  border-color: #6b8e23;
 }
 
-.bg-info-light {
-  background: linear-gradient(135deg, #e6f7ff 0%, #cceeff 100%);
-  border-color: #17a2b8;
+.bg-secondary-light {
+  background: linear-gradient(135deg, #fafce8 0%, #f0f8e8 100%);
+  border-color: #9acd32;
 }
 
 .bg-success-light {
   background: linear-gradient(135deg, #e6f9f0 0%, #ccf2e0 100%);
-  border-color: #28a745;
+  border-color: #90ee90;
+}
+
+.bg-accent-light {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border-color: #87ceeb;
 }
 
 .result-icon-large {
@@ -1043,14 +989,49 @@ export default {
   margin: 0.5rem 0 0 0;
 }
 
+.result-card-small {
+  background: #f5f9f0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: center;
+  border: 2px solid #e8f5e8;
+  transition: all 0.3s ease;
+}
+
+.result-card-small:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(107, 142, 35, 0.2);
+  border-color: #6b8e23;
+}
+
+.result-label {
+  font-size: 0.9rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+}
+
+/* Achievement Banner */
 .achievement-banner {
   background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
   padding: 2rem;
   border-radius: 15px;
   border: 3px solid #ffc107;
   text-align: center;
+  margin-top: 2rem;
 }
 
+.achievement-banner h3 {
+  color: #856404;
+}
+
+.achievement-banner p {
+  color: #333;
+  margin-bottom: 0;
+}
+
+/* Shadow utilities */
 .shadow-sm {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
@@ -1059,6 +1040,7 @@ export default {
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
 }
 
+/* Responsive */
 @media (max-width: 768px) {
   .hero-section {
     padding: 2rem 1rem;

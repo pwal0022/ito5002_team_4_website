@@ -43,7 +43,7 @@
 
         <!-- Step 2: Solar Panel Details -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-warning text-dark">
+          <div class="card-header bg-gradient-secondary text-white">
             <div class="d-flex align-items-center">
               <span class="step-badge me-3">2</span>
               <h3 class="mb-0">☀️ Solar Panel System Details</h3>
@@ -217,7 +217,7 @@
 
         <!-- Submit Button -->
         <div class="text-center mb-5">
-          <button type="submit" class="btn btn-warning btn-lg btn-calculate shadow-lg px-5">
+          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg px-5">
             <span class="btn-icon">☀️</span>
             Calculate Solar Savings
           </button>
@@ -230,8 +230,8 @@
 
       <!-- Results Section -->
       <div v-if="showResults" class="results-section animate-in">
-        <div class="card border-warning shadow-lg mb-5">
-          <div class="card-header bg-gradient-warning text-dark text-center py-4">
+        <div class="card border-success shadow-lg mb-5">
+          <div class="card-header bg-gradient-primary text-white text-center py-4">
             <h2 class="mb-0">🎉 Your Solar Savings Results</h2>
             <p class="mb-0 mt-2">Here's the environmental and financial impact!</p>
           </div>
@@ -239,7 +239,7 @@
             <!-- Key Metrics -->
             <div class="row g-3 mb-4">
               <div class="col-md-3">
-                <div class="result-card bg-warning-light">
+                <div class="result-card bg-primary-light">
                   <div class="result-icon-large">🌍</div>
                   <div class="result-number">{{ results.annualCO2Saved }}</div>
                   <div class="result-label">tonnes CO₂ saved/year</div>
@@ -247,7 +247,7 @@
               </div>
 
               <div class="col-md-3">
-                <div class="result-card bg-info-light">
+                <div class="result-card bg-secondary-light">
                   <div class="result-icon-large">⚡</div>
                   <div class="result-number">{{ results.kWhGenerated.toLocaleString() }}</div>
                   <div class="result-label">kWh generated/year</div>
@@ -263,137 +263,99 @@
               </div>
 
               <div class="col-md-3">
-                <div class="result-card bg-warning-light">
+                <div class="result-card bg-accent-light">
                   <div class="result-icon-large">🌳</div>
                   <div class="result-number">{{ results.treesEquivalent }}</div>
-                  <div class="result-label">trees equivalent</div>
+                  <div class="result-label">trees planted equivalent</div>
                 </div>
               </div>
             </div>
 
-            <!-- Environmental Impact Timeline -->
-            <div class="mt-5">
-              <h4 class="text-center mb-4">📊 Your Impact Over Time</h4>
-
-              <!-- Money Savings Timeline -->
-              <div class="timeline-section mb-4">
-                <h5 class="timeline-heading">
-                  <span class="timeline-icon">💵</span>
-                  Money Saved
-                </h5>
-                <div class="row g-3">
-                  <div class="col-md-3 col-6">
-                    <div class="money-period-card">
-                      <div class="money-period">1 Year</div>
-                      <div class="money-amount">${{ results.costSavings.toLocaleString() }}</div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="money-period-card">
-                      <div class="money-period">5 Years</div>
-                      <div class="money-amount">
-                        ${{ (results.costSavings * 5).toLocaleString() }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="money-period-card">
-                      <div class="money-period">10 Years</div>
-                      <div class="money-amount">
-                        ${{ (results.costSavings * 10).toLocaleString() }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="money-period-card">
-                      <div class="money-period">25 Years</div>
-                      <div class="money-amount">
-                        ${{ (results.costSavings * 25).toLocaleString() }}
-                      </div>
-                    </div>
+            <!-- Timeline Section: Savings Projections -->
+            <div class="timeline-section">
+              <h4 class="timeline-heading">
+                <span class="timeline-icon">💰</span> Your Money Savings Over Time
+              </h4>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <div class="money-period-card">
+                    <div class="money-period">Monthly</div>
+                    <div class="money-amount">${{ results.monthlySavings }}</div>
                   </div>
                 </div>
-              </div>
-
-              <!-- CO2 Savings Timeline -->
-              <div class="timeline-section">
-                <h5 class="timeline-heading">
-                  <span class="timeline-icon">🌍</span>
-                  CO₂ Emissions Prevented
-                </h5>
-                <div class="row g-3">
-                  <div class="col-md-3 col-6">
-                    <div class="co2-period-card">
-                      <div class="co2-period">1 Year</div>
-                      <div class="co2-amount">{{ results.annualCO2Saved }}</div>
-                      <div class="co2-unit">tonnes</div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="co2-period-card">
-                      <div class="co2-period">5 Years</div>
-                      <div class="co2-amount">{{ (results.annualCO2Saved * 5).toFixed(1) }}</div>
-                      <div class="co2-unit">tonnes</div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="co2-period-card">
-                      <div class="co2-period">10 Years</div>
-                      <div class="co2-amount">{{ (results.annualCO2Saved * 10).toFixed(1) }}</div>
-                      <div class="co2-unit">tonnes</div>
-                    </div>
-                  </div>
-                  <div class="col-md-3 col-6">
-                    <div class="co2-period-card">
-                      <div class="co2-period">25 Years</div>
-                      <div class="co2-amount">{{ (results.annualCO2Saved * 25).toFixed(1) }}</div>
-                      <div class="co2-unit">tonnes</div>
-                    </div>
+                <div class="col-md-3">
+                  <div class="money-period-card">
+                    <div class="money-period">Yearly</div>
+                    <div class="money-amount">${{ results.costSavings.toLocaleString() }}</div>
                   </div>
                 </div>
-                <p class="text-center text-muted mt-3 mb-0">
-                  <small
-                    >🌳 That's <strong>{{ (results.treesEquivalent * 25).toLocaleString() }} trees</strong> worth
-                    of CO₂ absorption over 25 years!</small
-                  >
-                </p>
+                <div class="col-md-3">
+                  <div class="money-period-card">
+                    <div class="money-period">5 Years</div>
+                    <div class="money-amount">${{ results.fiveYearSavings.toLocaleString() }}</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="money-period-card">
+                    <div class="money-period">10 Years</div>
+                    <div class="money-amount">${{ results.tenYearSavings.toLocaleString() }}</div>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <!-- Context Box -->
+            <!-- Timeline Section: CO2 Reduction -->
+            <div class="timeline-section">
+              <h4 class="timeline-heading">
+                <span class="timeline-icon">🌍</span> Your Carbon Impact Over Time
+              </h4>
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <div class="co2-period-card">
+                    <div class="co2-period">Yearly</div>
+                    <div class="co2-amount">{{ results.annualCO2Saved }}</div>
+                    <div class="co2-unit">tonnes CO₂</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="co2-period-card">
+                    <div class="co2-period">5 Years</div>
+                    <div class="co2-amount">{{ results.fiveYearCO2 }}</div>
+                    <div class="co2-unit">tonnes CO₂</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="co2-period-card">
+                    <div class="co2-period">10 Years</div>
+                    <div class="co2-amount">{{ results.tenYearCO2 }}</div>
+                    <div class="co2-unit">tonnes CO₂</div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="co2-period-card">
+                    <div class="co2-period">25 Years (Lifespan)</div>
+                    <div class="co2-amount">{{ results.lifespanCO2 }}</div>
+                    <div class="co2-unit">tonnes CO₂</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- System Details -->
             <div class="alert alert-info mt-4">
-              <h5>💡 What does this mean?</h5>
-              <p class="mb-2">
-                <strong>{{ results.annualCO2Saved }} tonnes of CO₂</strong> is equivalent to:
-              </p>
-              <ul class="mb-0">
-                <li>Taking <strong>{{ results.carsOffRoad }}</strong> cars off the road for a year</li>
-                <li>Planting <strong>{{ results.treesEquivalent }}</strong> trees</li>
-                <li>
-                  Avoiding <strong>{{ (results.annualCO2Saved * 400).toFixed(0) }}</strong> kg of coal being
-                  burned
-                </li>
-              </ul>
-            </div>
-
-            <!-- Next Steps -->
-            <div class="mt-4">
-              <h5>🚀 Next Steps</h5>
-              <ul>
-                <li v-if="formData.solar.hasSolar === 'no'">
-                  Research solar installers in your area and get quotes
-                </li>
-                <li v-if="formData.solar.hasSolar === 'no'">
-                  Check government rebates and incentives for {{ formData.state }}
-                </li>
-                <li v-if="formData.solar.hasSolar === 'yes'">
-                  Monitor your system's performance regularly
-                </li>
-                <li>Consider adding battery storage to maximize savings</li>
-                <li>
-                  Explore combining solar with an electric vehicle for even greater carbon reduction
-                </li>
-              </ul>
+              <h5 class="alert-heading">📊 Your System Details</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <p><strong>System size:</strong> {{ results.systemSizeKW }} kW</p>
+                  <p><strong>Number of panels:</strong> {{ formData.solar.numberOfPanels }}</p>
+                  <p><strong>Panel efficiency:</strong> {{ (formData.solar.efficiency * 100).toFixed(0) }}%</p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Roof orientation:</strong> {{ formData.solar.orientation }}</p>
+                  <p><strong>Shading level:</strong> {{ formData.solar.shading }}</p>
+                  <p><strong>State:</strong> {{ formData.state }}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -424,58 +386,53 @@ export default {
         electricityBill: null,
       },
       showResults: false,
-      results: {
-        annualCO2Saved: 0,
-        kWhGenerated: 0,
-        costSavings: 0,
-        treesEquivalent: 0,
-        carsOffRoad: 0,
-      },
+      results: {},
     }
   },
   methods: {
-    validateSolarPanels(blur) {
+    validateSolarPanels(showError) {
       const panels = parseInt(this.formData.solar.numberOfPanels)
       if (!panels || panels < 1) {
-        if (blur) this.errors.numberOfPanels = 'Please enter number of panels (minimum 1)'
-      } else if (panels > 100) {
-        if (blur) this.errors.numberOfPanels = 'Maximum 100 panels for residential systems'
-      } else {
-        this.errors.numberOfPanels = null
+        if (showError) this.errors.numberOfPanels = 'Please enter at least 1 panel'
+        return false
       }
+      if (panels > 100) {
+        if (showError) this.errors.numberOfPanels = 'Maximum 100 panels allowed'
+        return false
+      }
+      this.errors.numberOfPanels = null
+      return true
     },
-    validateElectricityBill(blur) {
+    validateElectricityBill(showError) {
       const bill = parseFloat(this.formData.solar.electricityBill)
-      if (!bill || bill <= 0) {
-        if (blur) this.errors.electricityBill = 'Please enter your electricity bill amount'
-      } else {
-        this.errors.electricityBill = null
+      if (!bill || bill < 1) {
+        if (showError) this.errors.electricityBill = 'Please enter a valid bill amount'
+        return false
       }
+      this.errors.electricityBill = null
+      return true
     },
     calculateSolarSavings() {
-      // State-specific emissions factors (kg CO2e per kWh)
-      const emissionsFactors = {
-        NSW: 0.79,
-        VIC: 1.02,
-        QLD: 0.81,
-        SA: 0.47,
-        WA: 0.7,
-        TAS: 0.16,
-        NT: 0.59,
-        ACT: 0.79,
+      const stateData = {
+        NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.30 },
+        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
+        QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.27 },
+        SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.32 },
+        WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
+        TAS: { sunHours: 4.2, emissionsFactor: 0.15, electricityRate: 0.26 },
+        NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.25 },
+        ACT: { sunHours: 5.1, emissionsFactor: 0.0, electricityRate: 0.28 },
       }
 
-      // Orientation multipliers
       const orientationFactors = {
         north: 1.0,
         northeast: 0.95,
         northwest: 0.95,
         east: 0.85,
         west: 0.85,
-        south: 0.65,
+        south: 0.6,
       }
 
-      // Shading multipliers
       const shadingFactors = {
         none: 1.0,
         minimal: 0.9,
@@ -483,52 +440,65 @@ export default {
         heavy: 0.5,
       }
 
-      // Calculate system size from number of panels
+      const state = stateData[this.formData.state]
       const numberOfPanels = parseInt(this.formData.solar.numberOfPanels)
-      const panelWattage = 0.4 // 400W per panel standard
-      const systemSize = numberOfPanels * panelWattage
-
       const efficiency = parseFloat(this.formData.solar.efficiency)
-      const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
-      const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
-      const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
+      const orientation = orientationFactors[this.formData.solar.orientation]
+      const shading = shadingFactors[this.formData.solar.shading]
 
-      // Average sun hours per day in Australia
-      const avgSunHours = 4.5
+      // System size in kW (assuming 400W panels)
+      const systemSizeKW = (numberOfPanels * 0.4).toFixed(2)
 
-      // Annual kWh generated
+      // Annual energy generation (kWh)
       const kWhGenerated = Math.round(
-        systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
+        numberOfPanels * 0.4 * state.sunHours * 365 * efficiency * orientation * shading
       )
 
-      // Annual CO2 saved (in tonnes)
-      const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
+      // Annual CO2 saved (tonnes)
+      const annualCO2Saved = ((kWhGenerated * state.emissionsFactor) / 1000).toFixed(2)
 
-      // Cost savings (assuming $0.30 per kWh)
-      const costSavings = Math.round(kWhGenerated * 0.3)
+      // Convert electricity bill to annual
+      let annualBill = parseFloat(this.formData.solar.electricityBill)
+      if (this.formData.solar.billFrequency === 'monthly') {
+        annualBill *= 12
+      } else if (this.formData.solar.billFrequency === 'quarterly') {
+        annualBill *= 4
+      }
 
-      // Trees equivalent (1 tree absorbs ~21kg CO2 per year)
+      // Annual cost savings (70% of generation offsets bill)
+      const costSavings = Math.round(kWhGenerated * state.electricityRate * 0.7)
+
+      // Trees equivalent (1 tree absorbs ~21kg CO2/year)
       const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
 
-      // Cars off road (average car emits ~4.6 tonnes CO2 per year)
-      const carsOffRoad = (parseFloat(annualCO2Saved) / 4.6).toFixed(1)
+      // Timeline projections
+      const monthlySavings = Math.round(costSavings / 12)
+      const fiveYearSavings = costSavings * 5
+      const tenYearSavings = costSavings * 10
+      const fiveYearCO2 = (parseFloat(annualCO2Saved) * 5).toFixed(2)
+      const tenYearCO2 = (parseFloat(annualCO2Saved) * 10).toFixed(2)
+      const lifespanCO2 = (parseFloat(annualCO2Saved) * 25).toFixed(2)
 
       return {
-        annualCO2Saved: parseFloat(annualCO2Saved),
+        systemSizeKW,
         kWhGenerated,
+        annualCO2Saved,
         costSavings,
         treesEquivalent,
-        carsOffRoad: parseFloat(carsOffRoad),
+        monthlySavings,
+        fiveYearSavings,
+        tenYearSavings,
+        fiveYearCO2,
+        tenYearCO2,
+        lifespanCO2,
       }
     },
     submitForm() {
-      // Validate
-      this.validateSolarPanels(true)
-      this.validateElectricityBill(true)
+      // Validate all fields
+      const panelsValid = this.validateSolarPanels(true)
+      const billValid = this.validateElectricityBill(true)
 
-      const hasErrors = Object.values(this.errors).some((error) => error !== null)
-
-      if (hasErrors) {
+      if (!panelsValid || !billValid) {
         alert('Please fix the errors before calculating.')
         return
       }
@@ -575,10 +545,22 @@ export default {
 </script>
 
 <style scoped>
+/* Energy-Friendly Color Palette */
+:root {
+  --olive-primary: #6b8e23;
+  --olive-dark: #556b2f;
+  --olive-light: #9acd32;
+  --sage-green: #87a96b;
+  --earth-brown: #8b7355;
+  --sky-blue: #87ceeb;
+  --leaf-green: #90ee90;
+  --sand-beige: #f5f5dc;
+}
+
 /* Hero Section */
 .hero-section {
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #9acd32 100%);
   color: white;
   border-radius: 15px;
 }
@@ -591,7 +573,7 @@ export default {
   width: 40px;
   height: 40px;
   background: white;
-  color: #333;
+  color: #556b2f;
   border-radius: 50%;
   font-weight: bold;
   font-size: 1.2rem;
@@ -599,11 +581,11 @@ export default {
 
 /* Card Gradients */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
 }
 
-.bg-gradient-warning {
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, #87a96b 0%, #9acd32 100%);
 }
 
 /* Radio Cards */
@@ -614,17 +596,18 @@ export default {
   transition: all 0.3s ease;
   cursor: pointer;
   text-align: center;
+  background: white;
 }
 
 .radio-card:hover {
-  border-color: #ffc107;
+  border-color: #6b8e23;
   transform: translateY(-2px);
 }
 
 .radio-selected {
-  border-color: #ffc107;
-  background-color: #fff9e6;
-  box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
+  border-color: #6b8e23;
+  background-color: #f5f9f0;
+  box-shadow: 0 5px 15px rgba(107, 142, 35, 0.3);
 }
 
 .radio-icon {
@@ -637,18 +620,32 @@ export default {
   opacity: 0;
 }
 
+/* Form Controls */
+.form-select:focus,
+.form-control:focus {
+  border-color: #6b8e23;
+  box-shadow: 0 0 0 0.2rem rgba(107, 142, 35, 0.25);
+}
+
 /* Calculate Button */
+.btn-primary {
+  background: linear-gradient(135deg, #6b8e23 0%, #87a96b 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #556b2f 0%, #6b8e23 100%);
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(107, 142, 35, 0.4);
+}
+
 .btn-calculate {
   padding: 1rem 3rem;
   font-size: 1.3rem;
   font-weight: bold;
   border-radius: 50px;
   transition: all 0.3s ease;
-}
-
-.btn-calculate:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(255, 193, 7, 0.4);
 }
 
 .btn-icon {
@@ -686,19 +683,24 @@ export default {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.bg-warning-light {
-  background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
-  border-color: #ffc107;
+.bg-primary-light {
+  background: linear-gradient(135deg, #f5f9f0 0%, #e8f5e8 100%);
+  border-color: #6b8e23;
 }
 
-.bg-info-light {
-  background: linear-gradient(135deg, #e6f7ff 0%, #cceeff 100%);
-  border-color: #17a2b8;
+.bg-secondary-light {
+  background: linear-gradient(135deg, #fafce8 0%, #f0f8e8 100%);
+  border-color: #9acd32;
 }
 
 .bg-success-light {
   background: linear-gradient(135deg, #e6f9f0 0%, #ccf2e0 100%);
-  border-color: #28a745;
+  border-color: #90ee90;
+}
+
+.bg-accent-light {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  border-color: #87ceeb;
 }
 
 .result-icon-large {
@@ -721,17 +723,18 @@ export default {
 
 /* Timeline */
 .timeline-section {
-  background: #f8f9fa;
+  background: #f5f9f0;
   padding: 2rem;
   border-radius: 15px;
   margin-bottom: 1.5rem;
+  border: 2px solid #e8f5e8;
 }
 
 .timeline-heading {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: #556b2f;
 }
 
 .timeline-icon {
@@ -746,12 +749,14 @@ export default {
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  border: 2px solid #e8f5e8;
 }
 
 .money-period-card:hover,
 .co2-period-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 5px 20px rgba(107, 142, 35, 0.2);
+  border-color: #6b8e23;
 }
 
 .money-period,
@@ -764,18 +769,25 @@ export default {
 .money-amount {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #28a745;
+  color: #6b8e23;
 }
 
 .co2-amount {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #007bff;
+  color: #556b2f;
 }
 
 .co2-unit {
   font-size: 0.9rem;
   color: #666;
+}
+
+/* Alert */
+.alert-info {
+  background-color: #f5f9f0;
+  border-color: #9acd32;
+  color: #556b2f;
 }
 
 /* Responsive */
