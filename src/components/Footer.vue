@@ -9,8 +9,27 @@
               <a href="/" alt="Home" class="nav-link p-0 text-body-secondary">Home</a>
             </li>
             <li class="nav-item mb-6">
-              <a href="/solar" alt="Household Carbon Calculator" class="nav-link p-0 text-body-secondary"
+              <a
+                href="/solar"
+                alt="Household Carbon Calculator"
+                class="nav-link p-0 text-body-secondary"
                 >Household Carbon Calculator</a
+              >
+            </li>
+            <li class="nav-item mb-6">
+              <a
+                href="/solar"
+                alt="Household Carbon Calculator"
+                class="nav-link p-0 text-body-secondary"
+                >Rebates and Schemes</a
+              >
+            </li>
+            <li class="nav-item mb-6">
+              <a
+                href="/solar"
+                alt="Household Carbon Calculator"
+                class="nav-link p-0 text-body-secondary"
+                >Data Sources</a
               >
             </li>
           </ul>
@@ -25,6 +44,6 @@
 
 <script>
 export default {
-  name: 'AppFooter'
+  name: 'AppFooter',
 }
 </script>

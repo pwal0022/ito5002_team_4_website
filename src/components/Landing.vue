@@ -24,11 +24,35 @@ defineProps({
         <div
           class="position-absolute top-50 start-50 translate-middle text-center text-white px-3 px-md-5"
         >
-          <h1 class="fw-bold display-5 mb-3">Australian Household Carbon Calculator</h1>
-          <p class="lead mb-4">
+          <h1 class="banner-title mb-3">Australian Household Carbon Calculator</h1>
+
+          <p class="banner-subtitle mb-4">
             Helping Australians measure, understand, and reduce their carbon emissions.
           </p>
-          <!-- <a href="/solar" class="btn btn-success btn-lg px-4 py-2 shadow"> Get Started </a> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- THREE NAVIGATION BUTTONS -->
+    <div class="container my-5">
+      <div class="row g-3 justify-content-center">
+        <div class="col-12 col-md-4">
+          <router-link to="/solar" class="btn btn-primary btn-lg w-100 py-3">
+            <i class="bi bi-sun-fill me-2"></i>
+            Solar Calculator
+          </router-link>
+        </div>
+        <div class="col-12 col-md-4">
+          <router-link to="/ev" class="btn btn-success btn-lg w-100 py-3">
+            <i class="bi bi-ev-front-fill me-2"></i>
+            Electric Vehicle Calculator
+          </router-link>
+        </div>
+        <div class="col-12 col-md-4">
+          <router-link to="/combined" class="btn btn-info btn-lg w-100 py-3">
+            <i class="bi bi-calculator-fill me-2"></i>
+            Combined Calculator
+          </router-link>
         </div>
       </div>
     </div>
@@ -40,7 +64,7 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://grist.org/wp-content/uploads/2015/12/emissions.jpg?resize=1536%2C864&quality=75&strip=all"
+              src="\src\assets\carbon.jpeg"
               class="card-img-top"
               alt="Australia emissions"
               style="height: 190px; object-fit: cover"
@@ -48,7 +72,7 @@ defineProps({
             <div class="card-body">
               <h4 class="card-title fw-semibold mb-3">Why Reducing Emissions Matters</h4>
               <p class="card-text text-secondary">
-                Australia remains one of the world’s highest per-capita emitters. Energy use and
+                Australia remains one of the world's highest per-capita emitters. Energy use and
                 transport are major contributors, making personal awareness crucial for climate
                 action.
               </p>
@@ -60,7 +84,7 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://i0.wp.com/1charging.com/wp-content/uploads/2023/10/solar-EV-charging-stations-1.webp?fit=800%2C450&ssl=1"
+              src="\src\assets\solarcharging.jpeg"
               class="card-img-top"
               alt="Solar and EV solutions"
               style="height: 190px; object-fit: cover"
@@ -79,52 +103,20 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://assets-us-01.kc-usercontent.com/99f113b4-e5f7-00d2-23c0-c83ca2e4cfa2/67c3ad66-e302-4ce7-b12e-de172f28edb2/E_SDG_poster_UN_emblem_WEB%202020.png"
+              src="\src\assets\calculator2.png"
               class="card-img-top"
-              alt="UN SDG 13"
+              alt="Calculate carbon savings"
               style="height: 190px; object-fit: cover"
             />
             <div class="card-body">
-              <h4 class="card-title fw-semibold mb-3">Our Calculator Makes It Simple</h4>
+              <h4 class="card-title fw-semibold mb-3">See Your Impact With Our Calculator</h4>
               <p class="card-text text-secondary">
-                Get personalised insights into your carbon footprint and see how your choices align
-                with the United Nations’ SDG 13: Climate Action.
+                Our tool helps you estimate how solar power or electric vehicles can reduce your
+                carbon footprint based on real Australian data.
               </p>
             </div>
           </div>
         </div>
-        <div class="col-lg-12">
-          <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
-            <div class="card-body">
-              <h4 class="card-title fw-semibold mb-3" style="text-align: center">
-                Complete this simple questionaire to see how much CO₂ you can save with solar panels
-                and electric vehicles.
-              </h4>
-              <p class="card-text text-secondary" style="text-align: center">
-                <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
-                  <span class="btn-icon">🧮</span>
-                  <a href="/solar" class="btn btn-lg shadow-lg" style="text-align: center">
-                    Click here to find out how much carbon emission you can save. </a
-                  ><span class="btn-icon">🧮</span>
-                </button>
-                <!-- <a
-                  href="/solar"
-                  class="btn btn-primary btn-lg btn-calculate shadow-lg"
-                  style="text-align: center"
-                >
-                  Click here to find out how much carbon emission you can save.
-                </a> -->
-              </p>
-            </div>
-          </div>
-        </div>
-        <!-- <h1>
-          Complete this simple questionaire to see how much CO₂ you can save with solar panels and
-          electric vehicles.
-        </h1>
-        <a href="/solar" class="btn btn-success btn-lg px-4 py-2 shadow">
-          Click here to find out how much carbon emission you can save.
-        </a> -->
       </div>
     </div>
   </div>
@@ -170,6 +162,43 @@ h3 {
 
 .card-text {
   line-height: 1.5;
+}
+
+/* Navigation Buttons Styling */
+.btn-lg {
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.btn-lg:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background-color: #667eea;
+}
+
+.btn-primary:hover {
+  background-color: #5568d3;
+}
+
+.btn-success {
+  background-color: #11998e;
+}
+
+.btn-success:hover {
+  background-color: #0f8278;
+}
+
+.btn-info {
+  background-color: #4facfe;
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: #3a96e8;
 }
 </style>
 
