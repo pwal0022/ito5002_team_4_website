@@ -1,4 +1,3 @@
-
 <template>
   <div class="combined-calculator">
     <div class="container">
@@ -441,7 +440,8 @@
                   </div>
                 </div>
                 <p class="text-muted small mt-2 mb-0">
-                  Australia's target: Reduce household emissions by 43%. You're making a difference! 🎯
+                  Australia's target: Reduce household emissions by 43%. You're making a difference!
+                  🎯
                 </p>
               </div>
             </div>
@@ -464,14 +464,18 @@
                   <div class="col-md-4">
                     <div class="result-card bg-warning-light">
                       <div class="result-icon-large">⚡</div>
-                      <h3 class="result-number">{{ results.solar.kWhGenerated.toLocaleString() }}</h3>
+                      <h3 class="result-number">
+                        {{ results.solar.kWhGenerated.toLocaleString() }}
+                      </h3>
                       <p class="result-unit">kWh generated</p>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="result-card bg-warning-light">
                       <div class="result-icon-large">💰</div>
-                      <h3 class="result-number">${{ results.solar.costSavings.toLocaleString() }}</h3>
+                      <h3 class="result-number">
+                        ${{ results.solar.costSavings.toLocaleString() }}
+                      </h3>
                       <p class="result-unit">saved/year</p>
                     </div>
                   </div>
@@ -890,7 +894,7 @@ export default {
 </script>
 
 <style scoped>
-.hero-section {
+/* .hero-section {
   padding: 3rem 1rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -1075,5 +1079,5 @@ export default {
   .btn-calculate {
     width: 100%;
   }
-}
+} */
 </style>

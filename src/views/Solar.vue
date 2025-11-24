@@ -22,7 +22,12 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="state" class="form-label fw-bold">State/Territory *</label>
-                <select class="form-select form-select-lg" id="state" v-model="formData.state" required>
+                <select
+                  class="form-select form-select-lg"
+                  id="state"
+                  v-model="formData.state"
+                  required
+                >
                   <option value="">Select your state</option>
                   <option value="NSW">New South Wales</option>
                   <option value="VIC">Victoria</option>
@@ -353,8 +358,9 @@
                 </div>
                 <p class="text-center text-muted mt-3 mb-0">
                   <small
-                    >🌳 That's <strong>{{ (results.treesEquivalent * 25).toLocaleString() }} trees</strong> worth
-                    of CO₂ absorption over 25 years!</small
+                    >🌳 That's
+                    <strong>{{ (results.treesEquivalent * 25).toLocaleString() }} trees</strong>
+                    worth of CO₂ absorption over 25 years!</small
                   >
                 </p>
               </div>
@@ -367,11 +373,15 @@
                 <strong>{{ results.annualCO2Saved }} tonnes of CO₂</strong> is equivalent to:
               </p>
               <ul class="mb-0">
-                <li>Taking <strong>{{ results.carsOffRoad }}</strong> cars off the road for a year</li>
-                <li>Planting <strong>{{ results.treesEquivalent }}</strong> trees</li>
                 <li>
-                  Avoiding <strong>{{ (results.annualCO2Saved * 400).toFixed(0) }}</strong> kg of coal being
-                  burned
+                  Taking <strong>{{ results.carsOffRoad }}</strong> cars off the road for a year
+                </li>
+                <li>
+                  Planting <strong>{{ results.treesEquivalent }}</strong> trees
+                </li>
+                <li>
+                  Avoiding <strong>{{ (results.annualCO2Saved * 400).toFixed(0) }}</strong> kg of
+                  coal being burned
                 </li>
               </ul>
             </div>
@@ -576,15 +586,15 @@ export default {
 
 <style scoped>
 /* Hero Section */
-.hero-section {
+/* .hero-section {
   padding: 2rem 1rem;
   background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
   color: white;
   border-radius: 15px;
-}
+} */
 
 /* Step Badges */
-.step-badge {
+/* .step-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -595,19 +605,19 @@ export default {
   border-radius: 50%;
   font-weight: bold;
   font-size: 1.2rem;
-}
+} */
 
 /* Card Gradients */
-.bg-gradient-primary {
+/* .bg-gradient-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 .bg-gradient-warning {
   background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
-}
+} */
 
 /* Radio Cards */
-.radio-card {
+/* .radio-card {
   padding: 2rem 1rem;
   border: 3px solid #e0e0e0;
   border-radius: 15px;
@@ -635,10 +645,10 @@ export default {
 .radio-card .form-check-input {
   position: absolute;
   opacity: 0;
-}
+} */
 
 /* Calculate Button */
-.btn-calculate {
+/* .btn-calculate {
   padding: 1rem 3rem;
   font-size: 1.3rem;
   font-weight: bold;
@@ -654,10 +664,10 @@ export default {
 .btn-icon {
   font-size: 1.5rem;
   margin-right: 0.5rem;
-}
+} */
 
 /* Results Section */
-.results-section {
+/* .results-section {
   animation: slideUp 0.5s ease-out;
 }
 
@@ -670,10 +680,10 @@ export default {
     opacity: 1;
     transform: translateY(0);
   }
-}
+} */
 
 /* Result Cards */
-.result-card {
+/* .result-card {
   padding: 2rem;
   border-radius: 15px;
   text-align: center;
@@ -717,10 +727,10 @@ export default {
   color: #666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
+} */
 
 /* Timeline */
-.timeline-section {
+/* .timeline-section {
   background: #f8f9fa;
   padding: 2rem;
   border-radius: 15px;
@@ -776,10 +786,10 @@ export default {
 .co2-unit {
   font-size: 0.9rem;
   color: #666;
-}
+} */
 
 /* Responsive */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .hero-section h1 {
     font-size: 2rem;
   }
@@ -792,5 +802,5 @@ export default {
   .co2-amount {
     font-size: 1.5rem;
   }
-}
+} */
 </style>

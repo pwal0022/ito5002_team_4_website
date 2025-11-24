@@ -39,9 +39,9 @@
           <!-- Annual KM Driven -->
           <div class="form-group">
             <label for="annualKm">Annual Kilometers Driven *</label>
-            <input 
-              type="number" 
-              v-model.number="formData.annualKm" 
+            <input
+              type="number"
+              v-model.number="formData.annualKm"
               id="annualKm"
               min="1000"
               max="50000"
@@ -105,7 +105,9 @@
           <div class="savings-content">
             <h3>You Could Save</h3>
             <div class="savings-value">{{ results.co2Saved }} tonnes CO2/year</div>
-            <div class="savings-percent">{{ results.reductionPercent }}% reduction in emissions!</div>
+            <div class="savings-percent">
+              {{ results.reductionPercent }}% reduction in emissions!
+            </div>
           </div>
         </div>
 
@@ -151,7 +153,7 @@ const formData = ref({
   state: '',
   currentVehicle: '',
   annualKm: null,
-  evModel: ''
+  evModel: '',
 })
 
 const results = ref(null)
@@ -160,26 +162,26 @@ const results = ref(null)
 const TEST_DATA = {
   // Grid emissions factors (kg CO2-e per kWh)
   gridEmissions: {
-    'NSW': 0.79,
-    'VIC': 0.98,
-    'QLD': 0.82,
-    'SA': 0.42,
-    'WA': 0.64,
-    'TAS': 0.15,
-    'NT': 0.59,
-    'ACT': 0.00
+    NSW: 0.79,
+    VIC: 0.98,
+    QLD: 0.82,
+    SA: 0.42,
+    WA: 0.64,
+    TAS: 0.15,
+    NT: 0.59,
+    ACT: 0.0,
   },
-  
+
   // ICE vehicle emissions (kg CO2 per km)
   iceVehicles: {
-    'petrol-small': { emissions: 0.150, name: 'Small Petrol Car', fuelCost: 0.18 },
-    'petrol-medium': { emissions: 0.200, name: 'Medium Petrol Car', fuelCost: 0.22 },
-    'petrol-large': { emissions: 0.280, name: 'Large Petrol Car', fuelCost: 0.30 },
-    'diesel-small': { emissions: 0.140, name: 'Small Diesel Car', fuelCost: 0.16 },
-    'diesel-medium': { emissions: 0.180, name: 'Medium Diesel Car', fuelCost: 0.20 },
-    'diesel-large': { emissions: 0.250, name: 'Large Diesel Car/4WD', fuelCost: 0.28 }
+    'petrol-small': { emissions: 0.15, name: 'Small Petrol Car', fuelCost: 0.18 },
+    'petrol-medium': { emissions: 0.2, name: 'Medium Petrol Car', fuelCost: 0.22 },
+    'petrol-large': { emissions: 0.28, name: 'Large Petrol Car', fuelCost: 0.3 },
+    'diesel-small': { emissions: 0.14, name: 'Small Diesel Car', fuelCost: 0.16 },
+    'diesel-medium': { emissions: 0.18, name: 'Medium Diesel Car', fuelCost: 0.2 },
+    'diesel-large': { emissions: 0.25, name: 'Large Diesel Car/4WD', fuelCost: 0.28 },
   },
-  
+
   // EV models (kWh per 100km)
   evModels: {
     'tesla-model3': { efficiency: 15.0, name: 'Tesla Model 3' },
@@ -189,16 +191,16 @@ const TEST_DATA = {
     'mg-zs': { efficiency: 16.0, name: 'MG ZS EV' },
     'byd-atto3': { efficiency: 15.5, name: 'BYD Atto 3' },
     'polestar-2': { efficiency: 18.0, name: 'Polestar 2' },
-    'bmw-i4': { efficiency: 17.5, name: 'BMW i4' }
+    'bmw-i4': { efficiency: 17.5, name: 'BMW i4' },
   },
-  
+
   // Electricity cost ($/kWh)
-  electricityCost: 0.30
+  electricityCost: 0.3,
 }
 
 const calculateSavings = () => {
   const { state, currentVehicle, annualKm, evModel } = formData.value
-  
+
   if (!state || !currentVehicle || !annualKm || !evModel) {
     alert('Please fill in all fields')
     return
@@ -226,9 +228,9 @@ const calculateSavings = () => {
   const reductionPercent = Math.round((co2SavedKg / iceEmissionsKg) * 100)
 
   // Calculate additional metrics
-  const carsOffRoad = Math.round((co2SavedKg / 1000) / 4)
+  const carsOffRoad = Math.round(co2SavedKg / 1000 / 4)
   const treesEquivalent = Math.round(co2SavedKg / 60)
-  const householdPercent = Math.round(((co2SavedKg / 1000) / 14) * 100)
+  const householdPercent = Math.round((co2SavedKg / 1000 / 14) * 100)
 
   // Calculate fuel savings
   const fuelCostAnnual = annualKm * iceData.fuelCost
@@ -248,7 +250,7 @@ const calculateSavings = () => {
     fuelSavings: fuelSavings.toLocaleString(),
     gridEmissions: gridEmissionsFactor,
     evEfficiency: evData.efficiency,
-    iceEmissionsPerKm: iceData.emissions
+    iceEmissionsPerKm: iceData.emissions,
   }
 }
 
@@ -257,14 +259,14 @@ const clearForm = () => {
     state: '',
     currentVehicle: '',
     annualKm: null,
-    evModel: ''
+    evModel: '',
   }
   results.value = null
 }
 </script>
 
 <style scoped>
-.ev-page {
+/* .ev-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
   padding: 40px 20px;
@@ -515,36 +517,36 @@ button {
     opacity: 1;
     transform: translateY(0);
   }
-}
+} */
 
 /* Responsive */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .ev-page {
     padding: 20px 10px;
   }
-  
+
   .calculator-card {
     padding: 20px;
   }
-  
+
   .button-group {
     flex-direction: column;
   }
-  
+
   .comparison-grid {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto;
   }
-  
+
   .vs-badge {
     justify-self: center;
   }
-  
+
   .savings-highlight {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .emission-value,
   .savings-value {
     font-size: 2rem;
@@ -555,13 +557,13 @@ button {
   h1 {
     font-size: 1.5rem;
   }
-  
+
   .emission-value {
     font-size: 1.8rem;
   }
-  
+
   .result-value {
     font-size: 1.5rem;
   }
-}
+} */
 </style>

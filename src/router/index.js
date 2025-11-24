@@ -40,6 +40,22 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/CombinedCalculator.vue'),
     },
+    {
+      path: '/sources',
+      name: 'sources',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/SourcesPage.vue'),
+    },
+    {
+      path: '/rebates',
+      name: 'rebates',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/RebatesAndSchemes.vue'),
+    },
   ],
 })
 export default router

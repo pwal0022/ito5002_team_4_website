@@ -32,6 +32,16 @@
                 >Household Carbon Calculator</router-link
               >
             </li>
+            <li class="nav-item">
+              <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
+                >Rebates and Schemes</router-link
+              >
+            </li>
+            <li class="nav-item">
+              <router-link to="/sources" class="nav-link" active-class="active" aria-current="page"
+                >Data Sources</router-link
+              >
+            </li>
           </ul>
         </div>
       </div>
@@ -41,6 +51,6 @@
 
 <script>
 export default {
-  name: 'NavBar'
+  name: 'NavBar',
 }
 </script>

@@ -24,8 +24,9 @@ defineProps({
         <div
           class="position-absolute top-50 start-50 translate-middle text-center text-white px-3 px-md-5"
         >
-          <h1 class="fw-bold display-5 mb-3">Australian Household Carbon Calculator</h1>
-          <p class="lead mb-4">
+          <h1 class="banner-title mb-3">Australian Household Carbon Calculator</h1>
+
+          <p class="banner-subtitle mb-4">
             Helping Australians measure, understand, and reduce their carbon emissions.
           </p>
         </div>
@@ -63,7 +64,7 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://grist.org/wp-content/uploads/2015/12/emissions.jpg?resize=1536%2C864&quality=75&strip=all"
+              src="\src\assets\carbon.jpeg"
               class="card-img-top"
               alt="Australia emissions"
               style="height: 190px; object-fit: cover"
@@ -83,7 +84,7 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://i0.wp.com/1charging.com/wp-content/uploads/2023/10/solar-EV-charging-stations-1.webp?fit=800%2C450&ssl=1"
+              src="\src\assets\solarcharging.jpeg"
               class="card-img-top"
               alt="Solar and EV solutions"
               style="height: 190px; object-fit: cover"
@@ -102,7 +103,7 @@ defineProps({
         <div class="col-lg-4">
           <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
             <img
-              src="https://blog.nativesolar.com/content/images/size/w2000/2023/12/12S5A6746-2-1.jpg"
+              src="\src\assets\calculator2.png"
               class="card-img-top"
               alt="Calculate carbon savings"
               style="height: 190px; object-fit: cover"
