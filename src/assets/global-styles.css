@@ -1,0 +1,62 @@
+/* Global Background Styles */
+/* Apply this class to any page wrapper to get the full-page background */
+
+.page-background {
+  min-height: 100vh;
+  background-image: url('./assets/coolbackgrounds-fractalize-wooded_flora.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Alternative: lighter overlay version for better text readability */
+.page-background-light {
+  min-height: 100vh;
+  background-image: url('./assets/coolbackgrounds-fractalize-wooded_flora.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.page-background-light::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+}
+
+/* Alternative: darker overlay version */
+.page-background-dark {
+  min-height: 100vh;
+  background-image: url('./assets/coolbackgrounds-fractalize-wooded_flora.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.page-background-dark::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Ensure content is above the overlay */
+.page-background-light > *,
+.page-background-dark > * {
+  position: relative;
+  z-index: 1;
+}

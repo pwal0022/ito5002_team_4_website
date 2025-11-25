@@ -136,25 +136,16 @@ defineProps({
           <p>
             This project directly supports UN SDG 13: Climate Action, which encourages individuals
             and communities to reduce greenhouse gas emissions and adopt sustainable energy systems.
-            By exploring your future with an EV and home solar, you’re contributing to:
-            <ul>
-              <li>
-                Lower
-            transport emissions
-              </li>
-              <li>
-Increased renewable energy use
-              </li>
-              <li>
-Reduced national reliance on fossil
-            fuels
-              </li>
-              <li>
-A healthier climate for future generations
-              </li>
-            </ul>     Small decisions at home—like switching
-            how you drive and power your household—play a vital role in Australia’s transition to a
-            low-carbon future.
+            By exploring your future with an EV and home solar, you're contributing to:
+          </p>
+          <ul>
+            <li>Lower transport emissions</li>
+            <li>Increased renewable energy use</li>
+            <li>Reduced national reliance on fossil fuels</li>
+            <li>A healthier climate for future generations</li>
+          </ul>
+          <p>
+            Small decisions at home—like switching how you drive and power your household—play a vital role in Australia's transition to a low-carbon future.
           </p>
         </div>
       </div>
