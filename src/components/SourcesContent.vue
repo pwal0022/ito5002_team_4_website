@@ -26,16 +26,14 @@ defineProps({
         >
           <h1 class="banner-title mb-3">Data Sources</h1>
 
-          <p class="banner-subtitle mb-4">
-            We gather and colate sources from a range of trusted agencies for use within our
-            calculator.
-            <br />
-            Last Update: 24/11/25
-          </p>
+          <p class="banner-subtitle mb-4">Data sources from trusted Agencies.</p>
         </div>
       </div>
     </div>
-
+    <p>
+      We gather and colate sources from a range of trusted agencies for use within our calculator.
+      Last Update: 24/11/25
+    </p>
     <!-- INTRO CARDS -->
     <div class="container my-5">
       <div class="row g-4">
