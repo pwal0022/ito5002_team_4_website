@@ -36,6 +36,18 @@ defineProps({
     <!-- THREE NAVIGATION BUTTONS -->
     <div class="container my-5">
       <div class="row g-3 justify-content-center">
+        <div class="col-12 4">
+          <h2 style="color: black; text-align: center">
+            Welcome to the Australian Household Carbon Calculator
+          </h2>
+          <p>
+            Welcome! This tool helps Australian households estimate the real financial and
+            carbon-emission benefits of switching to an electric vehicle (EV) and installing home
+            solar panels. Whether you're exploring cleaner transport options, looking to reduce
+            energy bills, or wanting to make a positive environmental impact, this calculator gives
+            you a simple, personalised overview of your potential savings.
+          </p>
+        </div>
         <div class="col-12 col-md-4">
           <router-link to="/solar" class="btn btn-primary btn-lg w-100 py-3">
             <i class="bi bi-sun-fill me-2"></i>
@@ -116,6 +128,34 @@ defineProps({
               </p>
             </div>
           </div>
+        </div>
+        <div class="col-12 4">
+          <h2 style="color: black; text-align: center">
+            Supporting UN Sustainable Development Goal 13
+          </h2>
+          <p>
+            This project directly supports UN SDG 13: Climate Action, which encourages individuals
+            and communities to reduce greenhouse gas emissions and adopt sustainable energy systems.
+            By exploring your future with an EV and home solar, you’re contributing to:
+            <ul>
+              <li>
+                Lower
+            transport emissions
+              </li>
+              <li>
+Increased renewable energy use
+              </li>
+              <li>
+Reduced national reliance on fossil
+            fuels
+              </li>
+              <li>
+A healthier climate for future generations
+              </li>
+            </ul>     Small decisions at home—like switching
+            how you drive and power your household—play a vital role in Australia’s transition to a
+            low-carbon future.
+          </p>
         </div>
       </div>
     </div>
