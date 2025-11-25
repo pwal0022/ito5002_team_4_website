@@ -1,12 +1,3 @@
-<script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true,
-  },
-})
-</script>
-
 <template>
   <div class="landing-page">
     <!-- HERO BANNER -->
@@ -231,9 +222,7 @@ h3 {
 .btn-info:hover {
   background-color: #3a96e8;
 }
-</style>
 
-<style scoped>
 /* Hero Section */
 .hero-section {
   padding: 3rem 1rem;
