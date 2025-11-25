@@ -32,7 +32,6 @@ defineProps({
     </div>
     <p>
       We gather and colate sources from a range of trusted agencies for use within our calculator.
-      Last Update: 24/11/25
     </p>
     <!-- INTRO CARDS -->
     <div class="container my-5">
@@ -208,6 +207,7 @@ defineProps({
         </div>
       </div>
     </div>
+    <p>Last Updated: 24/11/25</p>
   </div>
 </template>
 
