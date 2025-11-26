@@ -40,7 +40,14 @@ defineProps({
         </div> -->
       <!-- </div> -->
       <br />
-      <p style="color: black">Click on each state below to see what grants are available to you.</p>
+      <h2 style="color: black">Rebate and Grant Data</h2>
+      <p style="color: black">
+        Rebate and grant information is sourced from: The Australian Government (federal programs)
+        Official state and territory government websites Publicly available program summaries,
+        eligibility criteria, and policy announcements We monitor changes to ensure the information
+        reflects the most current rebates available to Australian households. Primary Sources:
+        Australian Government & State/Territory Government Rebate Portals.
+      </p>
       <!-- Accordion -->
       <div class="w-100" style="max-width: 100vw; margin: 0; padding: 0">
         <div class="accordion w-100" id="accordionExample">
@@ -136,7 +143,12 @@ defineProps({
                 <a href="https://cer.gov.au/batteries" target="_blank"
                   >Cheaper Home Batteries Program</a
                 >
-                <p>discount is now available.</p>
+                <p>
+                  Clean Energy Regulator: The Cheaper Home Batteries Program is now available.
+                  Households and small businesses may be eligible for around a 30% discount on the
+                  upfront cost of installing a small-scale solar battery. The discount will be based
+                  on the solar battery’s usable capacity and will gradually decrease until 2030.
+                </p>
                 <p>
                   Federal grants also available:
                   <a
@@ -595,6 +607,7 @@ export default {
 .accordion-button {
   background-color: #099ec8;
   font-weight: bold;
+  color: rgb(255, 255, 255);
 }
 .accordion-item {
   border-left: none;

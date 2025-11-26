@@ -40,8 +40,14 @@ defineProps({
         </div>
       </div> -->
       <br />
+
+      <h2 style="color: black">Commitment to Accuracy</h2>
       <p style="color: black">
-        We gather and colate sources from a range of trusted agencies for use within our calculator.
+        We are committed to providing clear, up-to-date and trustworthy carbon, energy and rebate
+        information for Australian households. All calculations on this website are based on
+        verified public data sources from reputable government agencies, industry bodies and
+        scientific organisations. We continually review and update our data to ensure our
+        calculators remain accurate and relevant.
       </p>
       <!-- INTRO CARDS -->
       <div class="container my-5">
@@ -217,8 +223,13 @@ defineProps({
           </div>
         </div>
       </div>
+      <h3 style="color: black">Attribution</h3>
+      <p style="color: black">
+        All third-party data used on this site is drawn from publicly available government and
+        industry publications. Links to relevant data sources are provided where applicable.
+      </p>
+      <p style="color: black">Last Updated: 24/11/25</p>
     </div>
-    <p>Last Updated: 24/11/25</p>
   </div>
 </template>
 
