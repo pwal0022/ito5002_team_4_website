@@ -1,7 +1,5 @@
 <template>
-  <!-- <div class="ev-page"> -->
   <div class="hero-section mb-5">
-    <!-- <div class="container"> -->
     <div id="hero-container">
       <img class="hero" src="\src\assets\evbanner.jpeg" />
       <div id="center-text">
@@ -9,10 +7,7 @@
         <p id="text2">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
       </div>
     </div>
-    <!-- <h1>Electric Vehicle CO2 Calculator</h1>
-      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p> -->
 
-    <!-- <div class="calculator-card"> -->
     <form @submit.prevent="calculateSavings">
       <!-- Step 1: Location -->
       <div class="card mb-4 shadow-sm">
@@ -25,12 +20,13 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <!-- <div class="form-group"> -->
               <label for="state" class="form-label fw-bold">State/Territory *</label>
               <select
                 v-model="formData.state"
                 id="state"
                 class="form-select form-select-lg"
+                :class="{ 'is-invalid': errors.state }"
+                @change="validateState"
                 required
               >
                 <option value="">Choose your state...</option>
@@ -43,6 +39,9 @@
                 <option value="NT">🦘 Northern Territory</option>
                 <option value="ACT">🏛️ Australian Capital Territory</option>
               </select>
+              <div v-if="errors.state" class="invalid-feedback d-block">
+                {{ errors.state }}
+              </div>
               <small class="form-text text-muted">
                 We use this for state-specific grid emissions factors
               </small>
@@ -115,6 +114,8 @@
                 v-model="formData.currentVehicle"
                 id="currentVehicle"
                 class="form-select form-select-lg"
+                :class="{ 'is-invalid': errors.currentVehicle }"
+                @change="validateCurrentVehicle"
                 required
               >
                 <option value="">Choose your car type...</option>
@@ -125,6 +126,9 @@
                 <option value="diesel-medium">🚙 Medium diesel car</option>
                 <option value="diesel-large">🚐 Large diesel car/SUV</option>
               </select>
+              <div v-if="errors.currentVehicle" class="invalid-feedback d-block">
+                {{ errors.currentVehicle }}
+              </div>
             </div>
 
             <div class="col-md-6">
@@ -136,31 +140,36 @@
                 v-model.number="formData.annualKm"
                 id="annualKm"
                 class="form-control form-control-lg"
+                :class="{ 'is-invalid': errors.annualKm }"
+                @blur="validateAnnualKm(true)"
+                @input="validateAnnualKm(false)"
                 min="1000"
                 max="50000"
                 step="100"
                 placeholder="15000"
                 required
               />
+              <div v-if="errors.annualKm" class="invalid-feedback d-block">
+                {{ errors.annualKm }}
+              </div>
               <small class="form-text text-muted"
                 >💡 <strong>Average Australian:</strong> 10,000-15,000 km/year</small
               >
             </div>
           </div>
 
-          <!-- EV Model -->
+          <!-- EV Model - OPTIONAL -->
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <label for="evModel" class="form-label fw-bold"
-                >Which electric vehicle are you considering? *</label
+                >Are you interested in a specific electric vehicle?</label
               >
               <select
                 v-model="formData.evModel"
                 id="evModel"
                 class="form-select form-select-lg"
-                required
               >
-                <option value="">Select EV model...</option>
+                <option value="">Not sure yet / Use average EV</option>
                 <option value="tesla-model3">Tesla Model 3</option>
                 <option value="tesla-modely">Tesla Model Y</option>
                 <option value="nissan-leaf">Nissan Leaf</option>
@@ -170,21 +179,9 @@
                 <option value="polestar-2">Polestar 2</option>
                 <option value="bmw-i4">BMW i4</option>
               </select>
-            </div>
-
-            <div class="col-md-6">
-              <label for="chargingType" class="form-label fw-bold"
-                >How would you mainly charge your EV?</label
-              >
-              <select
-                v-model="formData.chargingType"
-                id="chargingType"
-                class="form-select form-select-lg"
-              >
-                <option value="home">🏠 At home (cheapest)</option>
-                <option value="work">🏢 At work</option>
-                <option value="public">⚡ Public charging stations</option>
-              </select>
+              <small class="form-text text-muted">
+                Optional: Leave blank to use average EV efficiency (16 kWh/100km)
+              </small>
             </div>
           </div>
         </div>
@@ -192,8 +189,11 @@
 
       <!-- Buttons -->
       <div class="text-center mb-5">
-        <!-- <button type="submit" class="btn-primary">Compare Emissions</button> -->
-        <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
+        <button 
+          type="submit" 
+          class="btn btn-primary btn-lg btn-calculate shadow-lg"
+          :disabled="!isFormValid"
+        >
           <span class="btn-icon">🧮</span>
           Calculate My EV Savings
         </button>
@@ -201,12 +201,8 @@
         <button type="button" class="btn btn-link mt-3" @click="clearForm" style="color: black">
           Clear and start over
         </button>
-        <!-- <button type="button" class="btn-secondary" @click="clearForm" style="color: black">
-          Clear and start over
-        </button> -->
       </div>
     </form>
-    <!-- </div> -->
 
     <!-- Results -->
     <div v-if="results" class="results-card animate-in">
@@ -292,15 +288,21 @@
             </div>
           </div>
         </div>
+        <div class="text-center mb-5">
+          <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
+            ><button type="submit" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
+              <span class="btn-icon">☀️</span>
+              Find rebates for your state here.
+            </button></router-link
+          >
+        </div>
       </div>
     </div>
-    <!-- </div> -->
   </div>
-  <!-- </div> -->
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const formData = ref({
   state: '',
@@ -308,10 +310,16 @@ const formData = ref({
   currentVehicle: '',
   annualKm: null,
   evModel: '',
-  chargingType: 'home',
 })
 
 const results = ref(null)
+
+// Error tracking
+const errors = ref({
+  state: null,
+  currentVehicle: null,
+  annualKm: null,
+})
 
 const TEST_DATA = {
   gridEmissions: {
@@ -345,16 +353,104 @@ const TEST_DATA = {
   electricityCost: 0.3,
 }
 
-const calculateSavings = () => {
-  const { state, currentVehicle, annualKm, evModel } = formData.value
+// Validation Functions
+const validateState = () => {
+  if (!formData.value.state) {
+    errors.value.state = 'Please select your state or territory'
+    return false
+  }
+  errors.value.state = null
+  return true
+}
 
-  if (!state || !currentVehicle || !annualKm || !evModel) {
-    alert('Please fill in all fields')
+const validateCurrentVehicle = () => {
+  if (!formData.value.currentVehicle) {
+    errors.value.currentVehicle = 'Please select your current vehicle type'
+    return false
+  }
+  errors.value.currentVehicle = null
+  return true
+}
+
+const validateAnnualKm = (showError) => {
+  const km = formData.value.annualKm
+  
+  if (!km || km === 0) {
+    if (showError) {
+      errors.value.annualKm = 'Please enter your annual driving distance'
+    }
+    return false
+  }
+  
+  if (km < 1000) {
+    if (showError) {
+      errors.value.annualKm = 'Minimum 1,000 km per year. Please enter a realistic annual distance.'
+    }
+    return false
+  }
+  
+  if (km > 50000) {
+    if (showError) {
+      errors.value.annualKm = 'Maximum 50,000 km per year. For higher distances, please contact us for a custom calculation.'
+    }
+    return false
+  }
+  
+  // Warning for unusual values (but still valid)
+  if (km < 5000 && showError) {
+    // This is low but valid - no error, just let them proceed
+    console.log('Note: Low annual distance entered')
+  }
+  
+  if (km > 30000 && showError) {
+    // This is high but valid - no error, just let them proceed
+    console.log('Note: High annual distance entered')
+  }
+  
+  errors.value.annualKm = null
+  return true
+}
+
+// Computed property to check if form is valid
+const isFormValid = computed(() => {
+  return (
+    formData.value.state &&
+    formData.value.currentVehicle &&
+    formData.value.annualKm &&
+    formData.value.annualKm >= 1000 &&
+    formData.value.annualKm <= 50000 &&
+    !errors.value.state &&
+    !errors.value.currentVehicle &&
+    !errors.value.annualKm
+  )
+})
+
+const calculateSavings = () => {
+  // Validate all fields before calculating
+  const stateValid = validateState()
+  const vehicleValid = validateCurrentVehicle()
+  const kmValid = validateAnnualKm(true)
+
+  if (!stateValid || !vehicleValid || !kmValid) {
+    // Show error message
+    const errorMessages = []
+    if (!stateValid) errorMessages.push('state/territory')
+    if (!vehicleValid) errorMessages.push('vehicle type')
+    if (!kmValid) errorMessages.push('annual kilometers')
+    
+    alert(`Please check the following fields:\n• ${errorMessages.join('\n• ')}`)
     return
   }
 
+  const { state, currentVehicle, annualKm, evModel } = formData.value
+
   const iceData = TEST_DATA.iceVehicles[currentVehicle]
-  const evData = TEST_DATA.evModels[evModel]
+  
+  // Use specific model or fallback to average
+  const evData = evModel 
+    ? TEST_DATA.evModels[evModel]
+    : { efficiency: 16.0, name: 'Average Electric Vehicle' }
+  
   const gridEmissionsFactor = TEST_DATA.gridEmissions[state]
 
   const iceEmissionsKg = annualKm * iceData.emissions
@@ -407,7 +503,11 @@ const clearForm = () => {
     currentVehicle: '',
     annualKm: null,
     evModel: '',
-    chargingType: 'home',
+  }
+  errors.value = {
+    state: null,
+    currentVehicle: null,
+    annualKm: null,
   }
   results.value = null
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -416,4 +516,33 @@ const clearForm = () => {
 
 <style scoped>
 /* All styling is now in the external style.css file */
+
+/* Additional styles for validation feedback */
+.invalid-feedback {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+  border-color: #dc3545;
+  padding-right: calc(1.5em + 0.75rem);
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.btn-calculate:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>
