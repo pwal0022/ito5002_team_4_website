@@ -532,6 +532,18 @@
                   </div>
                 </div>
               </div>
+
+              <!-- Achievement Banner -->
+              <div class="achievement-banner">
+                <h3 class="mb-3">🏆 Outstanding Climate Action!</h3>
+                <p class="lead mb-2">
+                  You could save <strong>{{ results.combined.totalCO2Saved }} tonnes of CO₂</strong> per year!
+                </p>
+                <p>
+                  That's <strong>{{ results.combined.percentageOfTarget }}%</strong> of the way to Australia's target
+                  of 10 tonnes per person per year.
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -579,276 +591,183 @@ export default {
     }
   },
   methods: {
-    validateSolarPanels(blur) {
-      if (!this.formData.solar.numberOfPanels || this.formData.solar.numberOfPanels <= 0) {
-        if (blur) this.errors.numberOfPanels = 'Please enter your number of solar panels'
-      } else {
-        this.errors.numberOfPanels = null
-      }
-    },
-    validateElectricityBill(blur) {
-      const value = this.formData.solar.electricityBill
-
-      if (!this.isValidNumber(value)) {
-        if (blur) {
-          this.errors.electricityBill = 'Please enter a valid electricity bill amount'
-        }
-        return
-      }
-
-      const billAmount = parseFloat(value)
-
-      if (billAmount <= 0) {
-        if (blur) {
-          this.errors.electricityBill = 'Bill amount must be greater than $0'
-        }
-      } else if (billAmount > 10000) {
-        if (blur) {
-          this.errors.electricityBill = 'That seems very high! Please check your bill amount'
-        }
-      } else {
-        this.errors.electricityBill = null
-      }
-    },
-
-    validateAnnualKm(blur) {
-      const value = this.formData.ev.annualKm
-
-      if (!this.isValidNumber(value)) {
-        if (blur) {
-          this.errors.annualKm = 'Please enter a valid distance in kilometers'
-        }
-        return
-      }
-
-      const km = parseFloat(value)
-
-      if (km <= 0) {
-        if (blur) {
-          this.errors.annualKm = 'Distance must be greater than 0 km'
-        }
-      } else if (km > 100000) {
-        if (blur) {
-          this.errors.annualKm =
-            'That seems very high! Average is 13,300 km/year. Please check your input'
-        }
-      } else {
-        this.errors.annualKm = null
-      }
-    },
-    isValidNumber(value) {
-      if (value === null || value === undefined || value === '') {
+    validateSolarPanels(showError) {
+      const panels = parseInt(this.formData.solar.numberOfPanels)
+      if (!panels || panels < 1) {
+        if (showError) this.errors.numberOfPanels = 'Please enter at least 1 panel'
         return false
       }
-      const num = parseFloat(value)
-      return !isNaN(num) && isFinite(num)
-    },
-    safeParseFloat(value, defaultValue = 0) {
-      if (value === null || value === undefined || value === '') {
-        return defaultValue
+      if (panels > 100) {
+        if (showError) this.errors.numberOfPanels = 'Maximum 100 panels allowed'
+        return false
       }
-      const parsed = parseFloat(value)
-      return !isNaN(parsed) && isFinite(parsed) ? parsed : defaultValue
+      this.errors.numberOfPanels = null
+      return true
+    },
+    validateElectricityBill(showError) {
+      const bill = parseFloat(this.formData.solar.electricityBill)
+      if (!bill || bill < 1) {
+        if (showError) this.errors.electricityBill = 'Please enter a valid bill amount'
+        return false
+      }
+      this.errors.electricityBill = null
+      return true
+    },
+    validateAnnualKm(showError) {
+      const km = parseInt(this.formData.ev.annualKm)
+      if (!km || km < 1000) {
+        if (showError) this.errors.annualKm = 'Please enter at least 1000 km'
+        return false
+      }
+      if (km > 50000) {
+        if (showError) this.errors.annualKm = 'Maximum 50,000 km allowed'
+        return false
+      }
+      this.errors.annualKm = null
+      return true
     },
     calculateSolarSavings() {
-      try {
-        const emissionsFactors = {
-          NSW: 0.79,
-          VIC: 1.02,
-          QLD: 0.81,
-          SA: 0.47,
-          WA: 0.7,
-          TAS: 0.16,
-          NT: 0.59,
-          ACT: 0.79,
-        }
+      const stateData = {
+        NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.3 },
+        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
+        QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.27 },
+        SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.32 },
+        WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
+        TAS: { sunHours: 4.2, emissionsFactor: 0.15, electricityRate: 0.26 },
+        NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.25 },
+        ACT: { sunHours: 5.1, emissionsFactor: 0.0, electricityRate: 0.28 },
+      }
 
-        const orientationFactors = {
-          north: 1.0,
-          northeast: 0.95,
-          northwest: 0.95,
-          east: 0.85,
-          west: 0.85,
-          south: 0.65,
-        }
+      const orientationFactors = {
+        north: 1.0,
+        northeast: 0.95,
+        northwest: 0.95,
+        east: 0.85,
+        west: 0.85,
+        south: 0.6,
+      }
 
-        const shadingFactors = {
-          none: 1.0,
-          minimal: 0.9,
-          moderate: 0.75,
-          heavy: 0.5,
-        }
+      const shadingFactors = {
+        none: 1.0,
+        minimal: 0.9,
+        moderate: 0.75,
+        heavy: 0.5,
+      }
 
-        const numberOfPanels = this.safeParseFloat(this.formData.solar.numberOfPanels, 0)
+      const state = stateData[this.formData.state]
+      const numberOfPanels = parseInt(this.formData.solar.numberOfPanels)
+      const efficiency = parseFloat(this.formData.solar.efficiency)
+      const orientation = orientationFactors[this.formData.solar.orientation]
+      const shading = shadingFactors[this.formData.solar.shading]
 
-        if (numberOfPanels <= 0) {
-          throw new Error('Invalid number of panels')
-        }
+      const systemSizeKW = (numberOfPanels * 0.4).toFixed(2)
+      const kWhGenerated = Math.round(
+        numberOfPanels * 0.4 * state.sunHours * 365 * efficiency * orientation * shading
+      )
+      const annualCO2Saved = ((kWhGenerated * state.emissionsFactor) / 1000).toFixed(2)
 
-        const panelWattage = 0.4
-        const systemSize = numberOfPanels * panelWattage
+      let annualBill = parseFloat(this.formData.solar.electricityBill)
+      if (this.formData.solar.billFrequency === 'monthly') {
+        annualBill *= 12
+      } else if (this.formData.solar.billFrequency === 'quarterly') {
+        annualBill *= 4
+      }
 
-        const efficiency = this.safeParseFloat(this.formData.solar.efficiency, 0.85)
-        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
-        const orientationFactor = orientationFactors[this.formData.solar.orientation] || 1.0
-        const shadingFactor = shadingFactors[this.formData.solar.shading] || 1.0
+      const costSavings = Math.round(kWhGenerated * state.electricityRate * 0.7)
+      const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
 
-        const avgSunHours = 4.5
-
-        const kWhGenerated = Math.round(
-          systemSize * avgSunHours * 365 * efficiency * orientationFactor * shadingFactor,
-        )
-
-        if (!isFinite(kWhGenerated) || isNaN(kWhGenerated)) {
-          throw new Error('Calculation error')
-        }
-
-        const annualCO2Saved = ((kWhGenerated * emissionsFactor) / 1000).toFixed(2)
-        const costSavings = Math.round(kWhGenerated * 0.3)
-        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
-        const carsOffRoad = (parseFloat(annualCO2Saved) / 4.6).toFixed(1)
-
-        return {
-          annualCO2Saved: parseFloat(annualCO2Saved),
-          kWhGenerated,
-          costSavings,
-          treesEquivalent,
-          carsOffRoad: parseFloat(carsOffRoad),
-        }
-      } catch (error) {
-        console.error('Solar calculation error:', error)
-        return {
-          annualCO2Saved: 0,
-          kWhGenerated: 0,
-          costSavings: 0,
-          treesEquivalent: 0,
-          carsOffRoad: 0,
-        }
+      return {
+        systemSizeKW,
+        kWhGenerated,
+        annualCO2Saved: parseFloat(annualCO2Saved),
+        costSavings,
+        treesEquivalent,
       }
     },
     calculateEVSavings() {
-      try {
-        const emissionsFactors = {
-          NSW: 0.79,
-          VIC: 1.02,
-          QLD: 0.81,
-          SA: 0.47,
-          WA: 0.7,
-          TAS: 0.16,
-          NT: 0.59,
-          ACT: 0.79,
-        }
+      const gridEmissions = {
+        NSW: 0.79,
+        VIC: 0.98,
+        QLD: 0.82,
+        SA: 0.42,
+        WA: 0.64,
+        TAS: 0.15,
+        NT: 0.59,
+        ACT: 0.0,
+      }
 
-        const vehicleEmissions = {
-          'petrol-small': { emissionsPerKm: 0.15, fuelConsumption: 6.5 },
-          'petrol-medium': { emissionsPerKm: 0.18, fuelConsumption: 8.0 },
-          'petrol-large': { emissionsPerKm: 0.25, fuelConsumption: 11.0 },
-          'diesel-small': { emissionsPerKm: 0.14, fuelConsumption: 5.5 },
-          'diesel-medium': { emissionsPerKm: 0.17, fuelConsumption: 7.0 },
-          'diesel-large': { emissionsPerKm: 0.23, fuelConsumption: 9.5 },
-          hybrid: { emissionsPerKm: 0.1, fuelConsumption: 4.5 },
-        }
+      const iceVehicles = {
+        'petrol-small': { emissions: 0.15, fuelCost: 0.18 },
+        'petrol-medium': { emissions: 0.2, fuelCost: 0.22 },
+        'petrol-large': { emissions: 0.28, fuelCost: 0.3 },
+        'diesel-small': { emissions: 0.14, fuelCost: 0.16 },
+        'diesel-medium': { emissions: 0.18, fuelCost: 0.2 },
+        'diesel-large': { emissions: 0.25, fuelCost: 0.28 },
+      }
 
-        const evEfficiency = 18
+      const evModels = {
+        'tesla-model3': 15.0,
+        'tesla-modely': 16.5,
+        'nissan-leaf': 17.0,
+        'hyundai-kona': 14.5,
+        'mg-zs': 16.0,
+        'byd-atto3': 15.5,
+        'polestar-2': 18.0,
+        'bmw-i4': 17.5,
+      }
 
-        const annualKm = this.safeParseFloat(this.formData.ev.annualKm, 0)
+      const annualKm = parseInt(this.formData.ev.annualKm)
+      const iceData = iceVehicles[this.formData.ev.currentVehicleType]
+      const evEfficiency = evModels[this.formData.ev.evModel]
+      const gridEmissionsFactor = gridEmissions[this.formData.state]
 
-        if (annualKm <= 0) {
-          throw new Error('Invalid annual kilometers')
-        }
+      const iceEmissionsKg = annualKm * iceData.emissions
+      const evEnergyKwh = (annualKm / 100) * evEfficiency
+      const evEmissionsKg = evEnergyKwh * gridEmissionsFactor
 
-        const vehicleType = vehicleEmissions[this.formData.ev.currentVehicleType]
+      const co2SavedKg = iceEmissionsKg - evEmissionsKg
+      const co2Saved = (co2SavedKg / 1000).toFixed(2)
+      const reductionPercent = Math.round((co2SavedKg / iceEmissionsKg) * 100)
 
-        if (!vehicleType) {
-          throw new Error('Invalid vehicle type')
-        }
+      const treesEquivalent = Math.round(co2SavedKg / 60)
 
-        const emissionsFactor = emissionsFactors[this.formData.state] || 0.79
+      const fuelCostAnnual = annualKm * iceData.fuelCost
+      const electricityCostAnnual = evEnergyKwh * 0.3
+      const costSavings = Math.round(fuelCostAnnual - electricityCostAnnual)
 
-        const currentEmissions = annualKm * vehicleType.emissionsPerKm
-
-        const evKWhUsed = (annualKm / 100) * evEfficiency
-        const evEmissions = evKWhUsed * emissionsFactor
-
-        let annualCO2Saved
-        if (this.formData.ev.chargingType === 'home-solar') {
-          const evEmissionsReduced = evEmissions * 0.3
-          annualCO2Saved = ((currentEmissions - evEmissionsReduced) / 1000).toFixed(2)
-        } else {
-          annualCO2Saved = ((currentEmissions - evEmissions) / 1000).toFixed(2)
-        }
-
-        if (!isFinite(parseFloat(annualCO2Saved)) || isNaN(parseFloat(annualCO2Saved))) {
-          throw new Error('Calculation error')
-        }
-
-        const fuelSaved = Math.round((annualKm / 100) * vehicleType.fuelConsumption)
-
-        const fuelCost = fuelSaved * 2.0
-        const electricityCost = evKWhUsed * 0.3
-        const costSavings = Math.round(fuelCost - electricityCost)
-
-        const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
-
-        return {
-          annualCO2Saved: parseFloat(annualCO2Saved),
-          fuelSaved,
-          costSavings,
-          treesEquivalent,
-        }
-      } catch (error) {
-        console.error('EV calculation error:', error)
-        return {
-          annualCO2Saved: 0,
-          fuelSaved: 0,
-          costSavings: 0,
-          treesEquivalent: 0,
-        }
+      return {
+        co2Saved: parseFloat(co2Saved),
+        reductionPercent,
+        treesEquivalent,
+        costSavings,
       }
     },
     submitForm() {
-      this.validateSolarPanels(true)
-      this.validateElectricityBill(true)
-      this.validateAnnualKm(true)
-
-      const hasErrors = Object.values(this.errors).some((error) => error !== null)
-
-      if (hasErrors) {
-        const errorMessages = []
-        if (this.errors.numberOfPanels) errorMessages.push(this.errors.numberOfPanels)
-        if (this.errors.electricityBill) errorMessages.push(this.errors.electricityBill)
-        if (this.errors.annualKm) errorMessages.push(this.errors.annualKm)
-
-        alert('Please fix the following errors:\n\n' + errorMessages.join('\n'))
-        return
-      }
-
-      if (!this.formData.state) {
-        alert('Please select your state before calculating.')
-        return
-      }
-
-      if (!this.formData.ev.currentVehicleType) {
-        alert('Please select your current vehicle type.')
-        return
-      }
-
       try {
+        const panelsValid = this.validateSolarPanels(true)
+        const billValid = this.validateElectricityBill(true)
+        const kmValid = this.validateAnnualKm(true)
+
+        if (!panelsValid || !billValid || !kmValid) {
+          alert('Please fix the errors before calculating.')
+          return
+        }
+
+        if (!this.formData.state) {
+          alert('Please select your state.')
+          return
+        }
+
+        if (!this.formData.ev.currentVehicleType || !this.formData.ev.evModel) {
+          alert('Please complete all EV fields.')
+          return
+        }
+
         this.results.solar = this.calculateSolarSavings()
         this.results.ev = this.calculateEVSavings()
 
-        if (this.results.solar.annualCO2Saved === 0) {
-          alert('There was an error calculating solar savings. Please check your inputs.')
-          return
-        }
-
-        if (this.results.ev.annualCO2Saved === 0) {
-          alert('There was an error calculating EV savings. Please check your inputs.')
-          return
-        }
-
-        const solarCO2 = this.safeParseFloat(this.results.solar.annualCO2Saved, 0)
-        const evCO2 = this.safeParseFloat(this.results.ev.annualCO2Saved, 0)
+        const solarCO2 = this.results.solar.annualCO2Saved
+        const evCO2 = this.results.ev.co2Saved
         const totalCO2Saved = (solarCO2 + evCO2).toFixed(2)
 
         const totalCostSavings = this.results.solar.costSavings + this.results.ev.costSavings
@@ -918,190 +837,6 @@ export default {
 </script>
 
 <style scoped>
-/* .hero-section {
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 15px;
-  margin-bottom: 2rem;
-}
-
-.step-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: white;
-  color: #333;
-  border-radius: 50%;
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.bg-gradient-success {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
-
-.bg-gradient-warning {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.bg-gradient-info {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.radio-card {
-  padding: 2rem 1rem;
-  border: 3px solid #e0e0e0;
-  border-radius: 15px;
-  transition: all 0.3s ease;
-  cursor: pointer;
-  text-align: center;
-}
-
-.radio-card:hover {
-  border-color: #667eea;
-  transform: translateY(-2px);
-}
-
-.radio-selected {
-  border-color: #667eea;
-  background-color: #f0f4ff;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-}
-
-.radio-icon {
-  font-size: 3rem;
-  margin-bottom: 0.5rem;
-}
-
-.radio-card .form-check-input {
-  position: absolute;
-  opacity: 0;
-}
-
-.btn-calculate {
-  padding: 1rem 3rem;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border-radius: 50px;
-  transition: all 0.3s ease;
-}
-
-.btn-calculate:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-}
-
-.btn-icon {
-  font-size: 1.5rem;
-  margin-right: 0.5rem;
-}
-
-.results-section {
-  animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.result-card {
-  padding: 2rem;
-  border-radius: 15px;
-  text-align: center;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.result-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.bg-warning-light {
-  background: linear-gradient(135deg, #fff9e6 0%, #ffe6cc 100%);
-  border-color: #ffc107;
-}
-
-.bg-info-light {
-  background: linear-gradient(135deg, #e6f7ff 0%, #cceeff 100%);
-  border-color: #17a2b8;
-}
-
-.bg-success-light {
-  background: linear-gradient(135deg, #e6f9f0 0%, #ccf2e0 100%);
-  border-color: #28a745;
-}
-
-.result-icon-large {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.result-number {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-}
-
-.result-number-large {
-  font-size: 3.5rem;
-  font-weight: bold;
-  color: #333;
-  margin: 0;
-}
-
-.result-unit {
-  font-size: 1.2rem;
-  color: #666;
-  margin: 0.5rem 0 0 0;
-}
-
-.achievement-banner {
-  background: linear-gradient(135deg, #fff9c4 0%, #ffeb3b 100%);
-  padding: 2rem;
-  border-radius: 15px;
-  border: 3px solid #ffc107;
-  text-align: center;
-}
-
-.shadow-sm {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-}
-
-.shadow-lg {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
-
-@media (max-width: 768px) {
-  .hero-section {
-    padding: 2rem 1rem;
-  }
-
-  .result-number {
-    font-size: 2rem;
-  }
-
-  .result-number-large {
-    font-size: 2.5rem;
-  }
-
-  .btn-calculate {
-    width: 100%;
-  }
-} */
+/* All styling is now in the external style.css file */
+/* This component uses the shared styles from /src/assets/style.css */
 </style>
