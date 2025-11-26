@@ -398,6 +398,14 @@
             </ul>
           </div>
         </div>
+        <div class="text-center mb-5">
+          <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
+            ><button type="submit" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
+              <span class="btn-icon">☀️</span>
+              Find rebates for your state here.
+            </button></router-link
+          >
+        </div>
       </div>
     </div>
   </div>
