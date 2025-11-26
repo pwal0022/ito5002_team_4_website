@@ -1,11 +1,16 @@
 <template>
-  <div style="background: white; min-height: 100vh;">
-    <div class="container py-4">
-      <!-- Hero Section -->
-      <div class="hero-section text-center mb-4">
-        <h1 class="banner-title">🚗 Electric Vehicle CO2 Calculator</h1>
-        <p class="banner-subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+  <!-- <div class="ev-page"> -->
+  <div class="hero-section mb-5">
+    <div class="container">
+      <div id="hero-container">
+        <img class="hero" src="\src\assets\evbanner.jpeg" />
+        <div id="center-text">
+          <p id="text">🚗 Electric Vehicle CO2 Calculator</p>
+          <p id="text2">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+        </div>
       </div>
+      <!-- <h1>Electric Vehicle CO2 Calculator</h1>
+      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p> -->
 
       <div class="calculator-card">
         <form @submit.prevent="calculateSavings">
@@ -154,13 +159,11 @@
           </div>
 
           <!-- Buttons -->
-          <div class="text-center mb-4">
-            <button type="submit" class="btn btn-primary btn-lg btn-calculate px-5">
-              <span class="btn-icon">🚗</span>
-              Compare Emissions
+          <div class="button-group">
+            <button type="submit" class="btn-primary">Compare Emissions</button>
+            <button type="button" class="btn-secondary" @click="clearForm" style="color: black">
+              Clear and start over
             </button>
-            <br />
-            <button type="button" class="btn btn-link mt-3" @click="clearForm">Clear and start over</button>
           </div>
         </form>
       </div>
@@ -250,6 +253,7 @@
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <script setup>

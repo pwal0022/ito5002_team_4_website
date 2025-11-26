@@ -1,18 +1,30 @@
 <template>
   <div class="landing-page">
+    <div class="hero-section mb-5">
     <!-- HERO BANNER -->
-    <div class="container-fluid p-0 mb-5">
-      <div class="position-relative">
+     <div id="hero-container">
+  <img class="hero"  src="https://streetfurniture.com/wp-content/uploads/2024/06/Top-Banner.jpg" />
+  <div id="center-text">
+    <p id="text">
+   Australian Household Carbon Calculator
+    </p>
+    <p id="text2">
+      Helping Australians measure, understand, and reduce their carbon emissions.
+    </p>
+  </div>
+</div>
+    <!-- <div class="container-fluid p-0 mb-5">
+      <div class="position-relative"> -->
         <!-- Background -->
-        <img
+        <!-- <img
           src="https://streetfurniture.com/wp-content/uploads/2024/06/Top-Banner.jpg"
           class="img-fluid w-100 rounded-3 shadow-sm"
           style="height: 360px; object-fit: cover; filter: brightness(0.55)"
           alt="Australian nature banner"
-        />
+        /> -->
 
         <!-- Text -->
-        <div
+        <!-- <div
           class="position-absolute top-50 start-50 translate-middle text-center text-white px-3 px-md-5"
         >
           <h1 class="banner-title mb-3">Australian Household Carbon Calculator</h1>
@@ -22,7 +34,7 @@
           </p>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- THREE NAVIGATION BUTTONS -->
     <div class="container my-5">
@@ -31,7 +43,7 @@
           <h2 style="color: black; text-align: center">
             Welcome to the Australian Household Carbon Calculator
           </h2>
-          <p>
+          <p style="color: black;">
             Welcome! This tool helps Australian households estimate the real financial and
             carbon-emission benefits of switching to an electric vehicle (EV) and installing home
             solar panels. Whether you're exploring cleaner transport options, looking to reduce
@@ -40,19 +52,19 @@
           </p>
         </div>
         <div class="col-12 col-md-4">
-          <router-link to="/solar" class="btn btn-primary btn-lg w-100 py-3">
+          <router-link to="/solar" class="btn btn-info btn-lg w-100 py-3" style="background-color: #099ec8;">
             <i class="bi bi-sun-fill me-2"></i>
             Solar Calculator
           </router-link>
         </div>
         <div class="col-12 col-md-4">
-          <router-link to="/ev" class="btn btn-success btn-lg w-100 py-3">
+          <router-link to="/ev" class="btn btn-info btn-lg w-100 py-3" style="background-color: #099ec8;">
             <i class="bi bi-ev-front-fill me-2"></i>
-            Electric Vehicle Calculator
+            EV Calculator
           </router-link>
         </div>
         <div class="col-12 col-md-4">
-          <router-link to="/combined" class="btn btn-info btn-lg w-100 py-3">
+          <router-link to="/combined" class="btn btn-info btn-lg w-100 py-3" style="background-color: #099ec8;">
             <i class="bi bi-calculator-fill me-2"></i>
             Combined Calculator
           </router-link>
@@ -120,7 +132,7 @@
             </div>
           </div>
         </div>
-        <div class="col-12 4">
+        <div class="col-12 4" style="color: black;">
           <h2 style="color: black; text-align: center">
             Supporting UN Sustainable Development Goal 13
           </h2>
@@ -140,6 +152,7 @@
           </p>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -224,8 +237,9 @@ h3 {
 }
 
 /* Hero Section */
-.hero-section {
+/* .hero-section {
   padding: 3rem 1rem;
+
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-radius: 15px;
@@ -234,7 +248,7 @@ h3 {
 
 .hero-section h1 {
   font-weight: 700;
-}
+} */
 
 /* Step Badges */
 .step-badge {

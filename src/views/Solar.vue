@@ -1,13 +1,23 @@
 <template>
   <div class="calculator-page">
-    <div class="container py-4">
+    <div class="hero-section mb-5">
+      <!-- <div class="container py-4"> -->
       <!-- Hero Section -->
-      <div class="hero-section text-center mb-4">
-        <h1 class="banner-title">☀️ Solar Panel Carbon Calculator</h1>
-        <p class="banner-subtitle">
-          Calculate your potential carbon savings and cost benefits from solar panel installation
-        </p>
+      <div id="hero-container">
+        <img class="hero" src="\src\assets\solarbanner.jpg" />
+        <div id="center-text">
+          <p id="text">☀️ Solar Panel Carbon Calculator</p>
+          <p id="text2">
+            Calculate your potential carbon savings and cost benefits from solar panel installation
+          </p>
+        </div>
       </div>
+      <!-- <div class="hero-section text-center mb-4">
+          <h1 class="display-5 fw-bold mb-3">☀️ Solar Panel Carbon Calculator</h1>
+          <p class="lead">
+            Calculate your potential carbon savings and cost benefits from solar panel installation
+          </p>
+        </div> -->
 
       <form @submit.prevent="submitForm">
         <!-- Step 1: Location Information -->
@@ -227,7 +237,7 @@
             Calculate Solar Savings
           </button>
           <br />
-          <button type="button" class="btn btn-link mt-3" @click="clearForm">
+          <button type="button" class="btn btn-link mt-3" @click="clearForm" style="color: black">
             Clear and start over
           </button>
         </div>
@@ -358,6 +368,7 @@
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <script>

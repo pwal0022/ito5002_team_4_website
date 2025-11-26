@@ -1,6 +1,7 @@
 .hero-section {
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #9cd8e9;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   color: white;
   border-radius: 15px;
   margin-bottom: 2rem;
@@ -329,7 +330,7 @@ button {
 
 .vehicle-name {
   font-size: 0.9rem;
-  color: #666;
+  color: #000000;
   margin-bottom: 15px;
 }
 
@@ -342,7 +343,7 @@ button {
 
 .emission-label {
   font-size: 0.9rem;
-  color: #666;
+  color: #000000;
 }
 
 .vs-badge {
@@ -418,7 +419,7 @@ button {
 }
 
 .info-box {
-  background: #e3f2fd;
+  background: #2196f3;
   border-left: 4px solid #2196f3;
   padding: 20px;
   border-radius: 8px;
@@ -487,7 +488,8 @@ button {
 /* Hero Section */
 .hero-section {
   padding: 2rem 1rem;
-  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%); */
   color: white;
   border-radius: 15px;
 }
@@ -786,7 +788,8 @@ h3 {
 /* Hero Section */
 .hero-section {
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   color: white;
   border-radius: 15px;
   margin-bottom: 2rem;
@@ -960,7 +963,8 @@ h3 {
 ----------------------------------- */
 .hero-section {
   padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #9cd8e9;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   color: white;
   border-radius: 15px;
   margin-bottom: 2rem;
@@ -999,19 +1003,23 @@ h3 {
    GRADIENT UTILITIES
 ----------------------------------- */
 .bg-gradient-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
 }
 
 .bg-gradient-success {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); */
 }
 
 .bg-gradient-warning {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); */
 }
 
 .bg-gradient-info {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #099ec8;
+  /* background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); */
 }
 
 /* -----------------------------------
@@ -1249,7 +1257,7 @@ h3 {
 }
 
 .comparison-card {
-  background: #f8f9fa;
+  background: #2196f3;
   padding: 25px;
   border-radius: 12px;
   text-align: center;
@@ -1348,4 +1356,50 @@ h3 {
   .result-value {
     font-size: 1.5rem;
   }
+}
+/* new hero style code */
+#hero-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  height: 300px;
+}
+
+#center-text {
+  z-index: 100;
+  position: absolute;
+  color: white;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  text-align: center;
+}
+
+#text {
+  font-weight: bold;
+  margin: 0;
+  font-size: clamp(20px, 3vw, 48px);
+}
+
+#text2 {
+  margin: 0;
+  font-size: clamp(14px, 2vw, 28px);
+}
+
+#hero-container img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+#hero-container {
+  position: relative;
+}
+
+#hero-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7));
+  z-index: 50;
 }
