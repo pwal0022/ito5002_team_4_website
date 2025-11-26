@@ -438,13 +438,13 @@ export default {
       results: null,
       stateData: {
         NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.28 },
-        VIC: { sunHours: 4.6, emissionsFactor: 1.02, electricityRate: 0.3 },
+        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
         QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.26 },
         SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.38 },
         WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
         TAS: { sunHours: 4.4, emissionsFactor: 0.14, electricityRate: 0.27 },
         NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.27 },
-        ACT: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.28 },
+        ACT: { sunHours: 5.2, emissionsFactor: 0.0, electricityRate: 0.28 },
       },
     }
   },

@@ -9,10 +9,7 @@
         <p id="text2">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
       </div>
     </div>
-    <!-- <h1>Electric Vehicle CO2 Calculator</h1>
-      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p> -->
 
-    <!-- <div class="calculator-card"> -->
     <form @submit.prevent="calculateSavings">
       <!-- Step 1: Location -->
       <div class="card mb-4 shadow-sm">
@@ -25,7 +22,6 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <!-- <div class="form-group"> -->
               <label for="state" class="form-label fw-bold">State/Territory *</label>
               <select
                 v-model="formData.state"
@@ -148,19 +144,18 @@
             </div>
           </div>
 
-          <!-- EV Model -->
+          <!-- EV Model - NOW OPTIONAL -->
           <div class="row mb-3">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <label for="evModel" class="form-label fw-bold"
-                >Which electric vehicle are you considering? *</label
+                >Are you interested in a specific electric vehicle?</label
               >
               <select
                 v-model="formData.evModel"
                 id="evModel"
                 class="form-select form-select-lg"
-                required
               >
-                <option value="">Select EV model...</option>
+                <option value="">Not sure yet / Use average EV</option>
                 <option value="tesla-model3">Tesla Model 3</option>
                 <option value="tesla-modely">Tesla Model Y</option>
                 <option value="nissan-leaf">Nissan Leaf</option>
@@ -170,29 +165,17 @@
                 <option value="polestar-2">Polestar 2</option>
                 <option value="bmw-i4">BMW i4</option>
               </select>
-            </div>
-
-            <div class="col-md-6">
-              <label for="chargingType" class="form-label fw-bold"
-                >How would you mainly charge your EV?</label
-              >
-              <select
-                v-model="formData.chargingType"
-                id="chargingType"
-                class="form-select form-select-lg"
-              >
-                <option value="home">🏠 At home (cheapest)</option>
-                <option value="work">🏢 At work</option>
-                <option value="public">⚡ Public charging stations</option>
-              </select>
+              <small class="form-text text-muted">
+                Optional: Leave blank to use average EV efficiency (16 kWh/100km)
+              </small>
             </div>
           </div>
+          <!-- REMOVED: Charging Type Field - not used in calculations -->
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="text-center mb-5">
-        <!-- <button type="submit" class="btn-primary">Compare Emissions</button> -->
         <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
           <span class="btn-icon">🧮</span>
           Calculate My EV Savings
@@ -201,12 +184,8 @@
         <button type="button" class="btn btn-link mt-3" @click="clearForm" style="color: black">
           Clear and start over
         </button>
-        <!-- <button type="button" class="btn-secondary" @click="clearForm" style="color: black">
-          Clear and start over
-        </button> -->
       </div>
     </form>
-    <!-- </div> -->
 
     <!-- Results -->
     <div v-if="results" class="results-card animate-in">
@@ -302,9 +281,7 @@
         </div>
       </div>
     </div>
-    <!-- </div> -->
   </div>
-  <!-- </div> -->
 </template>
 
 <script setup>
@@ -315,8 +292,8 @@ const formData = ref({
   hasEV: 'no',
   currentVehicle: '',
   annualKm: null,
-  evModel: '',
-  chargingType: 'home',
+  evModel: '', // NOW OPTIONAL - defaults to empty string
+  // REMOVED: chargingType
 })
 
 const results = ref(null)
@@ -330,7 +307,7 @@ const TEST_DATA = {
     WA: 0.64,
     TAS: 0.15,
     NT: 0.59,
-    ACT: 0.0,
+    ACT: 0.0, // STANDARDIZED: ACT should be 0.0
   },
   iceVehicles: {
     'petrol-small': { emissions: 0.15, name: 'Small Petrol Car', fuelCost: 0.18 },
@@ -356,13 +333,19 @@ const TEST_DATA = {
 const calculateSavings = () => {
   const { state, currentVehicle, annualKm, evModel } = formData.value
 
-  if (!state || !currentVehicle || !annualKm || !evModel) {
-    alert('Please fill in all fields')
+  // UPDATED VALIDATION: evModel is now optional
+  if (!state || !currentVehicle || !annualKm) {
+    alert('Please fill in all required fields')
     return
   }
 
   const iceData = TEST_DATA.iceVehicles[currentVehicle]
-  const evData = TEST_DATA.evModels[evModel]
+  
+  // UPDATED: Use specific model or fallback to average
+  const evData = evModel 
+    ? TEST_DATA.evModels[evModel]
+    : { efficiency: 16.0, name: 'Average Electric Vehicle' }
+  
   const gridEmissionsFactor = TEST_DATA.gridEmissions[state]
 
   const iceEmissionsKg = annualKm * iceData.emissions
@@ -415,7 +398,7 @@ const clearForm = () => {
     currentVehicle: '',
     annualKm: null,
     evModel: '',
-    chargingType: 'home',
+    // REMOVED: chargingType
   }
   results.value = null
   window.scrollTo({ top: 0, behavior: 'smooth' })
