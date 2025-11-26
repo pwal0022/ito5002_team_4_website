@@ -1,8 +1,16 @@
 <template>
-  <div class="ev-page">
+  <!-- <div class="ev-page"> -->
+  <div class="hero-section mb-5">
     <div class="container">
-      <h1>Electric Vehicle CO2 Calculator</h1>
-      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+      <div id="hero-container">
+        <img class="hero" src="\src\assets\evbanner.jpeg" />
+        <div id="center-text">
+          <p id="text">🚗 Electric Vehicle CO2 Calculator</p>
+          <p id="text2">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
+        </div>
+      </div>
+      <!-- <h1>Electric Vehicle CO2 Calculator</h1>
+      <p class="subtitle">Compare emissions: Petrol/Diesel vs Electric Vehicle</p> -->
 
       <div class="calculator-card">
         <form @submit.prevent="calculateSavings">
@@ -71,7 +79,9 @@
           <!-- Buttons -->
           <div class="button-group">
             <button type="submit" class="btn-primary">Compare Emissions</button>
-            <button type="button" class="btn-secondary" @click="clearForm">Clear</button>
+            <button type="button" class="btn-secondary" @click="clearForm" style="color: black">
+              Clear and start over
+            </button>
           </div>
         </form>
       </div>
@@ -144,6 +154,7 @@
       </div>
     </div>
   </div>
+  <!-- </div> -->
 </template>
 
 <script setup>

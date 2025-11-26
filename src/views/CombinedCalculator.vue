@@ -1,510 +1,533 @@
 <template>
   <div class="combined-calculator">
-    <div class="container">
-      <!-- Hero Section -->
-      <div class="hero-section text-center mb-5">
-        <h1 class="display-4 mb-3">🌏 Combined Carbon Calculator</h1>
+    <div class="hero-section mb-5">
+      <div class="container">
+        <!-- Hero Section -->
+        <!-- <div class="hero-section text-center mb-5"> -->
+        <div id="hero-container">
+          <img class="hero" src="\src\assets\combinedbanner.png" />
+          <div id="center-text">
+            <p id="text">🌏 Combined Carbon Calculator</p>
+            <p id="text2">
+              Calculate your total impact from both solar panels AND electric vehicles
+            </p>
+          </div>
+        </div>
+        <!-- <h1 class="display-4 mb-3">🌏 Combined Carbon Calculator</h1>
         <p class="lead">Calculate your total impact from both solar panels AND electric vehicles</p>
-        <p class="text-muted">See your complete household carbon reduction potential!</p>
-      </div>
+        <p class="text-muted">See your complete household carbon reduction potential!</p> -->
 
-      <form @submit.prevent="submitForm">
-        <!-- Step 1: Location -->
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-primary text-white">
-            <div class="d-flex align-items-center">
-              <span class="step-badge me-3">1</span>
-              <h3 class="mb-0">📍 Where do you live?</h3>
-            </div>
-          </div>
-          <div class="card-body">
-            <p class="text-muted mb-3">We need this to calculate your state's energy emissions</p>
-            <div class="row">
-              <div class="col-md-6">
-                <label for="state" class="form-label fw-bold">Select your state *</label>
-                <select
-                  class="form-select form-select-lg"
-                  id="state"
-                  v-model="formData.state"
-                  required
-                >
-                  <option value="">Choose your state...</option>
-                  <option value="NSW">🏙️ New South Wales</option>
-                  <option value="VIC">🎭 Victoria</option>
-                  <option value="QLD">☀️ Queensland</option>
-                  <option value="SA">🍷 South Australia</option>
-                  <option value="WA">🏖️ Western Australia</option>
-                  <option value="TAS">🌲 Tasmania</option>
-                  <option value="NT">🦘 Northern Territory</option>
-                  <option value="ACT">🏛️ Australian Capital Territory</option>
-                </select>
+        <form @submit.prevent="submitForm">
+          <!-- Step 1: Location -->
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-gradient-primary text-white">
+              <div class="d-flex align-items-center">
+                <span class="step-badge me-3">1</span>
+                <h3 class="mb-0">📍 Where do you live?</h3>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Step 2: Solar Details -->
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-warning">
-            <div class="d-flex align-items-center">
-              <span class="step-badge me-3">2</span>
-              <h3 class="mb-0">☀️ Tell us about your solar setup</h3>
-            </div>
-          </div>
-          <div class="card-body">
-            <!-- Current Status -->
-            <div class="mb-4">
-              <label class="form-label fw-bold mb-3">Do you already have solar panels?</label>
+            <div class="card-body">
+              <p class="text-muted mb-3">We need this to calculate your state's energy emissions</p>
               <div class="row">
-                <div class="col-md-6 mb-2">
-                  <div
-                    class="radio-card"
-                    :class="{ 'radio-selected': formData.solar.hasSolar === 'yes' }"
+                <div class="col-md-6">
+                  <label for="state" class="form-label fw-bold">Select your state *</label>
+                  <select
+                    class="form-select form-select-lg"
+                    id="state"
+                    v-model="formData.state"
+                    required
                   >
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="hasSolar"
-                      id="hasSolarYes"
-                      value="yes"
-                      v-model="formData.solar.hasSolar"
-                    />
-                    <label class="form-check-label w-100" for="hasSolarYes">
-                      <div class="text-center">
-                        <div class="radio-icon">✅</div>
-                        <strong>Yes, I have solar</strong>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div
-                    class="radio-card"
-                    :class="{ 'radio-selected': formData.solar.hasSolar === 'no' }"
-                  >
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="hasSolar"
-                      id="hasSolarNo"
-                      value="no"
-                      v-model="formData.solar.hasSolar"
-                    />
-                    <label class="form-check-label w-100" for="hasSolarNo">
-                      <div class="text-center">
-                        <div class="radio-icon">💭</div>
-                        <strong>No, I'm considering it</strong>
-                      </div>
-                    </label>
-                  </div>
+                    <option value="">Choose your state...</option>
+                    <option value="NSW">🏙️ New South Wales</option>
+                    <option value="VIC">🎭 Victoria</option>
+                    <option value="QLD">☀️ Queensland</option>
+                    <option value="SA">🍷 South Australia</option>
+                    <option value="WA">🏖️ Western Australia</option>
+                    <option value="TAS">🌲 Tasmania</option>
+                    <option value="NT">🦘 Northern Territory</option>
+                    <option value="ACT">🏛️ Australian Capital Territory</option>
+                  </select>
                 </div>
               </div>
             </div>
+          </div>
 
-            <!-- Number of Panels & Quality -->
-            <div class="row mb-4">
-              <div class="col-md-6">
-                <label for="numberOfPanels" class="form-label fw-bold">
-                  How many solar panels? *
-                </label>
-                <input
-                  type="number"
-                  class="form-control form-control-lg"
-                  id="numberOfPanels"
-                  v-model="formData.solar.numberOfPanels"
-                  @blur="() => validateSolarPanels(true)"
-                  @input="() => validateSolarPanels(false)"
-                  step="1"
-                  min="1"
-                  max="100"
-                  placeholder="20"
-                  required
-                />
-                <div v-if="errors.numberOfPanels" class="text-danger small mt-1">
-                  {{ errors.numberOfPanels }}
-                </div>
-                <small class="form-text text-muted">
-                  💡 <strong>Typical homes:</strong> 15-25 panels (each panel = 400 watts)
-                </small>
-              </div>
-              <div class="col-md-6">
-                <label for="panelQuality" class="form-label fw-bold">Panel quality</label>
-                <select
-                  class="form-select form-select-lg"
-                  id="panelQuality"
-                  v-model="formData.solar.efficiency"
-                >
-                  <option value="0.85">Good (Standard panels)</option>
-                  <option value="0.90">Better (Premium panels)</option>
-                  <option value="0.95">Best (High-efficiency panels)</option>
-                </select>
-                <small class="form-text text-muted">
-                  Higher quality = more energy from same number of panels
-                </small>
+          <!-- Step 2: Solar Details -->
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-gradient-warning">
+              <div class="d-flex align-items-center">
+                <span class="step-badge me-3">2</span>
+                <h3 class="mb-0">☀️ Tell us about your solar setup</h3>
               </div>
             </div>
+            <div class="card-body">
+              <!-- Current Status -->
+              <div class="mb-4">
+                <label class="form-label fw-bold mb-3">Do you already have solar panels?</label>
+                <div class="row">
+                  <div class="col-md-6 mb-2">
+                    <div
+                      class="radio-card"
+                      :class="{ 'radio-selected': formData.solar.hasSolar === 'yes' }"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="hasSolar"
+                        id="hasSolarYes"
+                        value="yes"
+                        v-model="formData.solar.hasSolar"
+                      />
+                      <label class="form-check-label w-100" for="hasSolarYes">
+                        <div class="text-center">
+                          <div class="radio-icon">✅</div>
+                          <strong>Yes, I have solar</strong>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-2">
+                    <div
+                      class="radio-card"
+                      :class="{ 'radio-selected': formData.solar.hasSolar === 'no' }"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="hasSolar"
+                        id="hasSolarNo"
+                        value="no"
+                        v-model="formData.solar.hasSolar"
+                      />
+                      <label class="form-check-label w-100" for="hasSolarNo">
+                        <div class="text-center">
+                          <div class="radio-icon">💭</div>
+                          <strong>No, I'm considering it</strong>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-            <!-- Electricity Bill -->
-            <div class="row mb-4">
-              <div class="col-md-6">
-                <label for="electricityBill" class="form-label fw-bold">
-                  What's your electricity bill? *
-                </label>
-                <div class="input-group input-group-lg">
-                  <span class="input-group-text">$</span>
+              <!-- Number of Panels & Quality -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="numberOfPanels" class="form-label fw-bold">
+                    How many solar panels? *
+                  </label>
                   <input
                     type="number"
-                    class="form-control"
-                    id="electricityBill"
-                    v-model="formData.solar.electricityBill"
-                    @blur="() => validateElectricityBill(true)"
-                    @input="() => validateElectricityBill(false)"
-                    step="0.01"
-                    min="0"
-                    placeholder="450"
-                  />
-                </div>
-                <div v-if="errors.electricityBill" class="text-danger small mt-1">
-                  {{ errors.electricityBill }}
-                </div>
-                <small class="form-text text-muted">
-                  💡 <strong>Average Australian bill:</strong> $300-500 per quarter
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label for="billFrequency" class="form-label fw-bold">How often do you pay?</label>
-                <select
-                  class="form-select form-select-lg"
-                  id="billFrequency"
-                  v-model="formData.solar.billFrequency"
-                >
-                  <option value="monthly">Every month</option>
-                  <option value="quarterly">Every 3 months (quarter)</option>
-                  <option value="annually">Once a year</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Roof Details -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="roofOrientation" class="form-label fw-bold"
-                  >Which way does your roof face?</label
-                >
-                <select
-                  class="form-select form-select-lg"
-                  id="roofOrientation"
-                  v-model="formData.solar.orientation"
-                >
-                  <option value="north">⬆️ North (Best in Australia!)</option>
-                  <option value="northeast">↗️ North-East (Great)</option>
-                  <option value="northwest">↖️ North-West (Great)</option>
-                  <option value="east">➡️ East (Good)</option>
-                  <option value="west">⬅️ West (Good)</option>
-                  <option value="south">⬇️ South (OK)</option>
-                </select>
-                <small class="form-text text-muted">
-                  North-facing roofs get the most sun in Australia
-                </small>
-              </div>
-
-              <div class="col-md-6">
-                <label for="roofShading" class="form-label fw-bold"
-                  >How much shade is on your roof?</label
-                >
-                <select
-                  class="form-select form-select-lg"
-                  id="roofShading"
-                  v-model="formData.solar.shading"
-                >
-                  <option value="none">☀️ No shade (full sun all day)</option>
-                  <option value="minimal">🌤️ A little shade (trees/buildings)</option>
-                  <option value="moderate">⛅ Moderate shade (part of the day)</option>
-                  <option value="heavy">☁️ Lots of shade (most of the day)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 3: EV Details -->
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-info text-white">
-            <div class="d-flex align-items-center">
-              <span class="step-badge me-3">3</span>
-              <h3 class="mb-0">🚗 Tell us about your driving</h3>
-            </div>
-          </div>
-          <div class="card-body">
-            <!-- Current EV Status -->
-            <div class="mb-4">
-              <label class="form-label fw-bold mb-3"
-                >Do you already have an electric vehicle?</label
-              >
-              <div class="row">
-                <div class="col-md-6 mb-2">
-                  <div
-                    class="radio-card"
-                    :class="{ 'radio-selected': formData.ev.hasEV === 'yes' }"
-                  >
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="hasEV"
-                      id="hasEVYes"
-                      value="yes"
-                      v-model="formData.ev.hasEV"
-                    />
-                    <label class="form-check-label w-100" for="hasEVYes">
-                      <div class="text-center">
-                        <div class="radio-icon">⚡</div>
-                        <strong>Yes, I drive an EV</strong>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.ev.hasEV === 'no' }">
-                    <input
-                      class="form-check-input"
-                      type="radio"
-                      name="hasEV"
-                      id="hasEVNo"
-                      value="no"
-                      v-model="formData.ev.hasEV"
-                    />
-                    <label class="form-check-label w-100" for="hasEVNo">
-                      <div class="text-center">
-                        <div class="radio-icon">💭</div>
-                        <strong>No, I'm considering it</strong>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Current Vehicle & Driving -->
-            <div class="row mb-4">
-              <div class="col-md-6">
-                <label for="currentVehicleType" class="form-label fw-bold"
-                  >What do you drive now? *</label
-                >
-                <select
-                  class="form-select form-select-lg"
-                  id="currentVehicleType"
-                  v-model="formData.ev.currentVehicleType"
-                  required
-                >
-                  <option value="">Choose your car type...</option>
-                  <option value="petrol-small">🚗 Small petrol car (e.g., Mazda 3, Corolla)</option>
-                  <option value="petrol-medium">🚙 Medium petrol car (e.g., Camry, Accord)</option>
-                  <option value="petrol-large">🚐 Large petrol car/SUV (e.g., RAV4, CX-5)</option>
-                  <option value="diesel-small">🚗 Small diesel car</option>
-                  <option value="diesel-medium">🚙 Medium diesel car</option>
-                  <option value="diesel-large">🚐 Large diesel car/SUV</option>
-                  <option value="hybrid">⚡ Hybrid car (petrol + electric)</option>
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <label for="annualKm" class="form-label fw-bold"
-                  >How far do you drive per year? *</label
-                >
-                <div class="input-group input-group-lg">
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="annualKm"
-                    v-model="formData.ev.annualKm"
-                    @blur="() => validateAnnualKm(true)"
-                    @input="() => validateAnnualKm(false)"
-                    min="0"
-                    step="1000"
-                    placeholder="15000"
+                    class="form-control form-control-lg"
+                    id="numberOfPanels"
+                    v-model="formData.solar.numberOfPanels"
+                    @blur="() => validateSolarPanels(true)"
+                    @input="() => validateSolarPanels(false)"
+                    step="1"
+                    min="1"
+                    max="100"
+                    placeholder="20"
                     required
                   />
-                  <span class="input-group-text">km</span>
-                </div>
-                <div v-if="errors.annualKm" class="text-danger small mt-1">
-                  {{ errors.annualKm }}
-                </div>
-                <small class="form-text text-muted">
-                  💡 <strong>Average Australian:</strong> 10,000-15,000 km per year
-                </small>
-              </div>
-            </div>
-
-            <!-- EV Model & Charging -->
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="evModel" class="form-label fw-bold"
-                  >Interested in a specific EV? (optional)</label
-                >
-                <select
-                  class="form-select form-select-lg"
-                  id="evModel"
-                  v-model="formData.ev.evModel"
-                >
-                  <option value="">Any electric car (we'll use average)</option>
-                  <option value="tesla-model-3">Tesla Model 3</option>
-                  <option value="tesla-model-y">Tesla Model Y</option>
-                  <option value="mg-zs-ev">MG ZS EV</option>
-                  <option value="nissan-leaf">Nissan Leaf</option>
-                  <option value="hyundai-ioniq">Hyundai Ioniq</option>
-                  <option value="byd-atto-3">BYD Atto 3</option>
-                </select>
-              </div>
-
-              <div class="col-md-6">
-                <label for="chargingType" class="form-label fw-bold"
-                  >How would you charge it?</label
-                >
-                <select
-                  class="form-select form-select-lg"
-                  id="chargingType"
-                  v-model="formData.ev.chargingType"
-                >
-                  <option value="home">🏠 At home (standard power)</option>
-                  <option value="home-solar">☀️ At home (with solar panels)</option>
-                  <option value="mixed">🔌 Mix of home and public charging</option>
-                  <option value="public">⚡ Mainly public charging stations</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <div class="text-center mb-5">
-          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
-            <span class="btn-icon">🧮</span>
-            Calculate My Combined Savings
-          </button>
-          <br />
-          <button type="button" class="btn btn-link mt-3" @click="clearForm">
-            Clear and start over
-          </button>
-        </div>
-      </form>
-
-      <!-- Results Section -->
-      <div v-if="showResults" class="results-section animate-in">
-        <div class="card border-success shadow-lg mb-5">
-          <div class="card-header bg-gradient-success text-white text-center py-4">
-            <h2 class="mb-0">🎉 Your Combined Carbon Savings!</h2>
-            <p class="mb-0 mt-2">Here's your complete household impact</p>
-          </div>
-          <div class="card-body p-4">
-            <!-- Combined Total First -->
-            <div class="combined-results-top mb-5">
-              <div class="result-header text-center mb-4">
-                <h3>🌟 Your Total Household Impact</h3>
-              </div>
-
-              <div class="row g-3 mb-4">
-                <div class="col-md-6">
-                  <div class="result-card bg-success-light">
-                    <div class="result-icon-large">🌍</div>
-                    <h1 class="result-number-large">{{ results.combined.totalCO2Saved }}</h1>
-                    <p class="result-unit">tonnes of CO₂ saved per year</p>
+                  <div v-if="errors.numberOfPanels" class="text-danger small mt-1">
+                    {{ errors.numberOfPanels }}
                   </div>
+                  <small class="form-text text-muted">
+                    💡 <strong>Typical homes:</strong> 15-25 panels (each panel = 400 watts)
+                  </small>
                 </div>
                 <div class="col-md-6">
-                  <div class="result-card bg-success-light">
-                    <div class="result-icon-large">💰</div>
-                    <h1 class="result-number-large">
-                      ${{ results.combined.totalCostSavings.toLocaleString() }}
-                    </h1>
-                    <p class="result-unit">total savings per year</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="achievement-banner">
-                <h4>🏆 Amazing Achievement!</h4>
-                <p class="mb-3">
-                  This is equivalent to
-                  <strong>planting {{ results.combined.totalTreesEquivalent }} trees</strong> or
-                  removing <strong>{{ results.combined.totalCarsOffRoad }} cars</strong> from the
-                  road for an entire year!
-                </p>
-                <div class="progress" style="height: 30px">
-                  <div
-                    class="progress-bar bg-success progress-bar-striped progress-bar-animated"
-                    role="progressbar"
-                    :style="{ width: Math.min(results.combined.percentageOfTarget, 100) + '%' }"
+                  <label for="panelQuality" class="form-label fw-bold">Panel quality</label>
+                  <select
+                    class="form-select form-select-lg"
+                    id="panelQuality"
+                    v-model="formData.solar.efficiency"
                   >
-                    <strong>{{ results.combined.percentageOfTarget }}% of household target!</strong>
-                  </div>
+                    <option value="0.85">Good (Standard panels)</option>
+                    <option value="0.90">Better (Premium panels)</option>
+                    <option value="0.95">Best (High-efficiency panels)</option>
+                  </select>
+                  <small class="form-text text-muted">
+                    Higher quality = more energy from same number of panels
+                  </small>
                 </div>
-                <p class="text-muted small mt-2 mb-0">
-                  Australia's target: Reduce household emissions by 43%. You're making a difference!
-                  🎯
-                </p>
+              </div>
+
+              <!-- Electricity Bill -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="electricityBill" class="form-label fw-bold">
+                    What's your electricity bill? *
+                  </label>
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="electricityBill"
+                      v-model="formData.solar.electricityBill"
+                      @blur="() => validateElectricityBill(true)"
+                      @input="() => validateElectricityBill(false)"
+                      step="0.01"
+                      min="0"
+                      placeholder="450"
+                    />
+                  </div>
+                  <div v-if="errors.electricityBill" class="text-danger small mt-1">
+                    {{ errors.electricityBill }}
+                  </div>
+                  <small class="form-text text-muted">
+                    💡 <strong>Average Australian bill:</strong> $300-500 per quarter
+                  </small>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="billFrequency" class="form-label fw-bold"
+                    >How often do you pay?</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="billFrequency"
+                    v-model="formData.solar.billFrequency"
+                  >
+                    <option value="monthly">Every month</option>
+                    <option value="quarterly">Every 3 months (quarter)</option>
+                    <option value="annually">Once a year</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Roof Details -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="roofOrientation" class="form-label fw-bold"
+                    >Which way does your roof face?</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="roofOrientation"
+                    v-model="formData.solar.orientation"
+                  >
+                    <option value="north">⬆️ North (Best in Australia!)</option>
+                    <option value="northeast">↗️ North-East (Great)</option>
+                    <option value="northwest">↖️ North-West (Great)</option>
+                    <option value="east">➡️ East (Good)</option>
+                    <option value="west">⬅️ West (Good)</option>
+                    <option value="south">⬇️ South (OK)</option>
+                  </select>
+                  <small class="form-text text-muted">
+                    North-facing roofs get the most sun in Australia
+                  </small>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="roofShading" class="form-label fw-bold"
+                    >How much shade is on your roof?</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="roofShading"
+                    v-model="formData.solar.shading"
+                  >
+                    <option value="none">☀️ No shade (full sun all day)</option>
+                    <option value="minimal">🌤️ A little shade (trees/buildings)</option>
+                    <option value="moderate">⛅ Moderate shade (part of the day)</option>
+                    <option value="heavy">☁️ Lots of shade (most of the day)</option>
+                  </select>
+                </div>
               </div>
             </div>
+          </div>
 
-            <!-- Individual Breakdowns -->
-            <div class="individual-breakdowns mt-5 pt-4 border-top">
-              <h4 class="text-center mb-4">📋 Individual Breakdown</h4>
-
-              <!-- Solar Breakdown -->
+          <!-- Step 3: EV Details -->
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-gradient-info text-white">
+              <div class="d-flex align-items-center">
+                <span class="step-badge me-3">3</span>
+                <h3 class="mb-0">🚗 Tell us about your driving</h3>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- Current EV Status -->
               <div class="mb-4">
-                <h5>☀️ Solar Panel Contribution</h5>
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">🌍</div>
-                      <h3 class="result-number">{{ results.solar.annualCO2Saved }}</h3>
-                      <p class="result-unit">tonnes CO₂/year</p>
+                <label class="form-label fw-bold mb-3"
+                  >Do you already have an electric vehicle?</label
+                >
+                <div class="row">
+                  <div class="col-md-6 mb-2">
+                    <div
+                      class="radio-card"
+                      :class="{ 'radio-selected': formData.ev.hasEV === 'yes' }"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="hasEV"
+                        id="hasEVYes"
+                        value="yes"
+                        v-model="formData.ev.hasEV"
+                      />
+                      <label class="form-check-label w-100" for="hasEVYes">
+                        <div class="text-center">
+                          <div class="radio-icon">⚡</div>
+                          <strong>Yes, I drive an EV</strong>
+                        </div>
+                      </label>
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">⚡</div>
-                      <h3 class="result-number">
-                        {{ results.solar.kWhGenerated.toLocaleString() }}
-                      </h3>
-                      <p class="result-unit">kWh generated</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-warning-light">
-                      <div class="result-icon-large">💰</div>
-                      <h3 class="result-number">
-                        ${{ results.solar.costSavings.toLocaleString() }}
-                      </h3>
-                      <p class="result-unit">saved/year</p>
+                  <div class="col-md-6 mb-2">
+                    <div
+                      class="radio-card"
+                      :class="{ 'radio-selected': formData.ev.hasEV === 'no' }"
+                    >
+                      <input
+                        class="form-check-input"
+                        type="radio"
+                        name="hasEV"
+                        id="hasEVNo"
+                        value="no"
+                        v-model="formData.ev.hasEV"
+                      />
+                      <label class="form-check-label w-100" for="hasEVNo">
+                        <div class="text-center">
+                          <div class="radio-icon">💭</div>
+                          <strong>No, I'm considering it</strong>
+                        </div>
+                      </label>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- EV Breakdown -->
-              <div>
-                <h5>🚗 Electric Vehicle Contribution</h5>
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
+              <!-- Current Vehicle & Driving -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label for="currentVehicleType" class="form-label fw-bold"
+                    >What do you drive now? *</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="currentVehicleType"
+                    v-model="formData.ev.currentVehicleType"
+                    required
+                  >
+                    <option value="">Choose your car type...</option>
+                    <option value="petrol-small">
+                      🚗 Small petrol car (e.g., Mazda 3, Corolla)
+                    </option>
+                    <option value="petrol-medium">
+                      🚙 Medium petrol car (e.g., Camry, Accord)
+                    </option>
+                    <option value="petrol-large">🚐 Large petrol car/SUV (e.g., RAV4, CX-5)</option>
+                    <option value="diesel-small">🚗 Small diesel car</option>
+                    <option value="diesel-medium">🚙 Medium diesel car</option>
+                    <option value="diesel-large">🚐 Large diesel car/SUV</option>
+                    <option value="hybrid">⚡ Hybrid car (petrol + electric)</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="annualKm" class="form-label fw-bold"
+                    >How far do you drive per year? *</label
+                  >
+                  <div class="input-group input-group-lg">
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="annualKm"
+                      v-model="formData.ev.annualKm"
+                      @blur="() => validateAnnualKm(true)"
+                      @input="() => validateAnnualKm(false)"
+                      min="0"
+                      step="1000"
+                      placeholder="15000"
+                      required
+                    />
+                    <span class="input-group-text">km</span>
+                  </div>
+                  <div v-if="errors.annualKm" class="text-danger small mt-1">
+                    {{ errors.annualKm }}
+                  </div>
+                  <small class="form-text text-muted">
+                    💡 <strong>Average Australian:</strong> 10,000-15,000 km per year
+                  </small>
+                </div>
+              </div>
+
+              <!-- EV Model & Charging -->
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="evModel" class="form-label fw-bold"
+                    >Interested in a specific EV? (optional)</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="evModel"
+                    v-model="formData.ev.evModel"
+                  >
+                    <option value="">Any electric car (we'll use average)</option>
+                    <option value="tesla-model-3">Tesla Model 3</option>
+                    <option value="tesla-model-y">Tesla Model Y</option>
+                    <option value="mg-zs-ev">MG ZS EV</option>
+                    <option value="nissan-leaf">Nissan Leaf</option>
+                    <option value="hyundai-ioniq">Hyundai Ioniq</option>
+                    <option value="byd-atto-3">BYD Atto 3</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="chargingType" class="form-label fw-bold"
+                    >How would you charge it?</label
+                  >
+                  <select
+                    class="form-select form-select-lg"
+                    id="chargingType"
+                    v-model="formData.ev.chargingType"
+                  >
+                    <option value="home">🏠 At home (standard power)</option>
+                    <option value="home-solar">☀️ At home (with solar panels)</option>
+                    <option value="mixed">🔌 Mix of home and public charging</option>
+                    <option value="public">⚡ Mainly public charging stations</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center mb-5">
+            <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
+              <span class="btn-icon">🧮</span>
+              Calculate My Combined Savings
+            </button>
+            <br />
+            <button type="button" class="btn btn-link mt-3" @click="clearForm" style="color: black">
+              Clear and start over
+            </button>
+          </div>
+        </form>
+
+        <!-- Results Section -->
+        <div v-if="showResults" class="results-section animate-in">
+          <div class="card border-success shadow-lg mb-5">
+            <div class="card-header bg-gradient-success text-white text-center py-4">
+              <h2 class="mb-0">🎉 Your Combined Carbon Savings!</h2>
+              <p class="mb-0 mt-2">Here's your complete household impact</p>
+            </div>
+            <div class="card-body p-4">
+              <!-- Combined Total First -->
+              <div class="combined-results-top mb-5">
+                <div class="result-header text-center mb-4">
+                  <h3>🌟 Your Total Household Impact</h3>
+                </div>
+
+                <div class="row g-3 mb-4">
+                  <div class="col-md-6">
+                    <div class="result-card bg-success-light">
                       <div class="result-icon-large">🌍</div>
-                      <h3 class="result-number">{{ results.ev.annualCO2Saved }}</h3>
-                      <p class="result-unit">tonnes CO₂/year</p>
+                      <h1 class="result-number-large">{{ results.combined.totalCO2Saved }}</h1>
+                      <p class="result-unit">tonnes of CO₂ saved per year</p>
                     </div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
-                      <div class="result-icon-large">⛽</div>
-                      <h3 class="result-number">{{ results.ev.fuelSaved.toLocaleString() }}</h3>
-                      <p class="result-unit">litres fuel saved</p>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="result-card bg-info-light">
+                  <div class="col-md-6">
+                    <div class="result-card bg-success-light">
                       <div class="result-icon-large">💰</div>
-                      <h3 class="result-number">${{ results.ev.costSavings.toLocaleString() }}</h3>
-                      <p class="result-unit">saved/year</p>
+                      <h1 class="result-number-large">
+                        ${{ results.combined.totalCostSavings.toLocaleString() }}
+                      </h1>
+                      <p class="result-unit">total savings per year</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="achievement-banner">
+                  <h4>🏆 Amazing Achievement!</h4>
+                  <p class="mb-3">
+                    This is equivalent to
+                    <strong>planting {{ results.combined.totalTreesEquivalent }} trees</strong> or
+                    removing <strong>{{ results.combined.totalCarsOffRoad }} cars</strong> from the
+                    road for an entire year!
+                  </p>
+                  <div class="progress" style="height: 30px">
+                    <div
+                      class="progress-bar bg-success progress-bar-striped progress-bar-animated"
+                      role="progressbar"
+                      :style="{ width: Math.min(results.combined.percentageOfTarget, 100) + '%' }"
+                    >
+                      <strong
+                        >{{ results.combined.percentageOfTarget }}% of household target!</strong
+                      >
+                    </div>
+                  </div>
+                  <p class="text-muted small mt-2 mb-0">
+                    Australia's target: Reduce household emissions by 43%. You're making a
+                    difference! 🎯
+                  </p>
+                </div>
+              </div>
+
+              <!-- Individual Breakdowns -->
+              <div class="individual-breakdowns mt-5 pt-4 border-top">
+                <h4 class="text-center mb-4">📋 Individual Breakdown</h4>
+
+                <!-- Solar Breakdown -->
+                <div class="mb-4">
+                  <h5>☀️ Solar Panel Contribution</h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <div class="result-card bg-warning-light">
+                        <div class="result-icon-large">🌍</div>
+                        <h3 class="result-number">{{ results.solar.annualCO2Saved }}</h3>
+                        <p class="result-unit">tonnes CO₂/year</p>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="result-card bg-warning-light">
+                        <div class="result-icon-large">⚡</div>
+                        <h3 class="result-number">
+                          {{ results.solar.kWhGenerated.toLocaleString() }}
+                        </h3>
+                        <p class="result-unit">kWh generated</p>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="result-card bg-warning-light">
+                        <div class="result-icon-large">💰</div>
+                        <h3 class="result-number">
+                          ${{ results.solar.costSavings.toLocaleString() }}
+                        </h3>
+                        <p class="result-unit">saved/year</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- EV Breakdown -->
+                <div>
+                  <h5>🚗 Electric Vehicle Contribution</h5>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <div class="result-card bg-info-light">
+                        <div class="result-icon-large">🌍</div>
+                        <h3 class="result-number">{{ results.ev.annualCO2Saved }}</h3>
+                        <p class="result-unit">tonnes CO₂/year</p>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="result-card bg-info-light">
+                        <div class="result-icon-large">⛽</div>
+                        <h3 class="result-number">{{ results.ev.fuelSaved.toLocaleString() }}</h3>
+                        <p class="result-unit">litres fuel saved</p>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="result-card bg-info-light">
+                        <div class="result-icon-large">💰</div>
+                        <h3 class="result-number">
+                          ${{ results.ev.costSavings.toLocaleString() }}
+                        </h3>
+                        <p class="result-unit">saved/year</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -514,6 +537,7 @@
         </div>
       </div>
     </div>
+    <!-- </div> -->
   </div>
 </template>
 

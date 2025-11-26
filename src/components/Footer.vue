@@ -13,12 +13,28 @@
                 href="/solar"
                 alt="Household Carbon Calculator"
                 class="nav-link p-0 text-body-secondary"
-                >Household Carbon Calculator</a
+                >Solar Calculator</a
               >
             </li>
             <li class="nav-item mb-6">
               <a
-                href="/solar"
+                href="/ev"
+                alt="Household Carbon Calculator"
+                class="nav-link p-0 text-body-secondary"
+                >EV Calculator</a
+              >
+            </li>
+            <li class="nav-item mb-6">
+              <a
+                href="/combined"
+                alt="Household Carbon Calculator"
+                class="nav-link p-0 text-body-secondary"
+                >Combined Calculator</a
+              >
+            </li>
+            <li class="nav-item mb-6">
+              <a
+                href="/rebates"
                 alt="Household Carbon Calculator"
                 class="nav-link p-0 text-body-secondary"
                 >Rebates and Schemes</a
@@ -26,7 +42,7 @@
             </li>
             <li class="nav-item mb-6">
               <a
-                href="/solar"
+                href="/sources"
                 alt="Household Carbon Calculator"
                 class="nav-link p-0 text-body-secondary"
                 >Data Sources</a
