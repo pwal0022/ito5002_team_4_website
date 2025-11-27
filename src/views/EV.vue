@@ -192,7 +192,6 @@
         <button 
           type="submit" 
           class="btn btn-primary btn-lg btn-calculate shadow-lg"
-          :disabled="!isFormValid"
         >
           <span class="btn-icon">🧮</span>
           Calculate My EV Savings
@@ -411,20 +410,6 @@ const validateAnnualKm = (showError) => {
   return true
 }
 
-// Computed property to check if form is valid
-const isFormValid = computed(() => {
-  return (
-    formData.value.state &&
-    formData.value.currentVehicle &&
-    formData.value.annualKm &&
-    formData.value.annualKm >= 1000 &&
-    formData.value.annualKm <= 50000 &&
-    !errors.value.state &&
-    !errors.value.currentVehicle &&
-    !errors.value.annualKm
-  )
-})
-
 const calculateSavings = () => {
   // Validate all fields before calculating
   const stateValid = validateState()
@@ -432,13 +417,14 @@ const calculateSavings = () => {
   const kmValid = validateAnnualKm(true)
 
   if (!stateValid || !vehicleValid || !kmValid) {
-    // Show error message
-    const errorMessages = []
-    if (!stateValid) errorMessages.push('state/territory')
-    if (!vehicleValid) errorMessages.push('vehicle type')
-    if (!kmValid) errorMessages.push('annual kilometers')
-    
-    alert(`Please check the following fields:\n• ${errorMessages.join('\n• ')}`)
+    // Scroll to first error and highlight
+    setTimeout(() => {
+      const firstError = document.querySelector('.is-invalid')
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        firstError.focus()
+      }
+    }, 100)
     return
   }
 
