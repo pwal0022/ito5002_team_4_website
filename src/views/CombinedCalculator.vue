@@ -362,21 +362,6 @@
                   Optional: Leave blank to use average EV efficiency
                 </small>
               </div>
-
-              <div class="col-md-6">
-                <label for="chargingType" class="form-label fw-bold"
-                  >How would you mainly charge your EV?</label
-                >
-                <select
-                  v-model="formData.ev.chargingType"
-                  id="chargingType"
-                  class="form-select form-select-lg"
-                >
-                  <option value="home">🏠 At home (cheapest)</option>
-                  <option value="work">🏢 At work</option>
-                  <option value="public">⚡ Public charging stations</option>
-                </select>
-              </div>
             </div>
           </div>
         </div>
