@@ -1,9 +1,6 @@
 <template>
   <div class="combined-calculator">
     <div class="hero-section mb-5">
-      <!-- <div class="container"> -->
-      <!-- Hero Section -->
-      <!-- <div class="hero-section text-center mb-5"> -->
       <div id="hero-container">
         <img class="hero" src="/src/assets/combinedbanner.png" alt="Solar panels and electric vehicle" />
         <div id="center-text">
@@ -11,9 +8,14 @@
           <p id="text2">Calculate your total impact from both solar panels AND electric vehicles</p>
         </div>
       </div>
-      <!-- <h1 class="display-4 mb-3">🌏 Combined Carbon Calculator</h1>
-        <p class="lead">Calculate your total impact from both solar panels AND electric vehicles</p>
-        <p class="text-muted">See your complete household carbon reduction potential!</p> -->
+
+      <!-- Loading indicator -->
+      <div v-if="isLoading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading data...</span>
+        </div>
+        <p class="mt-2 text-muted">Loading calculator data...</p>
+      </div>
 
       <form @submit.prevent="submitForm">
         <!-- Step 1: Location -->
@@ -221,9 +223,6 @@
                   <option value="west">⬅️ West (Good)</option>
                   <option value="south">⬇️ South (OK)</option>
                 </select>
-                <small class="form-text text-muted">
-                  North-facing roofs get the most sun in Australia
-                </small>
               </div>
 
               <div class="col-md-6">
@@ -247,18 +246,16 @@
 
         <!-- Step 3: EV Details -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-gradient-info text-white">
+          <div class="card-header bg-gradient-primary text-white">
             <div class="d-flex align-items-center">
               <span class="step-badge me-3">3</span>
-              <h3 class="mb-0">🚗 Tell us about your driving</h3>
+              <h3 class="mb-0">🚗 Electric Vehicle Details</h3>
             </div>
           </div>
           <div class="card-body">
             <!-- Current EV Status -->
             <div class="mb-4">
-              <label class="form-label fw-bold mb-3"
-                >Do you already have an electric vehicle?</label
-              >
+              <label class="form-label fw-bold mb-3">Do you already have an electric vehicle?</label>
               <div class="row">
                 <div class="col-md-6 mb-2">
                   <div
@@ -283,7 +280,10 @@
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="radio-card" :class="{ 'radio-selected': formData.ev.hasEV === 'no' }">
+                  <div
+                    class="radio-card"
+                    :class="{ 'radio-selected': formData.ev.hasEV === 'no' }"
+                  >
                     <input
                       class="form-check-input"
                       type="radio"
@@ -304,10 +304,10 @@
               </div>
             </div>
 
-            <!-- Current Vehicle & Driving -->
+            <!-- Current Vehicle Type -->
             <div class="row mb-4">
               <div class="col-md-6">
-                <label for="currentVehicle" class="form-label fw-bold"
+                <label for="currentVehicleType" class="form-label fw-bold"
                   >What type of car do you currently drive? *</label
                 >
                 <select
@@ -318,13 +318,13 @@
                   required
                 >
                   <option value="">Choose your car type...</option>
-                  <option value="petrol-small">🚗 Small petrol car (e.g., Mazda 3, Corolla)</option>
-                  <option value="petrol-medium">🚙 Medium petrol car (e.g., Camry, Accord)</option>
-                  <option value="petrol-large">🚐 Large petrol car/SUV (e.g., RAV4, CX-5)</option>
+                  <option value="petrol-small">🚗 Small petrol car (e.g., Mazda 3)</option>
+                  <option value="petrol-medium">🚙 Medium petrol car (e.g., Camry)</option>
+                  <option value="petrol-large">🚐 Large petrol car/SUV</option>
                   <option value="diesel-small">🚗 Small diesel car</option>
                   <option value="diesel-medium">🚙 Medium diesel car</option>
                   <option value="diesel-large">🚐 Large diesel car/SUV</option>
-                  <option value="hybrid">⚡ Hybrid car (petrol + electric)</option>
+                  <option value="hybrid">🌿 Hybrid vehicle</option>
                 </select>
                 <div v-if="errors.currentVehicleType" class="invalid-feedback d-block">
                   {{ errors.currentVehicleType }}
@@ -333,52 +333,49 @@
 
               <div class="col-md-6">
                 <label for="annualKm" class="form-label fw-bold"
-                  >How far do you drive per year? *</label
+                  >How many kilometers do you drive per year? *</label
                 >
-                <div class="input-group input-group-lg">
-                  <input
-                    type="number"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.annualKm }"
-                    id="annualKm"
-                    v-model="formData.ev.annualKm"
-                    @blur="() => validateAnnualKm(true)"
-                    @input="() => validateAnnualKm(false)"
-                    min="0"
-                    step="1000"
-                    placeholder="15000"
-                    required
-                  />
-                  <span class="input-group-text">km</span>
-                </div>
+                <input
+                  type="number"
+                  class="form-control form-control-lg"
+                  :class="{ 'is-invalid': errors.annualKm }"
+                  id="annualKm"
+                  v-model="formData.ev.annualKm"
+                  @blur="() => validateAnnualKm(true)"
+                  @input="() => validateAnnualKm(false)"
+                  min="1000"
+                  max="50000"
+                  step="100"
+                  placeholder="15000"
+                  required
+                />
                 <div v-if="errors.annualKm" class="invalid-feedback d-block">
                   {{ errors.annualKm }}
                 </div>
-                <small class="form-text text-muted">
-                  💡 <strong>Average Australian:</strong> 10,000-15,000 km/year
-                </small>
+                <small class="form-text text-muted"
+                  >💡 <strong>Average Australian:</strong> {{ currentEvData?.avgKmPerYear?.toLocaleString() || '12,000-14,000' }} km/year</small
+                >
               </div>
             </div>
 
-            <!-- EV Model -->
+            <!-- EV Model Selection -->
             <div class="row mb-3">
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <label for="evModel" class="form-label fw-bold"
-                  >Interested in a specific EV? (optional)</label
+                  >Are you interested in a specific electric vehicle?</label
                 >
-                <select
-                  class="form-select form-select-lg"
-                  id="evModel"
-                  v-model="formData.ev.evModel"
-                >
-                  <option value="">Any electric car (we'll use average)</option>
+                <select class="form-select form-select-lg" id="evModel" v-model="formData.ev.evModel">
+                  <option value="">Not sure yet / Use average EV</option>
                   <option value="tesla-model3">Tesla Model 3</option>
                   <option value="tesla-modely">Tesla Model Y</option>
-                  <option value="mg-zs">MG ZS EV</option>
                   <option value="nissan-leaf">Nissan Leaf</option>
                   <option value="hyundai-kona">Hyundai Kona Electric</option>
+                  <option value="mg-zs">MG ZS EV</option>
                   <option value="byd-atto3">BYD Atto 3</option>
                 </select>
+                <small class="form-text text-muted">
+                  Optional: Leave blank to use average EV efficiency
+                </small>
               </div>
             </div>
           </div>
@@ -386,9 +383,9 @@
 
         <!-- Submit Button -->
         <div class="text-center mb-5">
-          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg">
-            <span class="btn-icon">🧮</span>
-            Calculate My Combined Savings
+          <button type="submit" class="btn btn-primary btn-lg btn-calculate shadow-lg px-5">
+            <span class="btn-icon">🌏</span>
+            Calculate Combined Savings
           </button>
           <br />
           <button type="button" class="btn btn-link mt-3" @click="clearForm" style="color: black">
@@ -535,20 +532,20 @@
         </div>
         <div class="text-center mb-5">
           <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
-            ><button type="submit" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
+            ><button type="button" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
               <span class="btn-icon">☀️</span>
               Find rebates for your state here.
             </button></router-link
           >
         </div>
       </div>
-      <!-- </div> -->
     </div>
-    <!-- </div> -->
   </div>
 </template>
 
 <script>
+import { fetchAllCalculatorData } from '@/services/calculatorData'
+
 export default {
   name: 'CombinedCalculator',
   data() {
@@ -584,9 +581,44 @@ export default {
         ev: null,
         combined: null,
       },
+      // Firebase data
+      firebaseData: null,
+      isLoading: true,
     }
   },
+  computed: {
+    // Get current solar state data from Firebase
+    currentSolarData() {
+      if (!this.formData.state || !this.firebaseData?.solarData) {
+        return null
+      }
+      return this.firebaseData.solarData[this.formData.state]
+    },
+    // Get current EV state data from Firebase
+    currentEvData() {
+      if (!this.formData.state || !this.firebaseData?.evData) {
+        return null
+      }
+      return this.firebaseData.evData[this.formData.state]
+    },
+  },
+  async mounted() {
+    // Load data from Firebase when component mounts
+    await this.loadFirebaseData()
+  },
   methods: {
+    async loadFirebaseData() {
+      this.isLoading = true
+      try {
+        const data = await fetchAllCalculatorData()
+        this.firebaseData = data
+        console.log('✅ Combined calculator data loaded from Firebase')
+      } catch (error) {
+        console.error('Failed to load Firebase data:', error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     validateSolarPanels(showError) {
       const panels = parseInt(this.formData.solar.numberOfPanels)
       if (!panels || panels < 1) {
@@ -632,15 +664,10 @@ export default {
       })
     },
     calculateSolarSavings() {
-      const stateData = {
-        NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.3 },
-        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
-        QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.27 },
-        SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.32 },
-        WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
-        TAS: { sunHours: 4.2, emissionsFactor: 0.15, electricityRate: 0.26 },
-        NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.25 },
-        ACT: { sunHours: 5.1, emissionsFactor: 0.0, electricityRate: 0.28 },
+      // Get state data from Firebase
+      const stateData = this.currentSolarData || {
+        dailyOutputKwh: 25,
+        totalEmissionsFactor: 0.7,
       }
 
       const orientationFactors = {
@@ -659,17 +686,23 @@ export default {
         heavy: 0.5,
       }
 
-      const state = stateData[this.formData.state]
+      // Default electricity rate
+      const electricityRate = 0.30
+
       const numberOfPanels = parseInt(this.formData.solar.numberOfPanels)
       const efficiency = parseFloat(this.formData.solar.efficiency)
       const orientation = orientationFactors[this.formData.solar.orientation]
       const shading = shadingFactors[this.formData.solar.shading]
 
       const systemSizeKW = (numberOfPanels * 0.4).toFixed(2)
+      
+      // Calculate daily output per kW from Firebase data (based on 6.6kW system)
+      const dailyOutputPerKw = stateData.dailyOutputKwh / 6.6
+      
       const kWhGenerated = Math.round(
-        numberOfPanels * 0.4 * state.sunHours * 365 * efficiency * orientation * shading,
+        parseFloat(systemSizeKW) * dailyOutputPerKw * 365 * efficiency * orientation * shading,
       )
-      const annualCO2Saved = ((kWhGenerated * state.emissionsFactor) / 1000).toFixed(2)
+      const annualCO2Saved = ((kWhGenerated * stateData.totalEmissionsFactor) / 1000).toFixed(2)
 
       let annualBill = parseFloat(this.formData.solar.electricityBill)
       if (this.formData.solar.billFrequency === 'monthly') {
@@ -678,7 +711,7 @@ export default {
         annualBill *= 4
       }
 
-      const costSavings = Math.round(kWhGenerated * state.electricityRate * 0.7)
+      const costSavings = Math.round(kWhGenerated * electricityRate * 0.7)
       const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
 
       return {
@@ -690,15 +723,10 @@ export default {
       }
     },
     calculateEVSavings() {
-      const gridEmissions = {
-        NSW: 0.79,
-        VIC: 0.98,
-        QLD: 0.82,
-        SA: 0.42,
-        WA: 0.64,
-        TAS: 0.15,
-        NT: 0.59,
-        ACT: 0.0,
+      // Get state data from Firebase
+      const stateData = this.currentEvData || {
+        gridEmissionsFactorScope2: 0.7,
+        avgEfficiencyKwhPer100km: 20,
       }
 
       const iceVehicles = {
@@ -723,12 +751,13 @@ export default {
       const annualKm = parseInt(this.formData.ev.annualKm)
       const iceData = iceVehicles[this.formData.ev.currentVehicleType]
       
-      // Use specific model efficiency or average (16 kWh/100km) if none selected
+      // Use specific model efficiency or Firebase average
       const evEfficiency = this.formData.ev.evModel 
         ? evModels[this.formData.ev.evModel] 
-        : 16.0  // Average EV efficiency
+        : stateData.avgEfficiencyKwhPer100km || 16.0
       
-      const gridEmissionsFactor = gridEmissions[this.formData.state]
+      // Use Firebase grid emissions factor
+      const gridEmissionsFactor = stateData.gridEmissionsFactorScope2
 
       const iceEmissionsKg = annualKm * iceData.emissions
       const evEnergyKwh = (annualKm / 100) * evEfficiency

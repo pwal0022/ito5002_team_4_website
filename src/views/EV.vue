@@ -8,6 +8,14 @@
       </div>
     </div>
 
+    <!-- Loading indicator -->
+    <div v-if="isLoading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading data...</span>
+      </div>
+      <p class="mt-2 text-muted">Loading calculator data...</p>
+    </div>
+
     <form @submit.prevent="calculateSavings">
       <!-- Step 1: Location -->
       <div class="card mb-4 shadow-sm">
@@ -153,7 +161,7 @@
                 {{ errors.annualKm }}
               </div>
               <small class="form-text text-muted"
-                >💡 <strong>Average Australian:</strong> 10,000-15,000 km/year</small
+                >💡 <strong>Average Australian:</strong> {{ currentStateData?.avgKmPerYear?.toLocaleString() || '12,000-14,000' }} km/year</small
               >
             </div>
           </div>
@@ -180,7 +188,7 @@
                 <option value="bmw-i4">BMW i4</option>
               </select>
               <small class="form-text text-muted">
-                Optional: Leave blank to use average EV efficiency (16 kWh/100km)
+                Optional: Leave blank to use average EV efficiency ({{ currentStateData?.avgEfficiencyKwhPer100km || 20 }} kWh/100km)
               </small>
             </div>
           </div>
@@ -230,70 +238,62 @@
             </div>
           </div>
 
-          <!-- Savings -->
-          <div class="savings-highlight">
-            <div class="savings-icon">🌱</div>
-            <div class="savings-content">
-              <h3>You Could Save</h3>
-              <div class="savings-value">{{ results.co2Saved }} tonnes CO2/year</div>
-              <div class="savings-percent">
-                {{ results.reductionPercent }}% reduction in emissions!
+          <!-- Key Metrics -->
+          <div class="row g-4 mb-4">
+            <div class="col-md-4">
+              <div class="result-card bg-success-light">
+                <div class="result-icon-large">🌱</div>
+                <p class="result-number">{{ results.co2Saved }}</p>
+                <p class="result-unit">tonnes CO₂ saved/year</p>
+                <small class="text-muted">{{ results.reductionPercent }}% reduction</small>
               </div>
             </div>
-          </div>
 
-          <!-- Additional Metrics -->
-          <div class="results-grid">
-            <div class="result-item">
-              <div class="result-icon">🚗</div>
-              <div class="result-value">{{ results.carsOffRoad }}</div>
-              <div class="result-label">Cars Off Road (Equivalent)</div>
+            <div class="col-md-4">
+              <div class="result-card bg-warning-light">
+                <div class="result-icon-large">💰</div>
+                <p class="result-number">${{ results.fuelSavings }}</p>
+                <p class="result-unit">fuel savings/year</p>
+                <small class="text-muted">Based on current fuel prices</small>
+              </div>
             </div>
 
-            <div class="result-item">
-              <div class="result-icon">🌳</div>
-              <div class="result-value">{{ results.treesEquivalent }}</div>
-              <div class="result-label">Trees Planted Equivalent</div>
-            </div>
-
-            <div class="result-item">
-              <div class="result-icon">🏠</div>
-              <div class="result-value">{{ results.householdPercent }}%</div>
-              <div class="result-label">Of Avg Household Emissions</div>
-            </div>
-
-            <div class="result-item">
-              <div class="result-icon">💰</div>
-              <div class="result-value">${{ results.fuelSavings }}</div>
-              <div class="result-label">Estimated Fuel Savings/Year</div>
+            <div class="col-md-4">
+              <div class="result-card bg-info-light">
+                <div class="result-icon-large">🌳</div>
+                <p class="result-number">{{ results.treesEquivalent }}</p>
+                <p class="result-unit">trees planted equivalent</p>
+                <small class="text-muted">Annual carbon offset</small>
+              </div>
             </div>
           </div>
 
           <!-- Info Box -->
-          <div class="info-box">
+          <div class="alert alert-info">
             <h5>📊 How We Calculated This</h5>
-            <div class="row">
-              <div class="col-md-6">
-                <p><strong>Annual distance:</strong> {{ formData.annualKm.toLocaleString() }} km</p>
-                <p>
-                  <strong>State grid emissions:</strong> {{ results.gridEmissions }} kg CO2-e per
-                  kWh
-                </p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>EV efficiency:</strong> {{ results.evEfficiency }} kWh/100km</p>
-                <p><strong>ICE emissions:</strong> {{ results.iceEmissionsPerKm }} kg CO2/km</p>
-              </div>
-            </div>
+            <ul class="mb-0">
+              <li>
+                <strong>Your State:</strong> {{ formData.state }} - Grid emissions factor: {{ results.gridEmissions }} kg CO₂/kWh
+              </li>
+              <li>
+                <strong>Current Vehicle:</strong> {{ results.iceEmissionsPerKm * 1000 }} g CO₂/km
+              </li>
+              <li>
+                <strong>EV Efficiency:</strong> {{ results.evEfficiency }} kWh/100km
+              </li>
+              <li>
+                <strong>Annual Distance:</strong> {{ formData.annualKm?.toLocaleString() }} km
+              </li>
+            </ul>
           </div>
         </div>
         <div class="text-center mb-5">
-          <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
-            ><button type="submit" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
-              <span class="btn-icon">☀️</span>
-              Find rebates for your state here.
-            </button></router-link
-          >
+          <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page">
+            <button type="button" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
+              <span class="btn-icon">🚗</span>
+              Find EV rebates for your state here.
+            </button>
+          </router-link>
         </div>
       </div>
     </div>
@@ -301,7 +301,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { fetchAllCalculatorData } from '@/services/calculatorData'
 
 const formData = ref({
   state: '',
@@ -313,6 +314,10 @@ const formData = ref({
 
 const results = ref(null)
 
+// Firebase data
+const firebaseData = ref(null)
+const isLoading = ref(true)
+
 // Error tracking
 const errors = ref({
   state: null,
@@ -320,36 +325,52 @@ const errors = ref({
   annualKm: null,
 })
 
-const TEST_DATA = {
-  gridEmissions: {
-    NSW: 0.79,
-    VIC: 0.98,
-    QLD: 0.82,
-    SA: 0.42,
-    WA: 0.64,
-    TAS: 0.15,
-    NT: 0.59,
-    ACT: 0.0,
-  },
-  iceVehicles: {
-    'petrol-small': { emissions: 0.15, name: 'Small Petrol Car', fuelCost: 0.18 },
-    'petrol-medium': { emissions: 0.2, name: 'Medium Petrol Car', fuelCost: 0.22 },
-    'petrol-large': { emissions: 0.28, name: 'Large Petrol Car', fuelCost: 0.3 },
-    'diesel-small': { emissions: 0.14, name: 'Small Diesel Car', fuelCost: 0.16 },
-    'diesel-medium': { emissions: 0.18, name: 'Medium Diesel Car', fuelCost: 0.2 },
-    'diesel-large': { emissions: 0.25, name: 'Large Diesel Car/4WD', fuelCost: 0.28 },
-  },
-  evModels: {
-    'tesla-model3': { efficiency: 15.0, name: 'Tesla Model 3' },
-    'tesla-modely': { efficiency: 16.5, name: 'Tesla Model Y' },
-    'nissan-leaf': { efficiency: 17.0, name: 'Nissan Leaf' },
-    'hyundai-kona': { efficiency: 14.5, name: 'Hyundai Kona Electric' },
-    'mg-zs': { efficiency: 16.0, name: 'MG ZS EV' },
-    'byd-atto3': { efficiency: 15.5, name: 'BYD Atto 3' },
-    'polestar-2': { efficiency: 18.0, name: 'Polestar 2' },
-    'bmw-i4': { efficiency: 17.5, name: 'BMW i4' },
-  },
-  electricityCost: 0.3,
+// ICE vehicle data (could be moved to Firebase in future)
+const iceVehicles = {
+  'petrol-small': { emissions: 0.15, name: 'Small Petrol Car', fuelCost: 0.18 },
+  'petrol-medium': { emissions: 0.20, name: 'Medium Petrol Car', fuelCost: 0.22 },
+  'petrol-large': { emissions: 0.28, name: 'Large Petrol Car', fuelCost: 0.30 },
+  'diesel-small': { emissions: 0.14, name: 'Small Diesel Car', fuelCost: 0.16 },
+  'diesel-medium': { emissions: 0.18, name: 'Medium Diesel Car', fuelCost: 0.20 },
+  'diesel-large': { emissions: 0.25, name: 'Large Diesel Car/4WD', fuelCost: 0.28 },
+}
+
+// EV model efficiency data
+const evModels = {
+  'tesla-model3': { efficiency: 15.0, name: 'Tesla Model 3' },
+  'tesla-modely': { efficiency: 16.5, name: 'Tesla Model Y' },
+  'nissan-leaf': { efficiency: 17.0, name: 'Nissan Leaf' },
+  'hyundai-kona': { efficiency: 14.5, name: 'Hyundai Kona Electric' },
+  'mg-zs': { efficiency: 16.0, name: 'MG ZS EV' },
+  'byd-atto3': { efficiency: 15.5, name: 'BYD Atto 3' },
+  'polestar-2': { efficiency: 18.0, name: 'Polestar 2' },
+  'bmw-i4': { efficiency: 17.5, name: 'BMW i4' },
+}
+
+// Computed property for current state data from Firebase
+const currentStateData = computed(() => {
+  if (!formData.value.state || !firebaseData.value?.evData) {
+    return null
+  }
+  return firebaseData.value.evData[formData.value.state]
+})
+
+// Load Firebase data on mount
+onMounted(async () => {
+  await loadFirebaseData()
+})
+
+async function loadFirebaseData() {
+  isLoading.value = true
+  try {
+    const data = await fetchAllCalculatorData()
+    firebaseData.value = data
+    console.log('✅ EV calculator data loaded from Firebase')
+  } catch (error) {
+    console.error('Failed to load Firebase data:', error)
+  } finally {
+    isLoading.value = false
+  }
 }
 
 // Validation Functions
@@ -395,17 +416,6 @@ const validateAnnualKm = (showError) => {
     return false
   }
   
-  // Warning for unusual values (but still valid)
-  if (km < 5000 && showError) {
-    // This is low but valid - no error, just let them proceed
-    console.log('Note: Low annual distance entered')
-  }
-  
-  if (km > 30000 && showError) {
-    // This is high but valid - no error, just let them proceed
-    console.log('Note: High annual distance entered')
-  }
-  
   errors.value.annualKm = null
   return true
 }
@@ -430,14 +440,21 @@ const calculateSavings = () => {
 
   const { state, currentVehicle, annualKm, evModel } = formData.value
 
-  const iceData = TEST_DATA.iceVehicles[currentVehicle]
+  // Get state data from Firebase
+  const stateData = currentStateData.value || {
+    gridEmissionsFactorScope2: 0.7,
+    avgEfficiencyKwhPer100km: 20,
+  }
+
+  const iceData = iceVehicles[currentVehicle]
   
-  // Use specific model or fallback to average
+  // Use specific model or fallback to Firebase average or default
   const evData = evModel 
-    ? TEST_DATA.evModels[evModel]
-    : { efficiency: 16.0, name: 'Average Electric Vehicle' }
+    ? evModels[evModel]
+    : { efficiency: stateData.avgEfficiencyKwhPer100km || 16.0, name: 'Average Electric Vehicle' }
   
-  const gridEmissionsFactor = TEST_DATA.gridEmissions[state]
+  // Use Firebase grid emissions factor
+  const gridEmissionsFactor = stateData.gridEmissionsFactorScope2
 
   const iceEmissionsKg = annualKm * iceData.emissions
   const iceEmissionsTonnes = (iceEmissionsKg / 1000).toFixed(2)
@@ -450,12 +467,10 @@ const calculateSavings = () => {
   const co2Saved = (co2SavedKg / 1000).toFixed(2)
   const reductionPercent = Math.round((co2SavedKg / iceEmissionsKg) * 100)
 
-  const carsOffRoad = Math.round(co2SavedKg / 1000 / 4)
   const treesEquivalent = Math.round(co2SavedKg / 60)
-  const householdPercent = Math.round((co2SavedKg / 1000 / 14) * 100)
 
   const fuelCostAnnual = annualKm * iceData.fuelCost
-  const electricityCostAnnual = evEnergyKwh * TEST_DATA.electricityCost
+  const electricityCostAnnual = evEnergyKwh * 0.30
   const fuelSavings = Math.round(fuelCostAnnual - electricityCostAnnual)
 
   results.value = {
@@ -465,9 +480,7 @@ const calculateSavings = () => {
     evEmissions: evEmissionsTonnes,
     co2Saved,
     reductionPercent,
-    carsOffRoad: carsOffRoad.toLocaleString(),
     treesEquivalent: treesEquivalent.toLocaleString(),
-    householdPercent,
     fuelSavings: fuelSavings.toLocaleString(),
     gridEmissions: gridEmissionsFactor,
     evEfficiency: evData.efficiency,

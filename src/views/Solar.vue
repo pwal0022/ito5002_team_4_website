@@ -1,8 +1,5 @@
 <template>
-  <!-- <div class="calculator-page"> -->
   <div class="hero-section mb-5">
-    <!-- <div class="container py-4"> -->
-    <!-- Hero Section -->
     <div id="hero-container">
       <img class="hero" src="\src\assets\solarbanner.jpg" />
       <div id="center-text">
@@ -12,12 +9,14 @@
         </p>
       </div>
     </div>
-    <!-- <div class="hero-section text-center mb-4">
-          <h1 class="display-5 fw-bold mb-3">☀️ Solar Panel Carbon Calculator</h1>
-          <p class="lead">
-            Calculate your potential carbon savings and cost benefits from solar panel installation
-          </p>
-        </div> -->
+
+    <!-- Loading indicator -->
+    <div v-if="isLoading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading data...</span>
+      </div>
+      <p class="mt-2 text-muted">Loading calculator data...</p>
+    </div>
 
     <form @submit.prevent="submitForm">
       <!-- Step 1: Location Information -->
@@ -378,7 +377,7 @@
               </li>
               <li>
                 <strong>Location:</strong> {{ formData.state }} with
-                {{ stateData[formData.state]?.sunHours || 'N/A' }} peak sun hours/day
+                {{ currentStateData?.dailyOutputKwh || 'N/A' }} kWh daily output per 6.6kW system
               </li>
               <li>
                 <strong>Panel Quality:</strong>
@@ -393,14 +392,14 @@
               </li>
               <li>
                 <strong>Grid Emissions Factor:</strong>
-                {{ stateData[formData.state]?.emissionsFactor || 'N/A' }} kg CO₂-e per kWh
+                {{ currentStateData?.totalEmissionsFactor || 'N/A' }} kg CO₂-e per kWh
               </li>
             </ul>
           </div>
         </div>
         <div class="text-center mb-5">
           <router-link to="/rebates" class="nav-link" active-class="active" aria-current="page"
-            ><button type="submit" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
+            ><button type="button" class="btn btn-primary btn-md btn-calculate shadow-lg px-5">
               <span class="btn-icon">☀️</span>
               Find rebates for your state here.
             </button></router-link
@@ -409,11 +408,11 @@
       </div>
     </div>
   </div>
-  <!-- </div> -->
-  <!-- </div> -->
 </template>
 
 <script>
+import { fetchAllCalculatorData } from '@/services/calculatorData'
+
 export default {
   name: 'SolarCalculator',
   data() {
@@ -436,19 +435,37 @@ export default {
       },
       showResults: false,
       results: null,
-      stateData: {
-        NSW: { sunHours: 5.2, emissionsFactor: 0.79, electricityRate: 0.28 },
-        VIC: { sunHours: 4.6, emissionsFactor: 0.98, electricityRate: 0.28 },
-        QLD: { sunHours: 5.5, emissionsFactor: 0.82, electricityRate: 0.26 },
-        SA: { sunHours: 5.3, emissionsFactor: 0.42, electricityRate: 0.38 },
-        WA: { sunHours: 5.8, emissionsFactor: 0.64, electricityRate: 0.29 },
-        TAS: { sunHours: 4.4, emissionsFactor: 0.14, electricityRate: 0.27 },
-        NT: { sunHours: 6.0, emissionsFactor: 0.59, electricityRate: 0.27 },
-        ACT: { sunHours: 5.2, emissionsFactor: 0.0, electricityRate: 0.28 },
-      },
+      // Firebase data
+      firebaseData: null,
+      isLoading: true,
     }
   },
+  computed: {
+    // Get current state data from Firebase
+    currentStateData() {
+      if (!this.formData.state || !this.firebaseData?.solarData) {
+        return null
+      }
+      return this.firebaseData.solarData[this.formData.state]
+    },
+  },
+  async mounted() {
+    // Load data from Firebase when component mounts
+    await this.loadFirebaseData()
+  },
   methods: {
+    async loadFirebaseData() {
+      this.isLoading = true
+      try {
+        const data = await fetchAllCalculatorData()
+        this.firebaseData = data
+        console.log('✅ Solar calculator data loaded from Firebase')
+      } catch (error) {
+        console.error('Failed to load Firebase data:', error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     validateSolarPanels(showError) {
       const panels = parseInt(this.formData.solar.numberOfPanels)
       if (!panels || panels < 1) {
@@ -488,7 +505,15 @@ export default {
         heavy: 0.5,
       }
 
-      const state = this.stateData[this.formData.state]
+      // Get state data from Firebase
+      const stateData = this.currentStateData || {
+        dailyOutputKwh: 25,
+        totalEmissionsFactor: 0.7,
+      }
+
+      // Default electricity rate
+      const electricityRate = 0.30
+
       const numberOfPanels = parseInt(this.formData.solar.numberOfPanels)
       const efficiency = parseFloat(this.formData.solar.efficiency)
       const orientation = orientationFactors[this.formData.solar.orientation]
@@ -497,13 +522,16 @@ export default {
       // System size in kW (assuming 400W panels)
       const systemSizeKW = (numberOfPanels * 0.4).toFixed(2)
 
-      // Annual energy generation (kWh)
+      // Calculate daily output per kW from Firebase data (based on 6.6kW system)
+      const dailyOutputPerKw = stateData.dailyOutputKwh / 6.6
+
+      // Annual energy generation (kWh) using Firebase data
       const kWhGenerated = Math.round(
-        numberOfPanels * 0.4 * state.sunHours * 365 * efficiency * orientation * shading,
+        parseFloat(systemSizeKW) * dailyOutputPerKw * 365 * efficiency * orientation * shading,
       )
 
-      // Annual CO2 saved (tonnes)
-      const annualCO2Saved = ((kWhGenerated * state.emissionsFactor) / 1000).toFixed(2)
+      // Annual CO2 saved (tonnes) using Firebase emissions factor
+      const annualCO2Saved = ((kWhGenerated * stateData.totalEmissionsFactor) / 1000).toFixed(2)
 
       // Convert electricity bill to annual
       let annualBill = parseFloat(this.formData.solar.electricityBill)
@@ -514,7 +542,7 @@ export default {
       }
 
       // Annual cost savings (70% of generation offsets bill)
-      const costSavings = Math.round(kWhGenerated * state.electricityRate * 0.7)
+      const costSavings = Math.round(kWhGenerated * electricityRate * 0.7)
 
       // Trees equivalent (1 tree absorbs ~21kg CO2/year)
       const treesEquivalent = Math.round((parseFloat(annualCO2Saved) * 1000) / 21)
@@ -547,7 +575,13 @@ export default {
       const billValid = this.validateElectricityBill(true)
 
       if (!panelsValid || !billValid) {
-        alert('Please fix the errors before calculating.')
+        // Scroll to first error
+        this.$nextTick(() => {
+          const firstError = document.querySelector('.text-danger')
+          if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
+          }
+        })
         return
       }
 
