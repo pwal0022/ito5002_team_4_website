@@ -49,3 +49,6 @@ a,
   text-align: center;
   padding: 5px;
 }
+body {
+  text-size-adjust: 100% !important;
+}
