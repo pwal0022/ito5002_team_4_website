@@ -83,6 +83,7 @@
                       id="hasSolarYes"
                       value="yes"
                       v-model="formData.solar.hasSolar"
+		      aria-label="Yes, I have solar panels"
                     />
                     <label class="form-check-label w-100" for="hasSolarYes">
                       <div class="text-center">
@@ -105,6 +106,7 @@
                       id="hasSolarNo"
                       value="no"
                       v-model="formData.solar.hasSolar"
+		      aria-label="No, I'm considering solar panels"
                     />
                     <label class="form-check-label w-100" for="hasSolarNo">
                       <div class="text-center">

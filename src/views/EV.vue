@@ -1,7 +1,7 @@
 <template>
   <div class="hero-section mb-5">
     <div id="hero-container">
-      <img class="hero" src="\src\assets\evbanner.jpeg" />
+      <img class="hero" src="\src\assets\evbanner.jpeg" alt="Electric vehicle charging" />
       <div id="center-text">
         <p id="text">🚗 Electric Vehicle CO2 Calculator</p>
         <p id="text2">Compare emissions: Petrol/Diesel vs Electric Vehicle</p>
@@ -84,6 +84,7 @@
                     id="hasEVYes"
                     value="yes"
                     v-model="formData.hasEV"
+		    aria-label="Yes, I have EV"
                   />
                   <div class="radio-icon">⚡</div>
                   <h5>Yes, I drive electric</h5>
@@ -103,6 +104,7 @@
                     id="hasEVNo"
                     value="no"
                     v-model="formData.hasEV"
+		    aria-label="No, I'm considering EV"
                   />
                   <div class="radio-icon">🚗</div>
                   <h5>No, I'm considering it</h5>

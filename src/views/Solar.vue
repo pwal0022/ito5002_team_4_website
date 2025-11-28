@@ -1,7 +1,7 @@
 <template>
   <div class="hero-section mb-5">
     <div id="hero-container">
-      <img class="hero" src="\src\assets\solarbanner.jpg" />
+      <img class="hero" src="\src\assets\solarbanner.jpg" alt="Solar panels on a rooftop" />
       <div id="center-text">
         <p id="text">☀️ Solar Panel Carbon Calculator</p>
         <p id="text2">
@@ -82,6 +82,7 @@
                       id="hasSolarYes"
                       value="yes"
                       v-model="formData.solar.hasSolar"
+		      aria-label="Yes, I have solar panels"
                     />
                     <div class="radio-icon">✅</div>
                     <h5>Yes, I have solar</h5>
@@ -101,6 +102,7 @@
                       id="hasSolarNo"
                       value="no"
                       v-model="formData.solar.hasSolar"
+		      aria-label="No, I'm considering solar panels"
                     />
                     <div class="radio-icon">💡</div>
                     <h5>No, I'm considering it</h5>
